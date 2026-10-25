@@ -1,6 +1,6 @@
 {
   "name": "ai-discovery-quest",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "private": true,
   "description": "A practical AI learning journey for Windows desktop.",
   "main": "src/main.cjs",

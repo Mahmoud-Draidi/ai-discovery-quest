@@ -1,72 +1,71 @@
 # AI Discovery Quest
 
-A Windows desktop learning app built around practical AI exercises. First development version: one complete chapter, **Models, tools, and skills**. The remaining journey is a labeled roadmap, not completed content.
+A Windows desktop course built from a real beginner's AI learning journey. This development version contains **13 chapters**, **39 quiz questions**, **84 searchable reference entries**, and **10 optional follow-ups**. See [the course guide](COURSE-GUIDE.md) for coverage, prerequisites, and evidence limits.
 
-## Try the first chapter
+The course teaches use of real AI tools. Its practical tasks take place in an AI chat, file tool, browser, coding environment, or connected service. The app organizes lessons, prompts, inspection checks, notes, and progress; it does not replace those tools with a built-in AI coach.
 
-1. Start with Overview and open the chapter.
-2. Read the concepts, then use **Try it** to create and edit a real note with your chosen AI assistant.
-3. Inspect your external result before recording the exercise as practiced. Skip/defer are separate outcomes.
-4. Complete the three-question check; incorrect answers give feedback and allow retries.
-5. Save a personal note. Completing the exercise and all questions earns **AI Explorer**.
+The published `v0.1.0-preview.1` ZIP still contains only the original first chapter. This branch is the full-course update for review; it does not update an already downloaded executable or publish a new release.
 
-The app cannot observe your external assistant. Exercise completion is self-reported. The quiz tests simple distinctions, not expert mastery.
+## Use the app
+
+- Open **Learning journey** to choose a chapter. Each explains the topic, lists the preparation, and provides a practical exercise.
+- Read **Understand**, then follow **Try it** one manageable step at a time in the relevant real tool.
+- Inspect the actual result before recording practice. Skip/defer are separate outcomes.
+- Use **Check** for three retryable questions. A milestone requires both practical completion and the knowledge check.
+- Use **Questions & sources** and **Reference library** to revisit explanations and corrections.
+- Save personal chapter notes. **Continue where I left off** returns to the saved chapter, section, and step.
+- Use **My journey** to record previous experience without retaking lessons, manage unfinished follow-ups, or export/import a personal backup.
+
+Completion records describe your own practice and understanding. The app cannot observe external chats or verify those actions automatically. Existing-practice records do not fabricate quiz answers or award titles.
+
+Lessons are written for a new learner without requiring knowledge of the project's authors or development history. Editorial provenance is kept in [CHAPTER-SOURCES.md](CHAPTER-SOURCES.md), outside the learner interface.
 
 ## Development
 
-Requires Node.js and a package manager. Electron is pinned in package.json; dependencies are locked in pnpm-lock.yaml.
+Requires Node.js and a package manager. Electron 45.0.0 is pinned; dependencies remain locked in pnpm-lock.yaml.
 
 ```sh
 pnpm install
 pnpm start
-```
-
-If Electron's executable has not been downloaded yet, its launcher downloads the official binary on first run. Internet is needed for installation and external source links, not for bundled lessons or local progress afterward.
-
-```sh
 pnpm test
 ```
 
-### Build a Windows preview
+Installation can require internet to obtain the official runtime. Bundled lessons, quizzes, notes, and local progress work offline afterward. Official-source links and most external practical tasks need their relevant connections. No AI API key is required by this app.
 
-On Windows x64, after installing dependencies:
+`Launch Learning Hub.cmd` launches the installed development runtime and exits its console. The optional local shortcut contains machine-specific paths and is excluded from Git.
+
+## Local data and backups
+
+The app stores personal progress in `progress.json` under its OS user-data directory. On Windows: `%APPDATA%/AI Discovery Quest/`. Notes are local plain text, not encrypted or automatically synced. Different extraction folders can use the same Windows account's data. Runtime data is not part of source control or the app package.
+
+This version preserves the earlier chapter-one fields and adds independent chapter, resume, prior-practice, and follow-up records. Prior-practice records are separate from in-app quiz results. Exported backups contain personal data: keep them private. Import previews the candidate state before replacement and saves the previous state to a dated local recovery file. Malformed JSON is rejected; corrupt saved progress is kept intact and editing blocked for recovery.
+
+Avoid using an old and new app version against the same profile in parallel: older versions do not understand the newer chapter fields. Back up progress before switching versions. No learner-specific resume or notes are seeded into the public app.
+
+## Checks
+
+The GitHub Actions **Progress checks** workflow runs syntax and Node progress/storage/content tests on Windows and Linux for pull requests into `main`. These tests cover completion gates, invalid state, chapter data, old-progress retention, and persistence. They do not open Electron or exercise external accounts.
+
+Desktop QA is separate: chapter routing, one-step practice, wrong-answer feedback, all quiz flows, notes/restart, resume, backup/import recovery, reference search, and narrow-window layout. Test profiles and screenshots stay in ignored `test-results/`. A successful app test does not demonstrate that every external lesson was performed by a learner.
+
+## Build a Windows app ZIP
+
+On Windows x64 after dependencies are installed:
 
 ```sh
 pnpm build:win
 ```
 
-The build script follows Electron's documented manual packaging approach. It copies the installed official runtime and an explicit app payload (`src`, runtime package metadata, and the app license), then creates a ZIP and `SHA256SUMS.txt` in ignored `dist/`. Developer files, Git history, tests, and personal data are not copied into the app payload. Runtime license notices are retained.
+The script copies the official runtime and explicit source/license payload, creates a ZIP and checksum in ignored `dist/`, and records the source revision. It refuses to replace an existing generated build directory. Preserve an older generated build deliberately before rebuilding the same version.
 
-Extract the entire generated ZIP, then open `AI Discovery Quest.exe`. Keep all extracted files together. Node.js and developer tools are not needed on the receiving computer. This preview is unsigned and has no verified publisher signature; code signing and an installer are later release steps. “Portable” means no installation, not that notes travel with the EXE: progress still lives in the Windows user's app-data folder.
+Extract the entire ZIP and open `AI Discovery Quest.exe`; keep the surrounding files together. No separate Node.js installation is needed for the packaged app. This is an unsigned app ZIP, not an installer or automatic updater. Publisher signing and an installer are separate distribution work.
 
-The script refuses to replace an existing generated build directory. Preserve or remove an older generated build deliberately before rebuilding the same version. Preparing a local ZIP does not publish a GitHub release.
-
-### Automatic checks
-
-The **Progress checks** GitHub Actions workflow runs on pull requests into `main` and pushes to `main` or the workflow's setup branch. It checks the desktop/page scripts' syntax and runs the progress/storage tests on Windows and Linux using Node.js 24. These tests use Node's standard library, so the workflow does not need to download Electron or install app dependencies.
-
-The workflow does not open the desktop UI, build an installer, or prove that every feature works. Desktop interaction and restart checks remain separate validation steps. Each GitHub job reports its own result on the PR and in the Actions tab.
-
-After installing the runtime, `Launch Learning Hub.cmd` opens the desktop executable and immediately exits its console. On the development machine, the local `AI Discovery Quest.lnk` shortcut opens it directly with no command window. The shortcut contains local paths and is excluded from Git. These are development launchers, not a Windows installer.
-
-## Local data
-
-Personal progress is saved as `progress.json` in Electron's OS-specific user-data folder. On Windows this app uses `%APPDATA%/AI Discovery Quest/`. Notes are local plain text in that file, not encrypted or synced. App source does not read the original course's private journal or progress file. Do not commit a user-data folder.
-
-The app stores note edits as you type and shows save status. If saving fails, the header reports it. If progress cannot be parsed, the file is left intact and editing is blocked until recovery.
-
-## Project status
-
-Development preview only. Source is public at [Mahmoud-Draidi/ai-discovery-quest](https://github.com/Mahmoud-Draidi/ai-discovery-quest). A Windows installer, automatic updates, full curriculum, and embedded AI are not available yet. Use the development instructions above to run this version.
+The package excludes Git history, development dependencies, tests, screenshots, course-private journals, and personal progress. Runtime license notices are retained. A source ZIP from GitHub is for developers, not the packaged end-user download.
 
 ## License and contributions
 
-The app's original source code and associated course documentation are licensed under the [MIT License](LICENSE). Dependencies retain their own licenses.
-
-You may use, modify, and redistribute this project, including commercially, while preserving the required copyright and license notice. Sharing modifications back here is welcome, but not required by MIT. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose improvements.
+Original source and associated course documentation use the [MIT License](LICENSE). Dependencies retain their own licenses. MIT permits broad use/modification/redistribution, including commercial use, while preserving required notices; contributions back are welcome, not mandatory. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Technical choices
 
-Electron desktop window; bundled HTML/CSS/JavaScript; a restricted preload interface for local progress and allowlisted source links. No remote executable content or external API service is loaded by the application. No production JavaScript framework is required.
-
-References: [Electron installation](https://www.electronjs.org/docs/latest/tutorial/installation), [Electron security guidance](https://www.electronjs.org/docs/latest/tutorial/security).
+Electron desktop window; bundled HTML/CSS/JavaScript; isolated sandboxed renderer; restricted preload for local progress and fixed official-reference links. No production framework, external AI API, or remote executable content is added. The shared chapter data drives the later lesson screens; earlier progress remains compatible.

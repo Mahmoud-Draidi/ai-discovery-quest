@@ -4,3 +4,10 @@ test-results/
 *.log
 user-data/
 *.lnk
+
+# Personal learning data must never enter the public source package.
+progress.json
+progress-before-import-*.json
+AI-Discovery-Quest-progress.json
+LOCAL-LEARNING-RESUME.json
+personal/

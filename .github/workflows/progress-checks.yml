@@ -32,5 +32,9 @@ jobs:
         run: node --check src/main.cjs
       - name: Check page behavior syntax
         run: node --check src/renderer.js
+      - name: Check chapter data and screens syntax
+        run: |
+          node --check src/course.js
+          node --check src/course-ui.js
       - name: Verify progress and note storage
-        run: node --test tests/progress.test.cjs
+        run: node --test tests/progress.test.cjs tests/course.test.cjs
