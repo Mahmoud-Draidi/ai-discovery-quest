@@ -12,13 +12,13 @@ Official product references checked 26 October 2026:
 - [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md): Codex discovers applicable instruction files; scope and overrides matter. The exercise uses a practice project's guidance, not machine-wide changes.
 - [Use ChatGPT](https://learn.chatgpt.com/docs/use-chatgpt): supply relevant files and context, then inspect created outputs.
 
-The built-in quiz checks three conceptual distinctions. Practical completion is a learner report of four external checkpoints; the app does not inspect another assistant or enable its tools. Unavailable mechanisms stay deferred rather than being marked successful. Memory is discussed only to distinguish it from explicit records; account-wide or project-specific memory behavior is not tested by this chapter.
+The built-in quiz checks the core conceptual distinctions. Practical completion is a learner report of the external practice checkpoints; the app does not inspect another assistant or enable its tools. Unavailable mechanisms stay deferred rather than being marked successful. Memory is discussed only to distinguish it from explicit records; account-wide or project-specific memory behavior is not tested by this chapter.
 
 Future chapters should preserve the same separation between real journey evidence, product documentation, and optional enhancements. Verify changing product details again when revising or releasing the relevant lesson.
 
 ## Full-course curation
 
-The course contains 13 chapters, 39 knowledge-check questions, and 84 searchable reference entries. Chapters 3–13 consolidate the actual prompting/research/artifact/browser/plugin/control/development/GitHub/environment/delegation/hook lessons. The app-building capstone is excluded from the learner curriculum. COURSE-GUIDE.md records each chapter's historical evidence and preparation.
+The course includes chapters, knowledge checks, and searchable reference. The later chapters consolidate the actual prompting/research/artifact/browser/plugin/control/development/GitHub/environment/delegation/hook lessons. The app-building capstone is excluded from the learner curriculum. COURSE-GUIDE.md records each chapter's historical evidence and preparation.
 
 Questions were rewritten for general learners. We retained the distinction between a practiced task, an explanation, a skipped exercise, and missing prerequisites. Generic sample inputs and alternate supported routes are portability enhancements, not claims of new historical practice. The hook diagnosis, missing renderer, unconfirmed scheduled run, untested direct peer messaging, and unperformed competitor execution retain their limits.
 

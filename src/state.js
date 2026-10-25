@@ -28,12 +28,12 @@
   }
   function normalizeContext(raw = {}) {
     const source = raw && typeof raw === "object" ? raw : {};
-    const checks = [...new Set((Array.isArray(source.checks) ? source.checks : []).filter(n => [1, 2, 3, 4].includes(n)))];
+    const checks = [...new Set((Array.isArray(source.checks) ? source.checks : []).filter(n => content.context.steps.some((_, i) => i + 1 === n)))];
     const quiz = {};
     for (const q of content.context.questions) quiz[q.id] = Array.isArray(source.quiz?.[q.id]) ? source.quiz[q.id].filter(a => Number.isInteger(a) && a >= 0 && a < 3).slice(-100) : [];
     let exercise = ["not-started", "practiced", "skipped", "deferred"].includes(source.exercise) ? source.exercise : "not-started";
-    if (exercise === "practiced" && checks.length !== 4) exercise = "not-started";
-    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, 3)) : 0 };
+    if (exercise === "practiced" && checks.length !== content.context.steps.length) exercise = "not-started";
+    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, content.context.steps.length - 1)) : 0 };
   }
   function normalize(raw = {}) {
     const source = raw && typeof raw === "object" ? raw : {};
@@ -54,19 +54,19 @@
   function solved(state, question) { return state.quiz[question.id].includes(question.correct); }
   function summary(state) {
     const correct = content.questions.filter(q => solved(state, q)).length;
-    const complete = correct === 3 && state.exercise === "practiced";
+    const complete = correct === content.questions.length && state.exercise === "practiced";
     const started = state.lessonSeen || state.checks.length > 0 || correct > 0 || state.exercise !== "not-started";
-    return { correct, complete, started, percent: Math.round(((state.exercise === "practiced" ? 1 : 0) + correct) / 4 * 100) };
+    return { correct, complete, started, percent: Math.round(((state.exercise === "practiced" ? 1 : 0) + correct) / (content.questions.length + 1) * 100) };
   }
   function nextAction(state) {
     if (summary(state).complete) return "Revisit your notes or explore the reference library.";
     if (state.exercise !== "practiced") return "Try the note exercise and inspect the actual result.";
-    return "Finish your three-question knowledge check.";
+    return "Finish your knowledge check.";
   }
   function contextSummary(state) {
     const value = normalizeContext(state.context);
     const correct = content.context.questions.filter(q => value.quiz[q.id].includes(q.correct)).length;
-    return { correct, complete: correct === 3 && value.exercise === "practiced", percent: Math.round(((value.exercise === "practiced" ? 1 : 0) + correct) / 4 * 100) };
+    return { correct, complete: correct === content.context.questions.length && value.exercise === "practiced", percent: Math.round(((value.exercise === "practiced" ? 1 : 0) + correct) / (content.context.questions.length + 1) * 100) };
   }
   function chapterSummary(state, chapter) {
     const value = normalizeChapter(state.chapters?.[chapter.id], chapter);

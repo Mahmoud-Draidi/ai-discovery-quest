@@ -1,6 +1,6 @@
 # AI Discovery Quest — desktop Learning Hub
 
-Status: PR #3 merged the 13-chapter course. Version 0.2.1 provides the Windows ZIP distribution, with notes, checks, resume, local backups, and existing-practice records; see Releases for download availability. An installer remains separate future work.
+Status: PR #3 merged the course. Version 0.2.1 provides the Windows ZIP distribution, with notes, checks, resume, local backups, and existing-practice records; see Releases for download availability. An installer remains separate future work.
 
 ## Purpose
 
@@ -27,12 +27,12 @@ One chapter: **Models, tools, and skills**.
 1. Read a short explanation of the three concepts and one everyday example for each.
 2. Follow a practical exercise using an AI assistant: ask it to create a short note and inspect its result.
 3. Record the exercise as completed, skipped, or still to do. This is learner-reported evidence; the app does not pretend to observe an external chat.
-4. Answer three short practice questions, one at a time, with useful feedback and retries.
+4. Answer short practice questions, one at a time, with useful feedback and retries.
 5. Save a personal note and return to it after restarting the app.
 6. Earn the title **AI Explorer** after completing the practice check and the exercise.
 7. See the chapter's status and next action on the home screen.
 
-Only this chapter is interactive in the published first preview. All 13 course chapters are now implemented on the development branch. Each gives a self-contained explanation, preparation, practice, and checks for a new learner. The Learning Hub build/release itself is project work, excluded from the course chapters.
+Only this chapter is interactive in the published first preview. The course chapters are now implemented on the development branch. Each gives a self-contained explanation, preparation, practice, and checks for a new learner. The Learning Hub build/release itself is project work, excluded from the course chapters.
 
 ## First-version acceptance checks
 

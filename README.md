@@ -2,15 +2,15 @@
 
 **Learn to use AI through practical exercises—not just explanations.**
 
-A beginner-friendly Windows desktop course with **13 chapters**, **39 practice questions**, **84 searchable reference entries**, and personal notes and progress. Start with models, tools, and skills, then explore files, research, browsers, coding, GitHub, agents, and automation.
+A beginner-friendly Windows desktop course with hands-on chapters, practice questions, searchable reference, and personal notes and progress. Start with models, tools, and skills, then explore files, research, browsers, coding, GitHub, agents, and automation.
 
-[**Download for Windows x64 · v0.2.1**](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/download/v0.2.1/AI-Discovery-Quest-0.2.1-windows-x64.zip) · [Release notes & checksums](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/tag/v0.2.1) · [Course guide](COURSE-GUIDE.md) · [Contribute](CONTRIBUTING.md)
+[**Download for Windows x64**](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/latest) · [Release notes & checksums](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/latest) · [Course guide](COURSE-GUIDE.md) · [Contribute](CONTRIBUTING.md)
 
 Free and open source under the [MIT License](LICENSE).
 
 ## Download and start learning
 
-1. [Download the Windows app ZIP](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/download/v0.2.1/AI-Discovery-Quest-0.2.1-windows-x64.zip).
+1. Open the latest release and download its **Windows x64 app ZIP**: [Download for Windows](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/latest).
 2. Extract the **entire ZIP** to a folder; keep its files together.
 3. Open **AI Discovery Quest.exe**.
 4. Select **Learning journey**, choose a chapter, and follow **Understand → Try it → Check**.
@@ -23,10 +23,10 @@ You do **not** need Node.js, developer tools, or an API key to use the downloade
 
 - Short explanations followed by practical tasks in real AI tools.
 - Ready-to-use prompts, clear preparation, and checks for inspecting the actual result.
-- Three questions per chapter, with feedback and retries.
+- Knowledge checks with feedback and retries.
 - Personal chapter notes, bookmarks, a saved resume point, and earned milestones.
 - Searchable answers and official references for revisiting a topic.
-- Ten optional follow-up tasks, plus separate records for prior experience, skipped work, and missing preparation.
+- Optional follow-up tasks, plus separate records for prior experience, skipped work, and missing preparation.
 
 The app guides your practice. Exercises use the relevant AI chat, browser, file tool, coding assistant, or connected service. Those tools may need an account, connection, or runtime; each chapter explains its preparation. Bundled lessons, quizzes, and personal progress work offline. External practice and source links may need internet access.
 

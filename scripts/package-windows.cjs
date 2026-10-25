@@ -42,7 +42,7 @@ async function build() {
     "AI Discovery Quest — Windows x64 preview", "",
     "1. Extract the entire ZIP to a folder. Do not run the app from inside the ZIP.",
     "2. Open AI Discovery Quest.exe. Keep the surrounding files and folders together.",
-    "3. Open Learning journey to explore all 13 chapters, or Continue where I left off.", "",
+    "3. Open Learning journey to explore the course, or Continue where I left off.", "",
     "No Node.js, developer tools, AI API key, or installation is needed to read the bundled course.",
     "Practical exercises use real AI tools and may require relevant accounts or runtimes.",
     "This app guides practice and tracks learning; it does not replace those tools with an AI coach.",

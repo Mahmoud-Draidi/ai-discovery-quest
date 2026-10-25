@@ -114,7 +114,7 @@ For actual hooks: supported lifecycle hooks, a practice repository, and the requ
 
 ## Learning progress
 
-Follow the practical steps in the relevant real AI tool. Inspect each result, then record your practice. A chapter milestone requires practical completion and all three correct knowledge-check answers. Skip and defer remain separate options.
+Follow the practical steps in the relevant real AI tool. Inspect each result, then record your practice. A chapter milestone requires practical completion and a completed knowledge check. Skip and defer remain separate options.
 
 Notes, bookmarks, resume points, backups, and existing-experience records are local personal data. Existing experience does not automatically change quiz answers. Optional follow-ups let you revisit additional topics when the necessary tools are available.
 

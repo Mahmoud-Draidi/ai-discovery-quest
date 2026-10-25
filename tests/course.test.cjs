@@ -113,3 +113,28 @@ test("local prior-practice records never fabricate quiz passes or earned milesto
   assert.equal(invalid.resume.view,"lesson");
   assert.equal(invalid.records.foundation.status,"not-recorded");
 });
+
+test("course and earlier quiz totals follow content changes without separate count edits", () => {
+  const content = require("../src/content.js");
+  const stateApi = require("../src/state.js");
+  const originalTotal = stateApi.courseSummary(normalize()).total;
+  const firstLength = content.questions.length;
+  const contextLength = content.context.questions.length;
+  const chapterLength = course.chapters.length;
+  try {
+    content.questions.push({...content.questions[0], id:"extra-foundation"});
+    content.context.questions.push({...content.context.questions[0], id:"extra-context"}, {...content.context.questions[1], id:"extra-context-two"});
+    course.chapters.push({...course.chapters[0], id:"extra-chapter", number:course.chapters.at(-1).number + 1});
+    const value = normalize({exercise:"practiced",checks:[1,2,3],quiz:{q1:[0],q2:[1],q3:[2]}});
+    assert.equal(stateApi.summary(value).complete,false);
+    value.quiz["extra-foundation"]=[content.questions[0].correct];
+    assert.equal(stateApi.summary(value).complete,true);
+    value.context.exercise="practiced";value.context.checks=content.context.steps.map((_, i)=>i+1);
+    value.context.quiz=Object.fromEntries(content.context.questions.map(q=>[q.id,[q.correct]]));
+    assert.equal(stateApi.contextSummary(value).correct,content.context.questions.length);
+    assert.equal(stateApi.contextSummary(value).complete,true);
+    assert.equal(stateApi.courseSummary(value).total,originalTotal+1);
+  } finally {
+    content.questions.length=firstLength;content.context.questions.length=contextLength;course.chapters.length=chapterLength;
+  }
+});
