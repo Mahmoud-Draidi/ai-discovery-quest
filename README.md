@@ -27,6 +27,12 @@ If Electron's executable has not been downloaded yet, its launcher downloads the
 pnpm test
 ```
 
+### Automatic checks
+
+The **Progress checks** GitHub Actions workflow runs on pull requests into `main` and pushes to `main` or the workflow's setup branch. It checks the desktop/page scripts' syntax and runs the progress/storage tests on Windows and Linux using Node.js 24. These tests use Node's standard library, so the workflow does not need to download Electron or install app dependencies.
+
+The workflow does not open the desktop UI, build an installer, or prove that every feature works. Desktop interaction and restart checks remain separate validation steps. Each GitHub job reports its own result on the PR and in the Actions tab.
+
 After installing the runtime, `Launch Learning Hub.cmd` opens the desktop executable and immediately exits its console. On the development machine, the local `AI Discovery Quest.lnk` shortcut opens it directly with no command window. The shortcut contains local paths and is excluded from Git. These are development launchers, not a Windows installer.
 
 ## Local data
