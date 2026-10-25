@@ -6,6 +6,7 @@ const { createStore } = require("./store.cjs");
 const testMode = process.env.QUEST_TEST_MODE === "1";
 if (testMode && process.env.QUEST_TEST_DATA) app.setPath("userData", process.env.QUEST_TEST_DATA);
 app.setName("AI Discovery Quest");
+if (process.platform === "win32") app.setAppUserModelId("io.github.mahmoud-draidi.ai-discovery-quest");
 let store;
 let quitting = false;
 const page = pathToFileURL(path.join(__dirname, "index.html")).href;
