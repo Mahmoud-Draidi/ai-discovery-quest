@@ -1,7 +1,9 @@
-const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, dialog } = require("electron");
 const path = require("node:path");
+const fs = require("node:fs/promises");
 const { pathToFileURL } = require("node:url");
 const { createStore } = require("./store.cjs");
+const { sources } = require("./course.js");
 
 const testMode = process.env.QUEST_TEST_MODE === "1";
 if (testMode && process.env.QUEST_TEST_DATA) app.setPath("userData", process.env.QUEST_TEST_DATA);
@@ -12,7 +14,11 @@ let quitting = false;
 const page = pathToFileURL(path.join(__dirname, "index.html")).href;
 const allowedSources = new Set([
   "https://learn.chatgpt.com/docs/skills-and-plugins",
-  "https://learn.chatgpt.com/docs/prompting"
+  "https://learn.chatgpt.com/docs/prompting",
+  "https://learn.chatgpt.com/docs/projects",
+  "https://learn.chatgpt.com/docs/agent-configuration/agents-md",
+  "https://learn.chatgpt.com/docs/use-chatgpt",
+  ...Object.values(sources).map(source => source[1])
 ]);
 
 function validateSender(event) {
@@ -45,6 +51,25 @@ app.whenReady().then(async () => {
   store = createStore(app.getPath("userData"));
   ipcMain.handle("quest:load", event => { validateSender(event); return store.load(); });
   ipcMain.handle("quest:save", (event, value) => { validateSender(event); return store.save(value); });
+  ipcMain.handle("quest:export", async event => {
+    validateSender(event);
+    await store.flush();
+    const progress = await store.load();
+    const result = await dialog.showSaveDialog(BrowserWindow.fromWebContents(event.sender), {
+      title: "Export personal learning backup", defaultPath: "AI-Discovery-Quest-progress.json", filters: [{ name: "Progress backup", extensions: ["json"] }]
+    });
+    if (result.canceled || !result.filePath) return false;
+    await fs.writeFile(result.filePath, JSON.stringify({ kind: "ai-discovery-quest", exportedAt: new Date().toISOString(), progress }, null, 2), "utf8");
+    return true;
+  });
+  ipcMain.handle("quest:import", async (event, value) => {
+    validateSender(event);
+    await store.flush();
+    const previous = await store.load();
+    await fs.mkdir(app.getPath("userData"), { recursive: true });
+    await fs.writeFile(path.join(app.getPath("userData"), `progress-before-import-${Date.now()}.json`), JSON.stringify(previous, null, 2), { encoding: "utf8", flag: "wx" });
+    return store.save(value);
+  });
   ipcMain.handle("quest:source", (event, url) => {
     validateSender(event);
     if (!allowedSources.has(url)) throw new Error("Unknown source link.");

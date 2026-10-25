@@ -1,10 +1,12 @@
 # AI Discovery Quest — desktop Learning Hub
 
-Status: first chapter implemented and desktop development build verified. Source published at https://github.com/Mahmoud-Draidi/ai-discovery-quest. Packaged Windows installer remains pending.
+Status: the published Windows ZIP contains chapter one. This feature branch implements the 13-chapter course for a single development PR, with notes, checks, resume, local backups, and existing-practice records. A new release and installer remain separate decisions.
 
 ## Purpose
 
 Turn our practical AI learning journey into a beginner-friendly Windows desktop course and searchable reference that other people can follow at their own pace.
+
+The actual journey is the foundation. Improve explanations, prerequisites, navigation, and checks; label genuinely new exercises as enhancements. Do not replace the journey with an unrelated course or require the original learner to repeat completed exercises to author content. Keep personal learning progress separate from app-development progress.
 
 The learner directs and reviews AI-led development. Teach the tools through useful work, explain unfamiliar terms, and distinguish what has been demonstrated from what has only been explained.
 
@@ -30,7 +32,7 @@ One chapter: **Models, tools, and skills**.
 6. Earn the title **AI Explorer** after completing the practice check and the exercise.
 7. See the chapter's status and next action on the home screen.
 
-Only this chapter is interactive in the first version. Future chapters can be shown as a roadmap, clearly labeled as not yet available. Do not present placeholder lessons as complete course content.
+Only this chapter is interactive in the published first preview. All 13 course chapters are now implemented on the development branch. Each distinguishes original journey evidence from the new learner's progress and preparation. The Learning Hub build/release itself is project work, excluded from the course chapters.
 
 ## First-version acceptance checks
 
@@ -45,7 +47,7 @@ Only this chapter is interactive in the first version. Future chapters can be sh
 
 ## Content plan after the first chapter
 
-Expand the curated route: prompting and verification; files and context; instructions and memory; research; artifacts; browser and computer use; plugins/MCP; reusable skills; planning/goals/scheduling; coding and Git; GitHub and PR review; local/cloud/worktrees; subagents/model handoffs/coordinated chats; hooks; cross-product comparisons.
+Expand the curated route: files/context and project continuity; prompting and verification; research; artifacts; browser and computer use; plugins/MCP; reusable skills; planning/goals/scheduling; coding and Git; GitHub and PR review; local/cloud/worktrees; subagents/model handoffs/coordinated chats; hooks; cross-product comparisons. Instructions and memory distinctions accompany context without requiring automatic memory.
 
 Keep the questions discovered during our journey as a searchable reference. Rewrite them for general learners, add requirements and source links, and preserve corrections. Track deferred or unavailable features honestly and provide alternatives where useful.
 
