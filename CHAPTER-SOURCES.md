@@ -51,3 +51,7 @@ Additional current official references reviewed 26 October 2026:
 Pricing/model/voice behavior is not a promise of availability for all accounts. No cache benchmark, automatic token savings, clean-machine installation test, or new competitor run is claimed by this content update.
 
 Personal resumes and progress are runtime user data and are never seeded into the public package.
+
+## Standalone learner presentation
+
+Source history is editorial context, not prerequisite knowledge for the learner. Version 0.2.1 removes the author-history panel and retrospective first-person narration from all lesson screens, quizzes, references, and optional topics. Runtime content contains direct explanations and exercises. IDs, personal notes, progress, and quiz answer mappings remain compatible. Historical evidence stays in project documentation rather than the course interface.

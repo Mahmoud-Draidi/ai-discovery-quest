@@ -32,7 +32,7 @@ One chapter: **Models, tools, and skills**.
 6. Earn the title **AI Explorer** after completing the practice check and the exercise.
 7. See the chapter's status and next action on the home screen.
 
-Only this chapter is interactive in the published first preview. All 13 course chapters are now implemented on the development branch. Each distinguishes original journey evidence from the new learner's progress and preparation. The Learning Hub build/release itself is project work, excluded from the course chapters.
+Only this chapter is interactive in the published first preview. All 13 course chapters are now implemented on the development branch. Each gives a self-contained explanation, preparation, practice, and checks for a new learner. The Learning Hub build/release itself is project work, excluded from the course chapters.
 
 ## First-version acceptance checks
 
@@ -73,3 +73,7 @@ These can be considered later. The initial product is a learning app; it does no
 3. Review the files selected for the fresh repository and its license.
 4. Publish the reviewed source and, later, a tested Windows release.
 5. Expand the course in small verified chapters while continuing the original learning journey.
+
+## Learner-facing presentation
+
+The interface is a standalone AI course. Do not show author-history panels, original-learner status, or retrospective dialogue. Use the real learning experiences as editorial source material, then teach the concepts directly. Keep provenance and project history in development documentation. Personal resume data remains local.

@@ -8,7 +8,7 @@ The published `v0.1.0-preview.1` ZIP still contains only the original first chap
 
 ## Use the app
 
-- Open **Learning journey** to choose a chapter. Each lists the preparation and original journey evidence.
+- Open **Learning journey** to choose a chapter. Each explains the topic, lists the preparation, and provides a practical exercise.
 - Read **Understand**, then follow **Try it** one manageable step at a time in the relevant real tool.
 - Inspect the actual result before recording practice. Skip/defer are separate outcomes.
 - Use **Check** for three retryable questions. A milestone requires both practical completion and the knowledge check.
@@ -16,9 +16,9 @@ The published `v0.1.0-preview.1` ZIP still contains only the original first chap
 - Save personal chapter notes. **Continue where I left off** returns to the saved chapter, section, and step.
 - Use **My journey** to record previous experience without retaking lessons, manage unfinished follow-ups, or export/import a personal backup.
 
-Original journey evidence is not the new learner's completion record. The app cannot observe external chats or verify those actions automatically. Existing-practice records do not fabricate quiz answers or award titles.
+Completion records describe your own practice and understanding. The app cannot observe external chats or verify those actions automatically. Existing-practice records do not fabricate quiz answers or award titles.
 
-The Learning Hub's own construction/publication is project history, not an additional AI-course chapter. Source provenance is described in [CHAPTER-SOURCES.md](CHAPTER-SOURCES.md).
+Lessons are written for a new learner without requiring knowledge of the project's authors or development history. Editorial provenance is kept in [CHAPTER-SOURCES.md](CHAPTER-SOURCES.md), outside the learner interface.
 
 ## Development
 

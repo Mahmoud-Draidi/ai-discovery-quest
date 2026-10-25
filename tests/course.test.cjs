@@ -18,7 +18,7 @@ test("all 13 chapters have usable content, preparation, exercises and answer fee
   assert.equal(new Set(course.chapters.map(ch => ch.id)).size, 11);
   const ids = new Set();
   for (const ch of course.chapters) {
-    assert.ok(ch.title && ch.evidence && ch.preparation && ch.award);
+    assert.ok(ch.title && ch.preparation && ch.award);
     assert.ok(ch.sections.length >= 3 && ch.library.length >= 4 && ch.steps.length >= 3);
     for (const step of ch.steps) assert.ok(step.title && step.text && step.prompt && step.check);
     assert.equal(ch.questions.length, 3);
@@ -36,6 +36,17 @@ test("all 13 chapters have usable content, preparation, exercises and answer fee
   }
   assert.equal(courseSummary(normalize()).total, 13);
   assert.equal(courseSummary(normalize()).complete, 0);
+});
+
+test("learner-facing content does not require knowledge of the course authors' history", () => {
+  const content = require("../src/content.js");
+  const forbidden = /\bour\b|\bwe\b|original learner|original journey|historical checkpoint|originally (skipped|deferred)/i;
+  const visible = { chapters: course.chapters, followUps: course.followUps, context: content.context };
+  assert.doesNotMatch(JSON.stringify(visible), forbidden);
+  for (const ch of course.chapters) assert.equal(ch.evidence, undefined);
+  const renderer = require("node:fs").readFileSync(path.join(__dirname, "../src/renderer.js"), "utf8");
+  const screens = require("node:fs").readFileSync(path.join(__dirname, "../src/course-ui.js"), "utf8");
+  assert.doesNotMatch(renderer + screens, /ORIGINAL JOURNEY|OUR REAL AI JOURNEY|THE JOURNEY WE ACTUALLY TOOK|Questions we asked|What we actually did|ch\.evidence/);
 });
 
 test("every chapter requires its own complete practice and quiz; skip/defer do not earn titles", () => {
