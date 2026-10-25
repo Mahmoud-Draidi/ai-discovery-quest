@@ -37,7 +37,7 @@ The app stores note edits as you type and shows save status. If saving fails, th
 
 ## Project status
 
-Development preview only. A public repository, Windows installer, automatic updates, full curriculum, and embedded AI are not part of this build yet. Publication remains a separate review checkpoint.
+Development preview only. Source is public at [Mahmoud-Draidi/ai-discovery-quest](https://github.com/Mahmoud-Draidi/ai-discovery-quest). A Windows installer, automatic updates, full curriculum, and embedded AI are not available yet. Use the development instructions above to run this version.
 
 ## License and contributions
 

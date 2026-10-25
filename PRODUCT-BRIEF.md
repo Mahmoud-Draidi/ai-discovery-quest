@@ -1,6 +1,6 @@
 # AI Discovery Quest — desktop Learning Hub
 
-Status: first chapter implemented and desktop development build verified. Public repository and packaged Windows installer remain pending.
+Status: first chapter implemented and desktop development build verified. Source published at https://github.com/Mahmoud-Draidi/ai-discovery-quest. Packaged Windows installer remains pending.
 
 ## Purpose
 
@@ -56,7 +56,7 @@ Keep the questions discovered during our journey as a searchable reference. Rewr
 - Review the exact initial public files before publishing. Do not upload the course folder wholesale.
 - Keep personal progress, notes, raw conversations, machine-specific paths, and credentials out of the public curriculum and Git history.
 - Provide a downloadable Windows release after the desktop build has been verified.
-- MIT selected for the app's original source and associated course documentation. Dependencies retain their licenses. Public repository publication remains pending.
+- MIT selected for the app's original source and associated course documentation. Dependencies retain their licenses. The reviewed initial source is now published in the public repository.
 
 ## Not required for the first version
 
