@@ -27,6 +27,20 @@ If Electron's executable has not been downloaded yet, its launcher downloads the
 pnpm test
 ```
 
+### Build a Windows preview
+
+On Windows x64, after installing dependencies:
+
+```sh
+pnpm build:win
+```
+
+The build script follows Electron's documented manual packaging approach. It copies the installed official runtime and an explicit app payload (`src`, runtime package metadata, and the app license), then creates a ZIP and `SHA256SUMS.txt` in ignored `dist/`. Developer files, Git history, tests, and personal data are not copied into the app payload. Runtime license notices are retained.
+
+Extract the entire generated ZIP, then open `AI Discovery Quest.exe`. Keep all extracted files together. Node.js and developer tools are not needed on the receiving computer. This preview is unsigned and has no verified publisher signature; code signing and an installer are later release steps. “Portable” means no installation, not that notes travel with the EXE: progress still lives in the Windows user's app-data folder.
+
+The script refuses to replace an existing generated build directory. Preserve or remove an older generated build deliberately before rebuilding the same version. Preparing a local ZIP does not publish a GitHub release.
+
 ### Automatic checks
 
 The **Progress checks** GitHub Actions workflow runs on pull requests into `main` and pushes to `main` or the workflow's setup branch. It checks the desktop/page scripts' syntax and runs the progress/storage tests on Windows and Linux using Node.js 24. These tests use Node's standard library, so the workflow does not need to download Electron or install app dependencies.
