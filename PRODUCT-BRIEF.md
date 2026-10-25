@@ -1,6 +1,6 @@
 # AI Discovery Quest — desktop Learning Hub
 
-Status: the published Windows ZIP contains chapter one. This feature branch implements the 13-chapter course for a single development PR, with notes, checks, resume, local backups, and existing-practice records. A new release and installer remain separate decisions.
+Status: PR #3 merged the 13-chapter course. Version 0.2.1 provides the Windows ZIP distribution, with notes, checks, resume, local backups, and existing-practice records; see Releases for download availability. An installer remains separate future work.
 
 ## Purpose
 
