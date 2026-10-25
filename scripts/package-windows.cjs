@@ -56,7 +56,8 @@ async function build() {
   const psQuote = text => "'" + text.replace(/'/g, "''") + "'";
   const zipPath = path.join(dist, base + ".zip");
   const powershell = path.join(process.env.SystemRoot || "C:\\Windows", "System32", "WindowsPowerShell", "v1.0", "powershell.exe");
-  const zip = spawnSync(powershell, ["-NoProfile", "-NonInteractive", "-Command", `$ErrorActionPreference = 'Stop'; Compress-Archive -LiteralPath ${psQuote(output)} -DestinationPath ${psQuote(zipPath)} -CompressionLevel Optimal`], { stdio: "inherit", windowsHide: true });
+  const zipCommand = `$ErrorActionPreference = 'Stop'; Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::CreateFromDirectory(${psQuote(output)}, ${psQuote(zipPath)}, [System.IO.Compression.CompressionLevel]::Optimal, $true)`;
+  const zip = spawnSync(powershell, ["-NoProfile", "-NonInteractive", "-Command", zipCommand], { stdio: "inherit", windowsHide: true });
   if (zip.status !== 0) throw new Error("ZIP creation failed; preserve the generated folder to investigate.");
   const hash = crypto.createHash("sha256").update(await fs.readFile(zipPath)).digest("hex");
   await fs.writeFile(path.join(dist, "SHA256SUMS.txt"), `${hash}  ${base}.zip\n`);
