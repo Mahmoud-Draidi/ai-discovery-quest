@@ -2,9 +2,13 @@
   "name": "ai-discovery-quest",
   "version": "0.2.2",
   "private": true,
-  "description": "A practical AI learning journey for Windows desktop.",
+  "description": "Beginner-friendly Windows desktop course for learning AI through practical exercises.",
   "main": "src/main.cjs",
   "license": "MIT",
+  "engines": {
+    "node": "24.x",
+    "pnpm": ">=10 <12"
+  },
   "scripts": {
     "start": "electron .",
     "test": "node --test tests/*.test.cjs",

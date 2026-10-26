@@ -21,6 +21,34 @@ Help make practical AI learning clearer, more accessible, and easier to verify. 
 
 Keep personal notes, progress files, credentials, raw conversations, dependencies, test profiles, and machine-specific shortcuts out of commits. The repository's `.gitignore` covers the development artifact locations; review the diff as well.
 
+Use the Node.js and pnpm versions declared in `package.json`, then run
+`pnpm install --frozen-lockfile`. Installation may need internet access for
+dependencies and the official Electron runtime. `Launch Learning Hub.cmd` is
+an optional Windows development launcher.
+
+## Content and desktop checks
+
+Run `node scripts/generate-course-guide.cjs` after editing lesson metadata.
+`node scripts/generate-course-guide.cjs --check` verifies that the guide matches
+the course. Keep chapter lists in the generated guide rather than duplicating
+them in the README.
+
+Optional desktop QA uses an existing Playwright installation: set
+`QUEST_PLAYWRIGHT` to its module path, or make `playwright` available to Node,
+then run `node scripts/verify-desktop.cjs`. It launches a separate test profile
+under ignored `test-results/`, tests interaction and companion-window behavior,
+and closes its windows. It does not modify the real learner profile.
+
+See [chapter sources](CHAPTER-SOURCES.md) for editorial provenance and dated
+reference checks, [review response](REVIEW-RESPONSE.md) for review findings,
+and [.github/workflows](.github/workflows) for automated checks.
+
+## Repository settings and releases
+
+See [release preparation](docs/RELEASING.md) for the GitHub About settings,
+build verification, and release-note template. Source changes reach learners
+when a new app ZIP is published.
+
 ## License
 
 By submitting a contribution, you agree to license that contribution under this project's MIT License, unless you clearly identify different terms and the maintainers explicitly agree before accepting it. Only contribute material you have permission to share.

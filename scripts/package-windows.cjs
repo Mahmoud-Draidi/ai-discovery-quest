@@ -4,7 +4,7 @@ const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
 
 async function build() {
-  if (process.platform !== "win32" || process.arch !== "x64") throw new Error("This preview build currently targets Windows x64. Run it on Windows x64.");
+  if (process.platform !== "win32" || process.arch !== "x64") throw new Error("This build targets Windows x64. Run it on Windows x64.");
   const root = path.resolve(__dirname, "..");
   const pkg = JSON.parse(await fs.readFile(path.join(root, "package.json"), "utf8"));
   if (!/^\d+\.\d+\.\d+$/.test(pkg.version)) throw new Error("Expected a simple numeric app version.");
@@ -39,7 +39,7 @@ async function build() {
     builtAt: new Date().toISOString()
   }, null, 2));
   await fs.writeFile(path.join(output, "START-HERE.txt"), [
-    "AI Discovery Quest — Windows x64 preview", "",
+    "AI Discovery Quest — Windows x64", "",
     "1. Extract the entire ZIP to a folder. Do not run the app from inside the ZIP.",
     "2. Open AI Discovery Quest.exe. Keep the surrounding files and folders together.",
     "3. Open Learning journey to explore the course, or Continue where I left off.", "",
@@ -49,8 +49,9 @@ async function build() {
     "Source links require internet access.",
     "Your notes and progress are saved on your PC in %APPDATA%/AI Discovery Quest/progress.json.",
     "Portable here means no installation; notes are not stored beside the EXE or synced.",
-    "My journey supports local backup/import and prior-practice records without fabricating quiz answers.",
-    "This app preview is unsigned. It does not have a verified publisher signature.",
+    "Progress & backups supports local backup/import and prior-practice records without fabricating quiz answers.",
+    "Close any older version and export a backup before updating; versions share saved progress.",
+    "This app is unsigned. It does not have a verified publisher signature.",
     "Source and MIT license: https://github.com/Mahmoud-Draidi/ai-discovery-quest", "",
     "APP-LICENSE.txt covers this app. LICENSE and LICENSES.chromium.html retain runtime notices.",
     "This is not an installer and does not update automatically.", ""

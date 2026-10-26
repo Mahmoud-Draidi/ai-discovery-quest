@@ -1,6 +1,6 @@
 # AI Discovery Quest — desktop Learning Hub
 
-Status: The standalone course is published as a Windows ZIP. The learner-review branch adds orientation, memory and feature practice, a tracker capstone, companion support and usability fixes. Check Releases for the shipped version. An installer remains separate future work.
+Status: See [CHANGELOG.md](CHANGELOG.md) for release notes and unreleased changes, and [Releases](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/latest) for the shipped version.
 
 ## Purpose
 
@@ -20,9 +20,9 @@ The learner directs and reviews AI-led development. Teach the tools through usef
 
 The learner's early drawing was an exercise only; it is not the product design specification.
 
-## First complete slice
+## Chapter experience
 
-One chapter: **Models, tools, and skills**.
+Example chapter: **Models, tools, and skills**.
 
 1. Read a short explanation of the three concepts and one everyday example for each.
 2. Follow a practical exercise using an AI assistant: ask it to create a short note and inspect its result.
@@ -32,7 +32,7 @@ One chapter: **Models, tools, and skills**.
 6. Earn 100 XP after completing the practice check and the exercise; the learner header shows progress toward the next level title.
 7. See the chapter's status and next action on the home screen.
 
-The first preview began with this slice; the full course is now implemented. Each gives a self-contained explanation, preparation, practice, and checks for a new learner. The Learning Hub build/release itself is project work, excluded from the course chapters.
+Each chapter gives a self-contained explanation, preparation, practice, and checks for a new learner. The Learning Hub build/release itself is project work, excluded from the course chapters.
 
 ## First-version acceptance checks
 
@@ -45,9 +45,9 @@ The first preview began with this slice; the full course is now implemented. Eac
 - The chapter is usable with keyboard controls and readable at common window sizes.
 - No AI API key, external account, or internet connection is needed to read the bundled chapter and save local progress. External practice instructions explain which tools are needed.
 
-## Content plan after the first chapter
+## Curriculum
 
-Expand the curated route: files/context and project continuity; prompting and verification; research; artifacts; browser and computer use; plugins/MCP; reusable skills; planning/goals/scheduling; coding and Git; GitHub and PR review; local/cloud/worktrees; subagents/model handoffs/coordinated chats; hooks; cross-product comparisons. Instructions and memory distinctions accompany context without requiring automatic memory.
+See the generated [course guide](COURSE-GUIDE.md) for the chapter route, preparation, and practice checkpoints.
 
 Keep the questions discovered during our journey as a searchable reference. Rewrite them for general learners, add requirements and source links, and preserve corrections. Track deferred or unavailable features honestly and provide alternatives where useful.
 
