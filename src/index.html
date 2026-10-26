@@ -16,7 +16,7 @@
 </head>
 <body>
   <aside class="sidebar" id="sidebar">
-    <a href="#home" class="brand"><img class="brand-logo" src="assets/quest-logo.png" alt="AI Discovery Quest"><span>AI Discovery<br><strong>Quest</strong></span></a>
+    <div class="sidebar-brand-row"><button id="sidebar-toggle" class="icon-button" aria-label="Close navigation" aria-controls="sidebar" aria-expanded="true">☰</button><a href="#home" class="brand"><img class="brand-logo" src="assets/quest-logo.png" alt="AI Discovery Quest"><span>AI Discovery<br><strong>Quest</strong></span></a></div>
     <div class="nav-label">YOUR LEARNING SPACE</div>
     <nav aria-label="Main navigation">
       <button data-view="home"><span aria-hidden="true">⌂</span> Overview</button>
@@ -28,7 +28,7 @@
     <div class="sidebar-bottom"><div class="local-dot">Saved on this device</div><p>Your pace. Your discoveries.</p><span class="version">PRACTICAL AI LEARNING</span></div>
   </aside>
   <div class="workspace">
-    <header class="topbar"><button id="sidebar-toggle" class="icon-button" aria-label="Close navigation" aria-controls="sidebar" aria-expanded="true">☰</button><span class="breadcrumb">YOUR JOURNEY / <strong id="breadcrumb">Overview</strong></span><span class="save-status" id="save-status" role="status">Loading…</span></header>
+    <header class="topbar"><span class="breadcrumb">YOUR JOURNEY / <strong id="breadcrumb">Overview</strong></span><span class="save-status" id="save-status" role="status">Loading…</span></header>
     <div class="content-column">
     <section class="learner-header" id="learner-header" aria-label="Your learner level"></section>
     <main id="main" tabindex="-1"><p>Opening your learning space…</p></main>

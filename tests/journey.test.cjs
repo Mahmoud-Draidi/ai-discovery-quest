@@ -33,6 +33,10 @@ test('viewing, retries and reported prior experience cannot farm XP',()=>{
   assert.equal(J.reward(summary.complete,summary.total).xp,0);
   state.chapters[chapter.id].checks=chapter.steps.map((_,i)=>i+1);
   state.chapters[chapter.id].exercise='practiced';
+  assert.equal(S.courseSummary(state).complete,0,'practice and quiz now require the final completion action');
+  state.completions[chapter.id].referencesReviewed=true;
+  state.completions[chapter.id].notesVisited=true;
+  assert.equal(S.finish(state,chapter.id),true);
   const completed=S.courseSummary(state);
   assert.equal(J.reward(completed.complete,completed.total).xp,100);
   assert.deepEqual(J.reward(completed.complete,completed.total),J.reward(completed.complete,completed.total));

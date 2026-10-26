@@ -106,7 +106,7 @@ test("aggregate course progress includes old chapters without marking new ones l
     context:{exercise:"practiced",checks:[1,2,3,4],quiz:{context1:[1],context2:[0],context3:[2]}}});
   assert.equal(courseSummary(state).complete,2);
   for (const ch of course.chapters) assert.equal(chapterSummary(state,ch).percent,0);
-  for (const ch of course.chapters) state.chapters[ch.id] = completed(ch);
+  for (const ch of course.chapters) { state.chapters[ch.id] = completed(ch); state.completions[ch.id] = {referencesReviewed:true,notesVisited:true,completed:true}; }
   assert.deepEqual(courseSummary(state), {total:course.chapters.length+2,complete:course.chapters.length+2,percent:100});
   assert.deepEqual(normalize(state), state);
 });
@@ -153,10 +153,15 @@ test("course and earlier quiz totals follow content changes without separate cou
     const value = normalize({exercise:"practiced",checks:[1,2,3],quiz:{q1:[0],q2:[1],q3:[2]}});
     assert.equal(stateApi.summary(value).complete,false);
     value.quiz["extra-foundation"]=[content.questions[0].correct];
+    assert.equal(stateApi.summary(value).ready,true);
+    value.completions.foundation = {referencesReviewed:true,notesVisited:true,completed:false};
+    assert.equal(stateApi.finish(value,"foundation"),true);
     assert.equal(stateApi.summary(value).complete,true);
     value.context.exercise="practiced";value.context.checks=content.context.steps.map((_, i)=>i+1);
     value.context.quiz=Object.fromEntries(content.context.questions.map(q=>[q.id,[q.correct]]));
     assert.equal(stateApi.contextSummary(value).correct,content.context.questions.length);
+    value.completions.context = {referencesReviewed:true,notesVisited:true,completed:false};
+    assert.equal(stateApi.finish(value,"context"),true);
     assert.equal(stateApi.contextSummary(value).complete,true);
     assert.equal(stateApi.courseSummary(value).total,originalTotal+1);
   } finally {

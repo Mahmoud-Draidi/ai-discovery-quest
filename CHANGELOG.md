@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Simplifies practice to one Done action per exercise, with Undo, saved counters, and automatic practice completion after all exercises are done.
+- Guides learners from the knowledge check through Common questions and an optional note to explicit chapter completion, with chapter and level-up celebrations; preserves previously completed chapters and XP.
+- Combines overview progress and the next chapter in one card with animated model/tool/skill labels, clear preparation recommendations, consistent chapter navigation, green completed cards and progress indicators.
+- Unifies all chapter notes in one autosaving picker with an immediately updated blue Added note status, removes redundant Save buttons and prior-experience forms, and keeps the sidebar toggle and logo visible in a compact rail.
 - Simplifies the README, centralizes development requirements in package.json, and documents repository settings and release preparation.
 - Removes preview wording from Windows build instructions and uses the current backup-screen name.
 - Replaces milestone pages with a local learner name, time-of-day greeting, chapter-based XP, six level titles, completion percentage and progress toward the next title.
