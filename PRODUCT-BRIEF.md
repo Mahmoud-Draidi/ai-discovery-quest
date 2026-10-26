@@ -12,11 +12,11 @@ The learner directs and reviews AI-led development. Teach the tools through usef
 
 ## Experience
 
-- A dark charcoal interface with subtle borders, readable off-white text, and a restrained green/teal accent. Inspired by ChatGPT's visual simplicity, with our own identity.
+- A neutral charcoal interface with subtle borders, readable off-white text, and white accents. Inspired by ChatGPT's visual simplicity, with our own identity.
 - A journey organized into chapters, with a clear next action and a way to resume.
 - Searchable explanations, examples, questions and answers, troubleshooting, and official sources.
 - Personal notes, bookmarks, and progress, kept separately from the shared curriculum.
-- Milestone titles earned by completing practical checks, rather than simply opening pages.
+- A named local learner profile, a time-of-day greeting, and XP/level titles based on completed chapters, with a progress bar toward the next title.
 
 The learner's early drawing was an exercise only; it is not the product design specification.
 
@@ -29,7 +29,7 @@ One chapter: **Models, tools, and skills**.
 3. Record the exercise as completed, skipped, or still to do. This is learner-reported evidence; the app does not pretend to observe an external chat.
 4. Answer short practice questions, one at a time, with useful feedback and retries.
 5. Save a personal note and return to it after restarting the app.
-6. Earn the title **AI Explorer** after completing the practice check and the exercise.
+6. Earn 100 XP after completing the practice check and the exercise; the learner header shows progress toward the next level title.
 7. See the chapter's status and next action on the home screen.
 
 The first preview began with this slice; the full course is now implemented. Each gives a self-contained explanation, preparation, practice, and checks for a new learner. The Learning Hub build/release itself is project work, excluded from the course chapters.
@@ -37,9 +37,9 @@ The first preview began with this slice; the full course is now implemented. Eac
 ## First-version acceptance checks
 
 - Opens as a desktop window on Windows.
-- Fresh users start with no completed lessons or earned titles.
+- Fresh users start with zero XP, no completed lessons and the AI Newcomer title.
 - Selecting an incorrect answer explains the distinction and allows another attempt.
-- A milestone is not awarded merely for visiting a lesson.
+- XP is not awarded merely for visiting a lesson or repeating a quiz.
 - Notes, answers, exercise status, and completion survive closing and reopening the app.
 - Progress belongs to this local user and does not alter the shared curriculum files.
 - The chapter is usable with keyboard controls and readable at common window sizes.
@@ -69,7 +69,7 @@ These can be considered later. The initial product is a learning app; it does no
 ## Build checkpoints
 
 1. Review this brief and build the desktop shell plus one polished chapter.
-2. Verify persistence, quiz feedback, milestones, and the real desktop window.
+2. Verify persistence, quiz feedback, learner XP/levels, and the real desktop window.
 3. Review the files selected for the fresh repository and its license.
 4. Publish the reviewed source and, later, a tested Windows release.
 5. Expand the course in small verified chapters while continuing the original learning journey.

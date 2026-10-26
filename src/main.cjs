@@ -30,7 +30,7 @@ function validateSender(event) {
 async function createWindow() {
   const win = new BrowserWindow({
     title: "AI Discovery Quest", width: 1240, height: 860, minWidth: 620, minHeight: 560,
-    backgroundColor: "#171919", autoHideMenuBar: true,
+    backgroundColor: "#212121", icon:path.join(__dirname,"assets","quest-logo.png"), autoHideMenuBar: true,
     show: !testMode || process.env.QUEST_TEST_SHOW === "1",
     webPreferences: { preload: path.join(__dirname, "preload.cjs"), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
@@ -67,7 +67,7 @@ app.whenReady().then(async () => {
   ipcMain.handle("quest:companion-open", async (event, value) => {
     validateSender(event); updateCompanion(value);
     if (companionWindow && !companionWindow.isDestroyed()) { companionWindow.show(); companionWindow.focus(); return; }
-    companionWindow = new BrowserWindow({title:"AI Discovery Quest · Practice companion",width:440,height:650,minWidth:340,minHeight:400,alwaysOnTop:true,autoHideMenuBar:true,backgroundColor:"#191b1b",show:!testMode||process.env.QUEST_TEST_SHOW==="1",webPreferences:{preload:path.join(__dirname,"companion-preload.cjs"),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+    companionWindow = new BrowserWindow({title:"AI Discovery Quest · Practice companion",icon:path.join(__dirname,"assets","quest-logo.png"),width:440,height:650,minWidth:340,minHeight:400,alwaysOnTop:true,autoHideMenuBar:true,backgroundColor:"#212121",show:!testMode||process.env.QUEST_TEST_SHOW==="1",webPreferences:{preload:path.join(__dirname,"companion-preload.cjs"),contextIsolation:true,nodeIntegration:false,sandbox:true}});
     companionWindow.webContents.setWindowOpenHandler(()=>({action:"deny"}));
     companionWindow.webContents.on("will-navigate",event=>event.preventDefault());
     companionWindow.on("closed",()=>{companionWindow=null;});

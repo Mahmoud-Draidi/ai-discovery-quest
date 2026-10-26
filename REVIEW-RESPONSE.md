@@ -1,5 +1,13 @@
 # Learner review response
 
+## Learner profile and visual refresh
+
+Replaces the sidebar lettermark with the original book-and-compass Quest logo and uses that asset for desktop windows. Milestone pages are replaced by a top-of-page learner header: optional local nickname, local-time greeting, six level titles, completed-chapter percentage, XP and progress toward the next title. Each fully completed chapter contributes 100 XP once; page visits, retries, skipped work and prior-experience records do not add XP. Titles use 0/20/40/60/80/100% of the current course, rounded up to whole chapters for thresholds.
+
+Every chapter card and header now shows a study-time range. The estimates cover reading, practice and checks; setup, downloads and scheduled waiting are additional. Navigation can be hidden or shown with the three-line button, with the preference preserved locally. Optional-exploration cards are removed from Progress & backups; existing backup data for those tasks remains intact. The full interface and companion use neutral charcoal surfaces with white accents.
+
+Validation includes profile migration/reload/rename/guest choice, escaped learner names, level thresholds, no XP farming, chapter estimate coverage, sidebar persistence, removed navigation/optional cards, the existing desktop flow, and narrow layout. UI tests use isolated profiles. No packaged release is created by this change.
+
 ## Files and memory follow-up
 
 The memory lesson now provides the scope comparison it previously asked learners to create unaided, with a direct practice-to-table link and official references. Both continuity lessons show expected results and recovery guidance. A copyable fictional handoff supplies all its own inputs, while the personal progress prompt waits for confirmation of actual actions. Context-quiz retries explain each mistaken assumption directly. These additions preserve existing exercise and accepted-answer IDs without awarding new completion credit.

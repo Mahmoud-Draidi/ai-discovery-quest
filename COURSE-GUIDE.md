@@ -6,23 +6,25 @@ This guide is generated from course data with `node scripts/generate-course-guid
 
 ## Course route
 
-- **Start here: find your controls**
-- **Models, tools, and skills**
-- **Files, context, and continuity**
-- **Memory, instructions, and account boundaries**
-- **Maps, images, and your working interface**
-- **Ask, steer, and verify**
-- **Research with evidence**
-- **Create useful artifacts**
-- **Show AI what you see**
-- **Plugins, MCP, and reusable skills**
-- **Plans, goals, schedules, and chat controls**
-- **Develop with AI and Git**
-- **Collaborate through pull requests**
-- **Local, worktree, and cloud**
-- **Subagents and coordinated chats**
-- **Hooks and cross-product workflows**
-- **Put the workflow together**
+- **Start here: find your controls** · About 10–15 min
+- **Models, tools, and skills** · About 15–20 min
+- **Files, context, and continuity** · About 20–30 min
+- **Memory, instructions, and account boundaries** · About 15–20 min
+- **Maps, images, and your working interface** · About 30–45 min
+- **Ask, steer, and verify** · About 15–20 min
+- **Research with evidence** · About 20–30 min
+- **Create useful artifacts** · About 45–60 min
+- **Show AI what you see** · About 20–30 min
+- **Plugins, MCP, and reusable skills** · About 30–45 min
+- **Plans, goals, schedules, and chat controls** · About 20–30 min
+- **Develop with AI and Git** · About 40–60 min
+- **Collaborate through pull requests** · About 40–60 min
+- **Local, worktree, and cloud** · About 30–45 min
+- **Subagents and coordinated chats** · About 30–45 min
+- **Hooks and cross-product workflows** · About 30–45 min
+- **Put the workflow together** · About 60–90 min
+
+Study times estimate reading, practice and the knowledge check. Account setup, downloads, external tool delays and scheduled waiting can take extra time.
 
 ## Preparation and practice
 
@@ -231,7 +233,7 @@ Project thread: Extend the existing tracker through plan, isolated implementatio
 
 ## Honest progress
 
-The app records your report; it cannot observe external chats or files. Quizzes alone do not earn practice titles. If tools are missing, defer the individual step and explore another. Deferred/skipped steps stay unfinished; completion requires every practical check. Existing experience is optional and separate from checked practice.
+The app records your report; it cannot observe external chats or files. Only chapters with all practical checks and knowledge questions complete earn 100 XP. Level titles reflect the percentage of current chapters completed; viewing pages, repeating answers, skipping steps and recording prior experience do not earn XP. If tools are missing, defer the individual step and explore another. Deferred/skipped steps stay unfinished; completion requires every practical check. Existing experience is optional and separate from checked practice.
 
 ## Study support
 
