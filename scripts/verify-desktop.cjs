@@ -8,7 +8,7 @@ const data=path.join(root,'test-results','review-qa-'+Date.now());
 async function verify(){
   let app;
   try{
-    app=await electron.launch({executablePath:require('electron'),args:[root],cwd:root,env:{...process.env,QUEST_TEST_MODE:'1',QUEST_TEST_SHOW:'1',QUEST_TEST_DATA:data}});
+    app=await electron.launch({executablePath:process.env.QUEST_EXECUTABLE || require('electron'),args:process.env.QUEST_EXECUTABLE?[]:[root],cwd:root,env:{...process.env,QUEST_TEST_MODE:'1',QUEST_TEST_SHOW:'1',QUEST_TEST_DATA:data}});
     const page=await app.firstWindow();await page.emulateMedia({reducedMotion:'reduce'});const errors=[];page.on('pageerror',e=>errors.push(e.message));
     await page.locator('#profile-dialog').waitFor({state:'visible'});
     await page.screenshot({path:path.join(data,'welcome.png')});
@@ -365,7 +365,7 @@ async function verify(){
     await page.locator('#learner-header').screenshot({path:path.join(data,'learner-narrow.png')});
     assert.deepEqual(errors,[]);
     await app.close();app=undefined;
-    app=await electron.launch({executablePath:require('electron'),args:[root],cwd:root,env:{...process.env,QUEST_TEST_MODE:'1',QUEST_TEST_SHOW:'1',QUEST_TEST_DATA:data+'-guest'}});
+    app=await electron.launch({executablePath:process.env.QUEST_EXECUTABLE || require('electron'),args:process.env.QUEST_EXECUTABLE?[]:[root],cwd:root,env:{...process.env,QUEST_TEST_MODE:'1',QUEST_TEST_SHOW:'1',QUEST_TEST_DATA:data+'-guest'}});
     const guest=await app.firstWindow();
     await guest.locator('#profile-dialog').waitFor({state:'visible'});
     await guest.locator('#profile-skip').click();

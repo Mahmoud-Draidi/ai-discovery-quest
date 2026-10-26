@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0 — 26 October 2026
+
 - Simplifies practice to one Done action per exercise, with Undo, saved counters, and automatic practice completion after all exercises are done.
 - Guides learners from the knowledge check through Common questions and an optional note to explicit chapter completion, with chapter and level-up celebrations; preserves previously completed chapters and XP.
 - Combines overview progress and the next chapter in one card with animated model/tool/skill labels, clear preparation recommendations, consistent chapter navigation, green completed cards and progress indicators.
