@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Adds independently accessible practice steps with saved deferred/skipped states; unfinished steps cannot earn completion credit.
+- Gives the setup exercise a filled-in label example and a direct link to its control map.
+- Adds companion Next, chapter-note and return controls, plus separate shortcut/reusable-assistant exercises and distinct Git improvements.
 - Adds a setup tour, memory/account boundaries, feature lab, and tracker-workflow capstone.
 - Makes prerequisites, project outputs, next chapters, and cross-product comparisons visible.
 - Improves scenario questions, choice-specific feedback, reviewed retries, references, topic filters, label readability, and keyboard focus.

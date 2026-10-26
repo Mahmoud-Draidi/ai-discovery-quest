@@ -1,5 +1,13 @@
 # Learner review response
 
+## Follow-up learner-flow improvements
+
+The setup practice now supplies a concrete screen-inventory example and a direct control-map link. Curated chapters and the context chapter let learners navigate between steps without recording false completion. Each step can retain its own skipped/deferred status across reloads; checking actual work clears that status. The final practice gate still requires every check.
+
+The compact companion adds bounded Next, chapter-note and return actions. The primary window remains the only progress writer, and stale step keys cannot navigate or change notes. Notes open in the primary editor rather than a second unsynchronized editor.
+
+Existing feature-lab step positions are retained, with separate shortcut and reusable-assistant practice appended. These new tasks begin unfinished even for previously completed profiles. Git exercises now add a remaining-count summary and then a distinct `--pending` option, instead of requesting behavior the starting tracker already has. Automated validation covers step-state persistence, unearned completion, reloads, companion navigation and stale actions. No external product execution or new packaged release is implied by these checks.
+
 The submitted review was based on source inspection, not a desktop run. This change checks its findings against the current source and adds desktop interaction checks.
 
 | Finding | Response |

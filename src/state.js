@@ -18,22 +18,24 @@
     const source = raw && typeof raw === "object" ? raw : {};
     const validChecks = chapter.steps.map((_, i) => i + 1);
     const checks = [...new Set((Array.isArray(source.checks) ? source.checks : []).filter(n => validChecks.includes(n)))];
+    const stepStatus = Object.fromEntries(validChecks.filter(n => !checks.includes(n) && ["deferred", "skipped"].includes(source.stepStatus?.[n])).map(n => [n, source.stepStatus[n]]));
     const quiz = {};
     for (const q of chapter.questions) quiz[q.id] = Array.isArray(source.quiz?.[q.id]) ? source.quiz[q.id].filter(a => Number.isInteger(a) && a >= 0 && a < q.choices.length).slice(-100) : [];
     let exercise = ["not-started", "practiced", "skipped", "deferred"].includes(source.exercise) ? source.exercise : "not-started";
     if (exercise === "practiced" && checks.length !== chapter.steps.length) exercise = "not-started";
-    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, quiz, exercise,
+    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise,
       step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, chapter.steps.length - 1)) : 0,
       bookmarked: source.bookmarked === true, seen: source.seen === true };
   }
   function normalizeContext(raw = {}) {
     const source = raw && typeof raw === "object" ? raw : {};
     const checks = [...new Set((Array.isArray(source.checks) ? source.checks : []).filter(n => content.context.steps.some((_, i) => i + 1 === n)))];
+    const stepStatus = Object.fromEntries(content.context.steps.map((_,i)=>i+1).filter(n=>!checks.includes(n) && ["skipped","deferred"].includes(source.stepStatus?.[n])).map(n=>[n,source.stepStatus[n]]));
     const quiz = {};
     for (const q of content.context.questions) quiz[q.id] = Array.isArray(source.quiz?.[q.id]) ? source.quiz[q.id].filter(a => Number.isInteger(a) && a >= 0 && a < 3).slice(-100) : [];
     let exercise = ["not-started", "practiced", "skipped", "deferred"].includes(source.exercise) ? source.exercise : "not-started";
     if (exercise === "practiced" && checks.length !== content.context.steps.length) exercise = "not-started";
-    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, content.context.steps.length - 1)) : 0 };
+    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, content.context.steps.length - 1)) : 0 };
   }
   function normalize(raw = {}) {
     const source = raw && typeof raw === "object" ? raw : {};

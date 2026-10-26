@@ -92,7 +92,7 @@ function contextPractice() {
   const index = state.context.step;
   const step = C.context.steps[index];
   const checked = state.context.checks.includes(index + 1);
-  return `<section class="panel context-step"><span class="pill">STEP ${index + 1} OF ${C.context.steps.length}</span><h2 id="context-step-title" tabindex="-1">${esc(step.title)}</h2><p class="lead">${esc(step.text)}</p><pre class="prompt">${esc(step.prompt)}</pre><button class="secondary" data-copy-context="${index}">Copy this prompt</button><div class="small-callout">${esc(step.hint)}</div>${index === 0 ? `<details><summary>Need a sample first note?</summary><pre class="prompt">${esc(C.context.sampleNote)}</pre><button class="secondary" data-copy-context="sample">Copy sample note</button><p>Save this as MY-FIRST-NOTE.md, then attach it or place it in your accessible practice workspace.</p></details>` : ""}<div class="checklist"><label><input type="checkbox" data-context-check="${index + 1}" ${checked ? "checked" : ""}><span>${esc(step.check)}</span></label></div><p class="honesty">Your report of work in another assistant. This app cannot inspect that chat or enable its file access.</p><div class="hero-actions">${index > 0 ? button("← Previous step", "context-back", "secondary") : ""}${index < C.context.steps.length - 1 ? `<button class="primary" data-action="context-next" ${checked ? "" : "disabled"}>Next step →</button>` : `<button class="primary" data-action="context-practiced" ${state.context.checks.length === C.context.steps.length ? "" : "disabled"}>Mark context exercise practiced</button>`}</div><p class="exercise-state" role="status">Context exercise: <strong>${esc(statusLabel(state.context.exercise))}</strong> · ${state.context.checks.length} / ${C.context.steps.length} checks</p><div class="exercise-options">${button("Skip context exercise", "context-skip", "text-button")}${button("Context tools unavailable", "context-defer", "text-button")}</div>${button("Knowledge check →", "context-quiz", "secondary")}</section>`;
+  return `<nav class="practice-route" aria-label="Context practice steps"><p>Explore any step; unfinished work stays unfinished.</p>${C.context.steps.map((step,i)=>`<button class="secondary" data-context-step="${i}" ${i===index ? 'aria-current="step"' : ""}>${i+1}. ${esc(step.title)} · ${state.context.checks.includes(i+1) ? "Checked" : esc(statusLabel(state.context.stepStatus[i+1] || "not-started"))}</button>`).join("")}</nav><section class="panel context-step"><span class="pill">STEP ${index + 1} OF ${C.context.steps.length}</span><h2 id="context-step-title" tabindex="-1">${esc(step.title)}</h2><p class="lead">${esc(step.text)}</p><pre class="prompt">${esc(step.prompt)}</pre><button class="secondary" data-copy-context="${index}">Copy this prompt</button><div class="small-callout">${esc(step.hint)}</div>${index === 0 ? `<details><summary>Need a sample first note?</summary><pre class="prompt">${esc(C.context.sampleNote)}</pre><button class="secondary" data-copy-context="sample">Copy sample note</button><p>Save this as MY-FIRST-NOTE.md, then attach it or place it in your accessible practice workspace.</p></details>` : ""}<div class="checklist"><label><input type="checkbox" data-context-check="${index + 1}" ${checked ? "checked" : ""}><span>${esc(step.check)}</span></label></div><p class="honesty">Your report of work in another assistant. This app cannot inspect that chat or enable its file access.</p><div class="hero-actions">${index > 0 ? button("← Previous step", "context-back", "secondary") : ""}${index < C.context.steps.length - 1 ? `<button class="primary" data-action="context-next" >Next step →</button>` : `<button class="primary" data-action="context-practiced" ${state.context.checks.length === C.context.steps.length ? "" : "disabled"}>Mark context exercise practiced</button>`}</div><p class="exercise-state" role="status">Context exercise: <strong>${esc(statusLabel(state.context.exercise))}</strong> · ${state.context.checks.length} / ${C.context.steps.length} checks</p><div class="exercise-options">${button("Skip this step", "context-step-skip", "text-button")}${button("Unavailable / revisit this step", "context-step-defer", "text-button")}</div><details><summary>Set aside the whole context exercise</summary><div class="exercise-options">${button("Skip context exercise", "context-skip", "text-button")}${button("Context tools unavailable", "context-defer", "text-button")}</div></details>${button("Knowledge check →", "context-quiz", "secondary")}</section>`;
 }
 function contextQuiz() {
   const info = S.contextSummary(state);
@@ -215,6 +215,16 @@ document.addEventListener("click", async event => {
     announce(S.solved(state, q) ? "Correct. You can continue to the next question." : "Not quite. Read the explanation and try again.");
     return;
   }
+  if (target.dataset.contextStep !== undefined) {
+    const step=Number(target.dataset.contextStep);
+    if(view==="context" && Number.isInteger(step) && step>=0 && step<C.context.steps.length) {state.context.step=step; save(); render(); document.getElementById("context-step-title")?.focus();}
+    return;
+  }
+  if (target.dataset.courseStep !== undefined) {
+    const step = Number(target.dataset.courseStep);
+    if (view === "chapter" && Number.isInteger(step) && step >= 0 && step < currentChapter().steps.length) { state.chapters[selectedChapter].step = step; save(); render(); document.getElementById("course-step-title")?.focus(); }
+    return;
+  }
   if (target.dataset.source) { window.quest.openSource(target.dataset.source).catch(() => announce("The source could not be opened.")); return; }
   switch (target.dataset.action) {
     case "resume": {
@@ -243,7 +253,10 @@ document.addEventListener("click", async event => {
     case "confirm-import": if (pendingImport) { try { state = S.normalize(await window.quest.importProgress(pendingImport)); pendingImport = null; status.textContent = "All changes saved"; render(); announce("Backup imported. Previous progress was backed up in the local data folder."); } catch { announce("Import failed. Inspect your saved progress before continuing."); } } break;
     case "course": navigate("course"); break;
     case "course-practice": chapterTab = "practice"; navigate("chapter"); break;
-    case "course-next": { const value = state.chapters[selectedChapter]; if (value.checks.includes(value.step + 1)) { value.step = Math.min(currentChapter().steps.length - 1, value.step + 1); save(); render(); document.getElementById("course-step-title")?.focus(); } break; }
+    case "course-next": { const value = state.chapters[selectedChapter]; value.step = Math.min(currentChapter().steps.length - 1, value.step + 1); save(); render(); document.getElementById("course-step-title")?.focus(); break; }
+    case "course-control-map": chapterTab = "learn"; navigate("chapter"); main.querySelector(".control-map")?.scrollIntoView(); break;
+    case "course-step-skip":
+    case "course-step-defer": { const value = state.chapters[selectedChapter]; const n = value.step + 1; value.checks = value.checks.filter(check => check !== n); value.stepStatus[n] = target.dataset.action === "course-step-skip" ? "skipped" : "deferred"; value.exercise = "not-started"; save(); render(); announce("Step saved to revisit. You can explore another step without claiming completion."); break; }
     case "course-back": state.chapters[selectedChapter].step = Math.max(0, state.chapters[selectedChapter].step - 1); save(); render(); break;
     case "course-practiced": { const value = state.chapters[selectedChapter]; if (value.checks.length === currentChapter().steps.length) { value.exercise = "practiced"; save(); render(); announce("Practice recorded from your report."); } break; }
     case "course-skip": state.chapters[selectedChapter].exercise = "skipped"; save(); render(); break;
@@ -253,7 +266,9 @@ document.addEventListener("click", async event => {
     case "course-next-question": chapterQuestion++; render(); break;
     case "context": contextTab = "learn"; navigate("context"); break;
     case "context-practice": contextTab = "practice"; navigate("context"); break;
-    case "context-next": if (state.context.checks.includes(state.context.step + 1)) { state.context.step = Math.min(C.context.steps.length - 1, state.context.step + 1); save(); render(); document.getElementById("context-step-title")?.focus(); } break;
+    case "context-next": { state.context.step = Math.min(C.context.steps.length - 1, state.context.step + 1); save(); render(); document.getElementById("context-step-title")?.focus(); } break;
+    case "context-step-skip":
+    case "context-step-defer": {const n=state.context.step+1; state.context.checks=state.context.checks.filter(check=>check!==n); state.context.stepStatus[n]=target.dataset.action==="context-step-skip"?"skipped":"deferred"; state.context.exercise="not-started"; save(); render(); announce("Step saved to revisit. Choose another step when ready."); break;}
     case "context-back": state.context.step = Math.max(0, state.context.step - 1); save(); render(); break;
     case "context-practiced": if (state.context.checks.length === C.context.steps.length) { state.context.exercise = "practiced"; save(); render(); announce("Practice recorded. This is your report of the external work."); } break;
     case "context-skip": state.context.exercise = "skipped"; save(); render(); break;
@@ -351,4 +366,18 @@ window.quest.onCompanionCheck?.(payload=>{
   const current=companionStep();if(payload?.key!==current.key||current.readOnly)return;
   const box=main.querySelector(view==='context'?'[data-context-check]':'[data-course-check]');
   if(box && box.checked!==payload.checked)box.click();
+});
+
+window.quest.onCompanionAction?.(payload=>{
+  const current=companionStep();
+  if(payload?.key!==current.key)return;
+  if(payload.action==="next" && current.canNext && view==="chapter" && chapterTab==="practice") {
+    state.chapters[selectedChapter].step++; save(); render(); document.getElementById("course-step-title")?.focus();
+  } else if(payload.action==="next" && current.canNext && view==="context" && contextTab==="practice") {
+    state.context.step++; save(); render(); document.getElementById("context-step-title")?.focus();
+  } else if(payload.action==="notes" && current.canNotes && view==="context") {
+    contextTab="notes"; navigate("context"); document.getElementById("context-note")?.focus();
+  } else if(payload.action==="notes" && current.canNotes && view==="chapter") {
+    chapterTab="notes"; navigate("chapter"); document.getElementById("course-note")?.focus();
+  }
 });

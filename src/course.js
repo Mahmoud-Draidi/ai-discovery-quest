@@ -28,8 +28,8 @@
       "steps": [
         {
           "title": "Inspect your actual screen",
-          "text": "Open your AI app. Use the illustrated control map below as a legend, not as an exact screenshot. Record the product/mode and model labels you see.",
-          "prompt": "I am learning this AI app. Explain the mode and model labels I supply, one at a time. Ask me for missing labels; do not claim you can see my screen without an attachment or connected tool.",
+          "text": "Open the AI app you want to learn, alongside this course. Find its mode selector and model label, usually near the chat controls. If you cannot find a label, write Not found. The Open the control map button returns to the legend on Understand. Example inventory: Product: ChatGPT desktop; Mode: Work; Model: copy the exact label shown. These are example labels, not a claim about your account.",
+          "prompt": "I am learning this AI app. Here is my screen inventory (replace the bracketed text before sending): Product: [app name]; Mode: [visible label or Not found]; Model: [visible label or Not found]. Explain the first label in plain language with one example. Ask one question if information is missing, then wait. Do not claim you can see my screen without an attachment or connected tool.",
           "check": "I identified the current mode and model from my own screen."
         },
         {
@@ -347,6 +347,18 @@
           "text": "Read the available Passwords/sign-in and cloud computer descriptions without sharing secrets. If a hosted browser is available, ask it to open a public documentation page and report its location. No login is needed.",
           "prompt": "If this client has a hosted graphical browser, open a public documentation page and tell me which browser/computer you used. Do not sign in or access personal tabs. If only a coding environment is available, explain the difference and stop. Never ask me to paste credentials.",
           "check": "I inspected an actual hosted-browser result and identified a private sign-in route without entering secrets. If unavailable, I deferred the exercise."
+        },
+        {
+          "title": "Try an interface shortcut separately",
+          "text": "Choose one available Pet or Mini control in your actual app. Open it, perform one harmless interaction, then return to the main chat. If it is unavailable, defer only this step and continue with another feature.",
+          "prompt": "Help me try the Pet or Mini feature whose label I provide. Explain one harmless action I can take and what I should observe. Do not install or create anything. If unavailable, explain the limitation.",
+          "check": "I used an available shortcut and recorded what changed in the interface, without assuming the model or tools changed."
+        },
+        {
+          "title": "Try a reusable assistant separately",
+          "text": "Choose an available GPT, plugin, or skill you already have. Use the supplied note twice and compare the workflow. You do not need to create an account, install anything, or buy a subscription. Defer only this step if unavailable.",
+          "prompt": "Use the reusable assistant, plugin, or skill I select to recap this supplied note: A model reasons, a tool acts, and reusable instructions guide a method. Give a short recap and one practice question, then wait for my answer. Tell me which reusable capability was actually used, or say if none was used.",
+          "check": "I tried an available reusable capability twice, inspected the recaps, and distinguished it from an interface shortcut."
         }
       ],
       "questions": [
@@ -1535,7 +1547,7 @@
         {
           "title": "Save a local version and compare a change",
           "text": "Use Git only in the chosen practice directory. The assistant should obtain a deliberate commit identity rather than invent yours.",
-          "prompt": "Inspect this practice folder's Git status. If it is not a repository, initialize Git here. Explain which files will be staged, use my chosen repo-local author identity, then commit the reviewed tracker. On a new feature branch, make a numbered-list improvement, run it, and show the diff. Do not push or touch another repository.",
+          "prompt": "Inspect this practice folder's Git status. If it is not a repository, initialize Git here. Explain which files will be staged, use my chosen repo-local author identity, then commit the reviewed tracker. On a new feature branch, add a summary line 'Remaining: N' counting pending lessons, run it, and show the diff. Do not push or touch another repository.",
           "check": "I understand which snapshot was committed and which later branch changes are still uncommitted."
         },
         {
@@ -1681,13 +1693,13 @@
         {
           "title": "Publish a reviewed practice branch",
           "text": "Reuse the tracker from Coding and Git. Choose repository visibility and exclude personal files before upload.",
-          "prompt": "Prepare my practice tracker for a GitHub repository I choose. Inspect exact public/private scope and files first. Add a feature branch that distinguishes completed and pending lessons, test its output, commit the reviewed change, and push only this branch to that repository. Report actual branch names; do not assume the base is called main.",
+          "prompt": "Prepare my practice tracker for a GitHub repository I choose. Inspect exact public/private scope and files first. Add a feature branch implementing a --pending command-line option that prints only pending lessons. Keep the existing default output unchanged. Test both commands and the all-completed case, document the option, commit the reviewed change, and push only this branch to that repository. Report actual branch names; do not assume the base is called main.",
           "check": "I verified the intended repository, visibility, files, and online feature branch."
         },
         {
           "title": "Open and inspect a draft PR",
           "text": "Ask for a concrete problem/result description and validation evidence.",
-          "prompt": "Open one draft PR from my feature branch to the actual default branch. Describe the completed/pending behavior and tests. Attach its link. Review related code and README for correctness; do not merge. Explain Conversation, Commits, Checks, and Files changed.",
+          "prompt": "Open one draft PR from my feature branch to the actual default branch. Describe the new --pending option, unchanged default behavior, and tests. Attach its link. Review related code and README for correctness; do not merge. Explain Conversation, Commits, Checks, and Files changed.",
           "check": "I inspected the PR's base/head, diff, description, and reported checks."
         },
         {

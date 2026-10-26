@@ -59,6 +59,7 @@ app.whenReady().then(async () => {
     const data = {};
     for (const key of ["key", "title", "text", "prompt", "check"]) data[key] = typeof value?.[key] === "string" ? value[key].slice(0, 12000) : "";
     data.checked = value?.checked === true; data.readOnly = value?.readOnly === true;
+    data.canNext = value?.canNext === true; data.canNotes = value?.canNotes === true;
     companionData = data;
     if (companionWindow && !companionWindow.isDestroyed()) companionWindow.webContents.send("quest:companion-data", data);
   }
@@ -82,6 +83,14 @@ app.whenReady().then(async () => {
     if (primaryWindow && !primaryWindow.isDestroyed()) primaryWindow.webContents.send("quest:companion-check", {key:value.key,checked:value.checked});
   });
   ipcMain.handle("quest:companion-pin", (event, value) => {validateCompanion(event);companionWindow.setAlwaysOnTop(value===true);});
+  ipcMain.handle("quest:companion-action", (event, value) => {
+    validateCompanion(event);
+    if (value?.key !== companionData.key || !["next", "notes", "return"].includes(value?.action)) return;
+    if (value.action === "next" && !companionData.canNext || value.action === "notes" && !companionData.canNotes) return;
+    if (!primaryWindow || primaryWindow.isDestroyed()) return;
+    primaryWindow.webContents.send("quest:companion-action", {key:value.key,action:value.action});
+    if (value.action !== "next") { primaryWindow.show(); primaryWindow.focus(); companionWindow.hide(); }
+  });
   ipcMain.handle("quest:load", event => { validateSender(event); return store.load(); });
   ipcMain.handle("quest:save", (event, value) => { validateSender(event); return store.save(value); });
   ipcMain.handle("quest:export", async event => {

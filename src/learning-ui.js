@@ -58,9 +58,9 @@ function controlMap() {
 }
 function companionStep() {
   if (view === "chapter" && chapterTab === "practice") {
-    const ch=currentChapter(), value=state.chapters[ch.id];return {key:`${ch.id}:${value.step}`,title:ch.title,...ch.steps[value.step],checked:value.checks.includes(value.step+1)};
+    const ch=currentChapter(), value=state.chapters[ch.id];return {key:`${ch.id}:${value.step}`,title:ch.title,...ch.steps[value.step],checked:value.checks.includes(value.step+1),canNext:value.step < ch.steps.length-1,canNotes:true};
   }
-  if (view === "context" && contextTab === "practice") return {key:`context:${state.context.step}`,title:chapterTitle("context"),...C.context.steps[state.context.step],checked:state.context.checks.includes(state.context.step+1)};
+  if (view === "context" && contextTab === "practice") return {key:`context:${state.context.step}`,title:chapterTitle("context"),...C.context.steps[state.context.step],checked:state.context.checks.includes(state.context.step+1),canNext:state.context.step<C.context.steps.length-1,canNotes:true};
   if (view === "lesson" && tab === "practice") return {key:"foundation:0",title:chapterTitle("foundation"),text:"Create, inspect, then edit your note. Keep the main window checklist accurate.",prompt:exercisePrompt,check:"I inspected the note; return to the main window to record the separate checks.",readOnly:true};
   return {key:"none",title:"Practice companion",text:"Open a chapter's Try it tab to show its current step here.",prompt:"",readOnly:true};
 }
