@@ -37,7 +37,7 @@ select{font:inherit;max-width:100%;padding:12px;background:var(--panel);color:va
 .icon-button:hover { background: #303030; }
 .sidebar[hidden] { display: none; }
 .nav-collapsed .workspace { margin-left: 0; }
-.learner-header { max-width: 1104px; margin: 26px auto 0; padding: 22px 26px; background: #262626; border: 1px solid var(--border); border-radius: 14px; }
+.learner-header { margin: 26px 0 0; padding: 22px 26px; background: #262626; border: 1px solid var(--border); border-radius: 14px; }
 .learner-heading { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
 .greeting { margin: 0 0 8px; font-size: 15px; }
 .learner-name { background: none; border: none; color: var(--text); font-weight: 600; padding: 0; text-decoration: underline; text-underline-offset: 4px; overflow-wrap: anywhere; text-align: start; }
@@ -62,10 +62,8 @@ dialog .muted { margin: 20px 0 0; }
 .primary:hover:not(:disabled) { background: #dedede; }
 .answer.correct { background: #383838; border-color: #e6e6e6; color: #fff; }
 .positive { background: #353535; }
-@media(min-width:761px) { .learner-header { margin-left: 38px; margin-right: 38px; } }
-@media(max-width:1050px) and (min-width:761px) { .learner-header { margin-left: 25px; margin-right: 25px; } }
 @media(max-width:760px) {
- .learner-header { margin: 18px 20px 0; padding: 18px; }
+ .learner-header { margin: 18px 0 0; padding: 18px; }
  .learner-heading { align-items: flex-start; flex-wrap: wrap; gap: 12px; }
  .learner-heading > div:first-child { min-width: 0; }
  .learner-totals { text-align: left; }
@@ -74,3 +72,11 @@ dialog .muted { margin: 20px 0 0; }
  .save-status { max-width: 35%; }
  .brand-logo { width: 40px; height: 40px; }
 }
+
+/* One centered column keeps the XP header, lessons and footer aligned at every width. */
+.content-column { width: 100%; max-width: 1180px; margin-inline: auto; padding-inline: 38px; }
+.content-column > main { max-width: none; margin: 0; padding: 40px 0 56px; }
+.content-column > footer { max-width: none; margin: 0; padding: 0 0 25px; }
+.content-column .hero { margin-bottom: 28px; }
+@media(max-width:1050px) { .content-column { padding-inline: 25px; } .content-column > main { padding-top: 32px; } }
+@media(max-width:760px) { .content-column { padding-inline: 20px; } .content-column > main { padding-top: 28px; } .content-column > footer { padding-bottom: 20px; } }

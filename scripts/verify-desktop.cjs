@@ -35,6 +35,22 @@ async function verify(){
     await page.locator('#learner-name').fill('Avery');
     await page.locator('#profile-form button[type="submit"]').click();
     await page.locator('.hero').waitFor();
+    for(const width of [620,1240,2560]) {
+      await page.setViewportSize({width,height:width===2560?1440:860});
+      for(const collapsed of [false,true]) {
+        if(await page.locator('#sidebar').isHidden()!==collapsed)await page.locator('#sidebar-toggle').click();
+        const header=await page.locator('#learner-header').boundingBox();
+        const main=await page.locator('main').boundingBox();
+        const intro=await page.locator('main .page-intro').first().boundingBox();
+        assert.ok(Math.abs(header.x-main.x)<=1,`header/main left alignment at ${width}, collapsed=${collapsed}`);
+        assert.ok(Math.abs(header.width-main.width)<=1,`header/main width alignment at ${width}, collapsed=${collapsed}`);
+        assert.ok(Math.abs(header.x-intro.x)<=1,`header/intro alignment at ${width}, collapsed=${collapsed}`);
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+        if(width===2560 && !collapsed)await page.screenshot({path:path.join(data,'layout-wide.png')});
+      }
+    }
+    await page.setViewportSize({width:1240,height:860});
+    if(await page.locator('#sidebar').isHidden())await page.locator('#sidebar-toggle').click();
     assert.equal(await page.locator('.roadmap .study-time').count(),course.chapters.length+2);
     await page.screenshot({path:path.join(data,'learner-home.png')});
     await page.getByRole('button',{name:'Start with the app tour →',exact:true}).click();
