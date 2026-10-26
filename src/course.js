@@ -29,7 +29,7 @@
       ],
       "steps": [
         {
-          "title": "Refine the actual journey request",
+          "title": "Refine a vague request",
           "text": "Use this sample scenario: you are a coding beginner planning a desktop app. Send the supplied request and inspect which assumptions the assistant makes. This is a prompt-writing exercise; you will not build the app here.",
           "prompt": "Help me learn to use AI to develop a desktop app. I am a coding beginner. Before implementing anything, ask one useful question about the app's purpose.",
           "check": "I answered the question and identified an assumption that needed clarification."
@@ -85,7 +85,7 @@
       "library": [
         {
           "title": "Should I interrupt with a correction or wait?",
-          "text": "Give an important correction promptly, and name what should change. If the client queues instead of steering, inspect that behavior. Early corrections can avoid wasted work, but this journey did not measure token savings.",
+          "text": "Give an important correction promptly, and name what should change. If the client queues instead of steering, inspect that behavior. Early corrections can avoid wasted work, but token savings are not guaranteed.",
           "tag": "Ask, steer, and verify",
           "chapter": "prompting"
         },
@@ -234,7 +234,7 @@
         },
         {
           "title": "Why use official documentation?",
-          "text": "It lets us check product-specific claims against the provider's description. It still needs a relevant passage, a date check, and testing where the claim concerns actual behavior on your setup.",
+          "text": "It lets you check product-specific claims against the provider's description. It still needs a relevant passage, a date check, and testing where the claim concerns actual behavior on your setup.",
           "tag": "Research with evidence",
           "chapter": "research"
         }
@@ -363,7 +363,7 @@
           "chapter": "artifacts"
         },
         {
-          "title": "Did choosing Riyadh share my location?",
+          "title": "Does choosing a city on a map share my location?",
           "text": "Selecting a city for a map exercise does not establish residence or grant location access. Click a marker and check whether the displayed details match the selected place.",
           "tag": "Create useful artifacts",
           "chapter": "artifacts"
@@ -376,7 +376,7 @@
         },
         {
           "title": "Why defer a document because a renderer is missing?",
-          "text": "Creating bytes alone does not establish readable page layout. Rendering is the step that lets us inspect the actual document appearance; record that limitation honestly.",
+          "text": "Creating bytes alone does not establish readable page layout. Rendering is the step that lets you inspect the actual document appearance; record that limitation honestly.",
           "tag": "Create useful artifacts",
           "chapter": "artifacts"
         }
@@ -414,7 +414,7 @@
       "steps": [
         {
           "title": "Share a harmless snapshot",
-          "text": "Create a fresh note containing the supplied sentence. Use the supported Appshot or screenshot attachment, then compare what the assistant reports with what is visible.",
+          "text": "Create a fresh note in any plain text editor containing the sentence “Today I learned how AI uses models, tools, and skills.” Use the supported Appshot or screenshot attachment, then compare what the assistant reports with what is visible.",
           "prompt": "Summarize this attached Notepad snapshot. Quote the visible sentence and distinguish what you can see from actions you have not performed. Do not edit anything.",
           "check": "I compared the response with the snapshot and did not confuse it with live control."
         },
@@ -498,7 +498,7 @@
           "chapter": "seeing"
         },
         {
-          "title": "Was Attach Discord another integration?",
+          "title": "Does attaching an open app's window connect that app?",
           "text": "An attachment labeled with an open app may provide a snapshot of that app. Inspect what is actually attached. An app name alone does not establish a separate account integration or permission to send messages.",
           "tag": "Show AI what you see",
           "chapter": "seeing"
@@ -592,7 +592,7 @@
             "Claim the old chat was fully inherited"
           ],
           "correct": 1,
-          "explanation": "The coach was tested specifically for this missing-context boundary.",
+          "explanation": "A reliable workflow asks for missing input instead of inventing content or assuming an earlier chat was inherited.",
           "id": "extensions-q3"
         }
       ],
@@ -663,7 +663,7 @@
         },
         {
           "title": "Scheduling repeats a saved task",
-          "text": "Prepare and test the prompt first. Local execution depends on the host being available; hosted execution has its own file and tool access. Choose schedule, timezone, notifications, and context deliberately, then inspect real runs. The original course did not verify a completed scheduled run."
+          "text": "Prepare and test the prompt first. Local execution depends on the host being available; hosted execution has its own file and tool access. Choose schedule, timezone, notifications, and context deliberately, then inspect real runs. Filling in a schedule does not verify it; inspect an actual run."
         },
         {
           "title": "Understand the counters and menus",
@@ -829,8 +829,8 @@
         {
           "title": "Create and run the tiny tracker",
           "text": "The course supplies the task and sample data. The AI should handle routine setup and show actual run output.",
-          "prompt": "In a new practice folder, create learning-tracker.cjs with title 'My AI Journey' and three lessons: Models/tools/skills and MCP connections completed, Git foundations pending. Count completed flags and print a numbered Done/Pending list. Check Node.js availability, run it, and explain actual output. Do not use an existing repository or push anything.",
-          "check": "I inspected the source and actual run output: 2 of 3 completed."
+          "prompt": "In a new practice folder, create learning-tracker.cjs with title 'My AI Journey' and three lessons: Models/tools/skills and MCP connections completed, Git foundations pending. Count completed flags and print a numbered Done/Pending list. Also create a short README.md that explains what the tracker does and gives the exact run command with its expected output. Check Node.js availability, run it, and explain actual output. Do not use an existing repository or push anything.",
+          "check": "I inspected the source, the README, and the actual run output: 2 of 3 completed."
         },
         {
           "title": "Change one input and check behavior",
@@ -1268,8 +1268,8 @@
       ],
       "library": [
         {
-          "title": "Are you the parent agent?",
-          "text": "In the demonstrated subagent exercise, the main chat assigned the tasks, waited, checked the results, and synthesized them. The parent role is coordination, not a guarantee that subagents are weaker models.",
+          "title": "What does the parent agent do?",
+          "text": "In a subagent exercise, the main chat assigns the tasks, waits, checks the results, and synthesizes them. The parent role is coordination, not a guarantee that subagents are weaker models.",
           "tag": "Subagents and coordinated chats",
           "chapter": "delegation"
         },
@@ -1337,7 +1337,7 @@
         },
         {
           "title": "Compare concepts, not identical products",
-          "text": "Codex AGENTS.md, Claude Code CLAUDE.md, and Copilot repository instructions serve related guidance roles. Skills, plugins, MCP, agents, remote work, and hooks differ by client. Claude Code also documents agent-team workflows; this course did not test them. Check the specific product rather than promising one-to-one portability."
+          "text": "Codex AGENTS.md, Claude Code CLAUDE.md, and Copilot repository instructions serve related guidance roles. Skills, plugins, MCP, agents, remote work, and hooks differ by client. Claude Code also documents agent-team workflows; this chapter does not practice them. Check the specific product rather than promising one-to-one portability."
         }
       ],
       "steps": [
