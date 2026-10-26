@@ -1,6 +1,7 @@
 node_modules/
 dist/
 test-results/
+work/
 *.log
 user-data/
 *.lnk

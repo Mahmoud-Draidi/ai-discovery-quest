@@ -11,3 +11,10 @@
 .milestone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}.milestone-grid>.page-intro{grid-column:1/-1}.milestone-grid .award{margin:0;max-width:none;padding:24px}.milestone-grid .award h2{font-size:26px}.milestone-grid .award-symbol{font-size:60px}
 select{font:inherit;max-width:100%;padding:12px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px}.prior-experience{margin-top:24px}.prior-experience>summary{cursor:pointer;font-size:18px}.other-tools .text-button{display:inline-block}
 .companion main{padding:22px;max-width:none}.companion h1{font-size:27px;margin:20px 0}.companion #text{margin-top:20px}.companion .prompt{font-size:14px}.companion label{display:flex;align-items:flex-start;gap:10px}.companion input{flex-shrink:0}.companion .companion-check{margin:24px 0}
+
+.practice-route { margin: 1rem 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.practice-route p { flex-basis: 100%; }
+.practice-route button { text-align: left; white-space: normal; }
+.practice-route [aria-current="step"] { border-color: var(--accent, #b3e8d2); }
+
+.companion-actions { position: sticky; top: 0; flex-wrap: wrap; padding: 8px 0; background: var(--bg); z-index: 1; }

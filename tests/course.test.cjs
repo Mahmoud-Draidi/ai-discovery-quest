@@ -8,10 +8,34 @@ const { normalize, chapterSummary, courseSummary } = require("../src/state.js");
 const { createStore } = require("../src/store.cjs");
 
 function completed(chapter) {
-  return { notes: `My ${chapter.id} observation`, seen: true, bookmarked: true,
+  return { notes: `My ${chapter.id} observation`, seen: true, bookmarked: true, stepStatus: {},
     exercise: "practiced", checks: chapter.steps.map((_, i) => i + 1), step: chapter.steps.length - 1,
     quiz: Object.fromEntries(chapter.questions.map(q => [q.id, [q.correct]])) };
 }
+
+test("step deferrals survive storage without granting practice credit or losing legacy checks", async () => {
+  const ch = course.chapters[0];
+  const state = normalize({chapters:{[ch.id]:{checks:[1],stepStatus:{1:"deferred",2:"deferred",3:"skipped",99:"deferred",bad:"skipped"},exercise:"practiced"}}});
+  assert.deepEqual(state.chapters[ch.id].checks,[1]);
+  assert.deepEqual(state.chapters[ch.id].stepStatus,{2:"deferred",3:"skipped"});
+  assert.equal(chapterSummary(state,ch).complete,false);
+  const directory=await fs.mkdtemp(path.join(os.tmpdir(),"quest-step-status-"));
+  try {
+    await createStore(directory).save(state);
+    assert.deepEqual(normalize(await createStore(directory).load()),state);
+  } finally { await fs.rm(directory,{recursive:true,force:true}); }
+  assert.deepEqual(normalize({chapters:{[ch.id]:{checks:[1,2]}}}).chapters[ch.id].checks,[1,2]);
+  assert.deepEqual(normalize({chapters:{[ch.id]:{checks:[1,2]}}}).chapters[ch.id].stepStatus,{});
+});
+
+test("added feature exercises remain unfinished for an older completed feature profile", () => {
+  const ch=course.chapters.find(ch=>ch.id==='feature-lab');
+  const legacy={...completed(ch),checks:[1,2,3,4]};
+  const state=normalize({chapters:{[ch.id]:legacy},context:{checks:[1],stepStatus:{1:"skipped",2:"deferred",88:"deferred"}}});
+  assert.deepEqual(state.chapters[ch.id].checks,[1,2,3,4]);
+  assert.equal(chapterSummary(state,ch).complete,false);
+  assert.deepEqual(state.context.stepStatus,{2:"deferred"});
+});
 
 test("every course chapter has usable content, preparation, exercises and answer feedback", () => {
   assert.equal(course.chapters[0].id, "orientation");

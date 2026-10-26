@@ -77,6 +77,8 @@ Project thread: Add a checked public-destination map and a visual to your field 
 - Try a visual feature
 - Inspect interface and reusable assistants
 - Inspect hosted access and credentials
+- Try an interface shortcut separately
+- Try a reusable assistant separately
 
 ### Ask, steer, and verify
 
@@ -229,11 +231,11 @@ Project thread: Extend the existing tracker through plan, isolated implementatio
 
 ## Honest progress
 
-The app records your report; it cannot observe external chats or files. Quizzes alone do not earn practice titles. If tools are missing, defer the exercise and preserve what remains unverified. Existing experience is optional and separate from checked practice.
+The app records your report; it cannot observe external chats or files. Quizzes alone do not earn practice titles. If tools are missing, defer the individual step and explore another. Deferred/skipped steps stay unfinished; completion requires every practical check. Existing experience is optional and separate from checked practice.
 
 ## Study support
 
-Use the compact companion from Try it to keep the current step visible beside your AI tool. The companion can stay on top and synchronizes its checkbox with the main lesson; only the main app saves progress. Use chapter questions/sources, library search and topic filters, and your notes when returning.
+Use the compact companion from Try it to keep the current step visible beside your AI tool. The companion can stay on top and synchronizes its checkbox with the main lesson; only the main app saves progress. Use Next step to explore without claiming completion, My chapter note to return to the main note editor, or Return to lesson. Practice-step buttons let you revisit unfinished work directly. Use chapter questions/sources, library search and topic filters, and your notes when returning.
 
 ## Capstone
 
