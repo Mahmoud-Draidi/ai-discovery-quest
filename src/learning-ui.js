@@ -35,6 +35,14 @@ function earlyReference(id) {
   const ids = id === "context" ? ["projects","memories","files"] : ["plugins","prompting"];
   return `<section class="chapter-questions">${entries.map(item => `<details class="panel"><summary>${esc(item.title)}</summary><p>${esc(item.text)}</p></details>`).join("")}</section><section class="panel sources"><h2>Official references</h2><p>Content review: ${esc(Course.checkedOn)}. Check the source and your app before relying on a product-specific control.</p>${courseSources(ids)}</section>`;
 }
+function scopeGuide(ch) {
+  const guide=ch.scopeGuide;
+  if(!guide)return "";
+  return `<section class="panel scope-guide"><h2 id="scope-guide-title" tabindex="-1">Context and memory scope</h2><p>Use this comparison to decide what to supply and what to inspect. It does not certify your account settings or promise full conversation transfer.</p><div class="table-scroll" role="region" aria-label="Context and memory scope table" tabindex="0"><table><caption>${esc(guide.caption)}</caption><thead><tr>${guide.columns.map(label=>`<th scope="col">${esc(label)}</th>`).join("")}</tr></thead><tbody>${guide.rows.map(row=>`<tr>${row.map((cell,i)=>i?`<td>${esc(cell)}</td>`:`<th scope="row">${esc(cell)}</th>`).join("")}</tr>`).join("")}</tbody></table></div><p>Product details checked ${esc(ch.reviewedOn || Course.checkedOn)}. Inspect your actual account and host before relying on a setting.</p>${courseSources(["projects","memories"])}</section>`;
+}
+function practiceSupport(step, copyKey) {
+  return `${step.expected ? `<aside class="practice-help"><h3>What success looks like</h3><p>${esc(step.expected)}</p></aside>` : ""}${step.recovery ? `<details class="practice-help"><summary>If your result differs</summary><p>${esc(step.recovery)}</p></details>` : ""}${step.starter ? `<details class="practice-help"><summary>${esc(step.starter.title)}</summary><p>${esc(step.starter.text)}</p><pre class="prompt">${esc(step.starter.prompt)}</pre><button class="secondary" data-copy-starter="${esc(copyKey)}">Copy fictional handoff</button></details>` : ""}`;
+}
 function controlMap() {
   const controls = [
     ["Mode selector", "Chat / Work / Codex", "Choose the workflow; tool access can differ."],

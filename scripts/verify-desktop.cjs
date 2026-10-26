@@ -90,6 +90,21 @@ async function verify(){
         await page.reload();
         await page.locator('[data-action="resume"]').click();
         assert.equal(await page.locator('#course-note').inputValue(),'Private test observation: explicit records are distinct from recall.');
+        await page.locator('[data-chapter-tab="learn"]').click();
+        assert.equal(await page.locator('.scope-guide tbody tr').count(),6);
+        assert.equal(await page.locator('.scope-guide caption').count(),1);
+        await page.setViewportSize({width:640,height:800});
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'scope table stays inside narrow page');
+        await page.locator('#scope-guide-title').scrollIntoViewIfNeeded();
+        await page.locator('.scope-guide').screenshot({path:path.join(data,'memory-scope.png')});
+        await page.setViewportSize({width:1240,height:860});
+        await page.locator('[data-chapter-tab="practice"]').click();
+        assert.match(await page.locator('.practice-help').first().innerText(),/What success looks like/);
+        await page.locator('[data-action="course-scope-guide"]').click();
+        assert.equal(await page.locator('#scope-guide-title').evaluate(e=>e===document.activeElement),true);
+        await page.locator('[data-chapter-tab="practice"]').click();
+        await page.locator('[data-course-step="2"]').click();
+        assert.match(await page.locator('.context-step pre.prompt').innerText(),/A training team uses AI/,'fresh chat prompt supplies its own note');
       }
       await page.locator('[data-action="course"]').first().click();
     }
@@ -102,6 +117,13 @@ async function verify(){
     await page.locator('[data-context-step="3"]').click();
     assert.equal(await page.locator('[data-context-check]').isChecked(),false);
     assert.equal(await page.locator('[data-action="context-practiced"]').isDisabled(),true);
+    await page.getByText('Fictional handoff starter',{exact:true}).click();
+    await page.locator('[data-copy-starter="context:3"]').click();
+    await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Fictional handoff copied'));
+    const copied=await app.evaluate(({clipboard})=>clipboard.readText());
+    assert.match(copied,/This is a fictional continuity exercise/);
+    assert.match(copied,/Not completed: Creating my own note or testing automatic memory/);
+    assert.equal(await page.locator('[data-context-check]').isChecked(),false,'copying an example does not record personal practice');
     await page.locator('[data-context-tab="reference"]').click();
     await page.locator('[data-view="library"]').click();
     for(const term of ['memory','passwords','maps']){

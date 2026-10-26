@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Adds a memory/context scope table, self-contained fictional handoff, and expected-result/recovery guidance to the files and memory lessons.
+- Asks learners to confirm actual work before drafting progress, and replaces generic context-quiz retry text with specific feedback.
 - Adds independently accessible practice steps with saved deferred/skipped states; unfinished steps cannot earn completion credit.
 - Gives the setup exercise a filled-in label example and a direct link to its control map.
 - Adds companion Next, chapter-note and return controls, plus separate shortcut/reusable-assistant exercises and distinct Git improvements.

@@ -168,7 +168,7 @@
         },
         {
           "title": "Check the scope",
-          "text": "Current OpenAI guidance distinguishes ChatGPT memory from local Codex memory. Inspect the selected account, workspace, machine, and chat controls. Never assume a setting is shared across clients or accounts."
+          "text": "ChatGPT memory and local Codex memories use separate stores and controls. ChatGPT Work follows the selected account/workspace’s memory settings. For local Codex, distinguish the connected host’s memory setting from the current chat’s use/contribution controls. Inspect the descriptions; this lesson does not require changing them."
         },
         {
           "title": "Keep required context explicit",
@@ -178,21 +178,27 @@
       "steps": [
         {
           "title": "Inspect without changing",
-          "text": "Locate personalization or memory settings in your app. Record the setting name and scope, or record that it is unavailable.",
-          "prompt": "Explain the memory and instruction settings I describe. Distinguish current-chat context, project instructions, progress files, and automatic memory. Do not change any setting or store a preference.",
-          "check": "I recorded the visible memory scope without enabling, deleting, or assuming synchronization."
+          "text": "Use the scope table on Understand. Inspect your actual product, mode, and selected host. Copy the visible memory setting name and its description into your chapter note, or record Not found. Do not toggle it or switch accounts for this exercise.",
+          "prompt": "Here are the labels I inspected (replace bracketed text): Product/mode: [label]; Host: [label or Not shown]; Memory setting: [label or Not found]; Description: [visible description or Not shown]. Explain what these labels establish about scope and what remains unknown. Distinguish project instructions, supplied records, and automatic memory. Do not change settings or store a preference.",
+          "check": "I recorded the visible memory scope without enabling, deleting, or assuming synchronization.",
+          "expected": "A short inventory of what you actually saw, plus explicitly unknown items. A hidden or unavailable control does not prove memory is enabled, disabled, shared, or isolated.",
+          "recovery": "If labels are missing, record Not found and continue with the supplied-text exercise. Do not turn on memory just to finish this lesson."
         },
         {
           "title": "Test explicit context",
           "text": "Supply a fictional preference in a harmless note: use short paragraphs for this practice task. Ask for a recap based on that note.",
           "prompt": "For this task only, use short paragraphs. Summarize this fictional note: A training team uses AI to draft checklists and verifies every output. Identify which instruction came from this message.",
-          "check": "I identified an explicit instruction and did not mistake compliance for automatic memory."
+          "check": "I identified an explicit instruction and did not mistake compliance for automatic memory.",
+          "expected": "A short recap identifies “use short paragraphs” as an instruction in the current message. That demonstrates explicit context, not automatic recall.",
+          "recovery": "If the assistant attributes the preference to memory, point to the sentence you supplied and ask it to separate observed evidence from its assumption."
         },
         {
           "title": "Resume from a record",
           "text": "In a new chat, supply the same harmless note and preference explicitly. Compare the response and save your observation.",
-          "prompt": "Use only the supplied fictional training note and preference. What can you conclude from them, and what earlier context is missing? Do not infer that you received another chat or account history.",
-          "check": "I tested record-based continuity and documented what it does not establish."
+          "prompt": "This is a fresh-chat exercise. Use only the following supplied fictional record.\nPreference for this task: Use short paragraphs.\nNote: A training team uses AI to draft checklists and verifies every output.\nNot established: The team’s name, any earlier conversation, or automatic memory behavior.\n\nGive a short recap, identify the instruction supplied here, and name one detail you cannot know from this record. Do not infer that another chat or account history transferred.",
+          "check": "I tested record-based continuity and documented what it does not establish.",
+          "expected": "The recap uses the supplied training-team note and preference, and leaves unknown details unknown. Even a correct recap does not establish memory synchronization or full-transcript sharing.",
+          "recovery": "If it invents a team name or earlier events, ask which supplied line supports them. Correct the recap and keep the unverified parts out of your progress note."
         }
       ],
       "questions": [
@@ -259,7 +265,7 @@
         },
         {
           "title": "Is shared memory account-wide?",
-          "text": "Scope varies by product and workspace. Inspect the active settings and documentation. A shared file is not proof of shared automatic memory.",
+          "text": "“Shared” needs an object and a boundary: shared project files, shared instructions, or automatic recall. Identify the product, account/workspace, and host. Shared files do not prove shared automatic memory. Use the scope table and current official references.",
           "tag": "Memory, instructions, and account boundaries",
           "chapter": "memory"
         },
@@ -297,7 +303,47 @@
             "copilotRepo"
           ]
         }
-      ]
+      ],
+      "scopeGuide": {
+        "caption": "What carries forward? Check the source and its scope.",
+        "columns": [
+          "Context source",
+          "Where it applies",
+          "What to check when moving"
+        ],
+        "rows": [
+          [
+            "Current chat",
+            "Messages and inputs supplied here.",
+            "A new chat needs the relevant context; do not assume it received this transcript."
+          ],
+          [
+            "Project instructions",
+            "The chosen project’s supported instruction mechanism.",
+            "Use the intended project and check which instructions apply."
+          ],
+          [
+            "Local files",
+            "Folders accessible on the execution host.",
+            "After changing host or folder, recheck file access. Conversation sync does not upload the whole folder."
+          ],
+          [
+            "Progress record",
+            "The exact work you document and supply.",
+            "Read or attach the latest copy; correct stale or untested claims."
+          ],
+          [
+            "ChatGPT memory",
+            "The selected account and workspace’s memory controls.",
+            "Inspect those settings; they are separate from local Codex memories."
+          ],
+          [
+            "Codex local memories",
+            "The connected host, with its memory and chat controls.",
+            "Recheck the host and available /memories controls. A per-chat choice does not change global settings."
+          ]
+        ]
+      }
     },
     {
       "id": "feature-lab",
