@@ -50,7 +50,8 @@
     if (exercise === "practiced" && checks.length !== 3) exercise = "not-started";
     const chapters = {};
     for (const chapter of course.chapters) chapters[chapter.id] = normalizeChapter(source.chapters?.[chapter.id], chapter);
-    return { version: 1, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", exercise, checks, quiz, bookmarked: source.bookmarked === true, lessonSeen: source.lessonSeen === true, context: normalizeContext(source.context), chapters,
+    const name=typeof source.profile?.name==="string"?source.profile.name.replace(/[\u0000-\u001f\u007f]/g,"").trim().slice(0,60):"";
+    return { version: 1, profile:{name,setupComplete:source.profile?.setupComplete===true || !!name}, ui:{sidebarCollapsed:source.ui?.sidebarCollapsed===true}, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", exercise, checks, quiz, bookmarked: source.bookmarked === true, lessonSeen: source.lessonSeen === true, context: normalizeContext(source.context), chapters,
       resume: normalizeResume(source.resume || {view:"chapter",chapter:"orientation",tab:"learn"}), records: normalizeRecords(source.records), followUps: normalizeRecords(source.followUps, course.followUps.map(item => item.id)) };
   }
   function solved(state, question) { return state.quiz[question.id].includes(question.correct); }

@@ -27,9 +27,9 @@ You do **not** need Node.js, developer tools, or an API key to use the downloade
 - A compact, optionally always-on-top companion for practice alongside another app.
 - Visible prerequisites and next-chapter links; a field guide and tracker project connect the work.
 - Direct practice-step navigation, with separate skipped/deferred records so a missing feature does not block exploring another step.
-- Personal chapter notes, bookmarks, a saved resume point, and earned milestones.
+- Personal chapter notes, bookmarks, a saved resume point, and a named learner profile with XP and level titles.
 - Searchable answers and official references for revisiting a topic.
-- Optional follow-up tasks, plus separate records for prior experience, skipped work, and missing preparation.
+- Chapter study-time estimates and separate records for prior experience, skipped work, and missing preparation.
 
 The app guides your practice. Exercises use the relevant AI chat, browser, file tool, coding assistant, or connected service. Those tools may need an account, connection, or runtime; each chapter explains its preparation. Bundled lessons, quizzes, and personal progress work offline. External practice and source links may need internet access.
 
@@ -51,7 +51,11 @@ The app guides your practice. Exercises use the relevant AI chat, browser, file 
 
 ## Your notes and progress
 
-Everything is saved locally on your computer. On Windows, the app uses:
+On first launch, choose a name or nickname, or continue as Learner. Change it later by selecting your name in the greeting. Each completed chapter earns 100 XP once; the header shows the current title, chapter-completion percentage, and XP left until the next level. Titles reflect current course progress, not professional certification. Added or revised chapters can change the completion percentage and title.
+
+Use the three-line button to hide or show navigation; the app remembers your choice. Study-time ranges include reading, practice and checks; setup, downloads and scheduled waiting are extra.
+
+Everything, including your learner name and navigation preference, is saved locally on your computer. On Windows, the app uses:
 
 ```text
 %APPDATA%/AI Discovery Quest/progress.json
@@ -64,7 +68,7 @@ Everything is saved locally on your computer. On Windows, the app uses:
 
 Different extraction folders can share the same Windows account's progress. Back up before updating, close the old app first, and avoid running older and newer versions against the same data. Notes and backups are plain text, not encrypted or automatically synced; keep them private.
 
-Practical completion is your report of work in another tool. The app does not observe your external chats. Existing-experience records do not fabricate quiz results or automatically award a milestone.
+Practical completion is your report of work in another tool. The app does not observe your external chats. Existing-experience records do not fabricate quiz results or earn XP.
 
 Skipped and deferred steps remain unfinished; they do not satisfy practical completion. Returning and checking a step clears its earlier deferred/skipped status. This source adds separate shortcut and reusable-assistant tasks after the existing feature-lab steps. Existing checks and notes stay saved, but the expanded chapter needs those additional checks before it is complete. New source changes are not included in the downloadable ZIP until a new release is published.
 

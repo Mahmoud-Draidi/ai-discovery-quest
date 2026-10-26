@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Replaces milestone pages with a local learner name, time-of-day greeting, chapter-based XP, six level titles, completion percentage and progress toward the next title.
+- Uses a simple transparent asymmetric orbit icon in the sidebar and desktop windows, adds a remembered sidebar toggle, and adopts neutral charcoal/white colors.
+- Aligns the learner header, lesson content and footer in one centered column at wide and narrow sizes, with navigation open or closed.
+- Adds chapter study-time estimates and removes optional-exploration cards from Progress & backups while preserving their old backup records.
 - Adds a memory/context scope table, self-contained fictional handoff, and expected-result/recovery guidance to the files and memory lessons.
 - Asks learners to confirm actual work before drafting progress, and replaces generic context-quiz retry text with specific feedback.
 - Adds independently accessible practice steps with saved deferred/skipped states; unfinished steps cannot earn completion credit.

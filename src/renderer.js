@@ -1,12 +1,13 @@
 const C = window.QuestContent;
 const S = window.QuestState;
 const Course = window.QuestCourse;
+const J = window.QuestJourney;
 let selectedChapter = Course.chapters[0].id;
 let chapterTab = "learn";
 let chapterQuestion = 0;
 const main = document.getElementById("main");
 const status = document.getElementById("save-status");
-const names = { home: "Overview", lesson: "Learning journey", context: "Learning journey", course: "Learning journey", chapter: "Learning journey", journal: "Progress & backups", library: "Reference library", notes: "My notes", milestones: "Milestones" };
+const names = { home: "Overview", lesson: "Learning journey", context: "Learning journey", course: "Learning journey", chapter: "Learning journey", journal: "Progress & backups", library: "Reference library", notes: "My notes" };
 let state;
 let view = "home";
 let tab = "learn";
@@ -53,7 +54,7 @@ function noteEditor() {
 function overview() {
   const info = S.summary(state);
   return `${intro("SMALL STEPS. REAL DISCOVERIES.", "Make AI something<br>you know how to <em>use.</em>", "Learn by trying. Check what happens. Build confidence, one useful skill at a time.")}
-  <section class="panel course-progress"><span class="pill accent">YOUR WHOLE JOURNEY</span><h2>${S.courseSummary(state).complete} of ${S.courseSummary(state).total} chapters practiced & checked</h2><progress max="100" value="${S.courseSummary(state).percent}" aria-label="Whole course progress">${S.courseSummary(state).percent}%</progress><p>${esc(S.nextAction(state))}</p>${button("Continue where I left off →", "resume")}${button("Explore all chapters →", "course", "secondary")}${button("My existing practice & follow-ups", "journal", "text-button")}</section>
+  <section class="panel course-progress"><span class="pill accent">YOUR WHOLE JOURNEY</span><h2>${S.courseSummary(state).complete} of ${S.courseSummary(state).total} chapters practiced & checked</h2><progress max="100" value="${S.courseSummary(state).percent}" aria-label="Whole course progress">${S.courseSummary(state).percent}%</progress><p>${esc(S.nextAction(state))}</p>${button("Continue where I left off →", "resume")}${button("Explore all chapters →", "course", "secondary")}${button("My learning record", "journal", "text-button")}</section>
   <section class="hero panel"><div class="hero-copy"><span class="pill accent">YOUR NEXT DISCOVERY</span><h2>Find your controls.<br>Try something useful.</h2><p>Start with the app tour, then create your AI field guide and turn it into a practical learning tracker.</p><div class="hero-actions">${chapterButton("orientation", "Start with the app tour →", "primary")}</div></div><div class="orbit" aria-hidden="true"><div class="orbit-ring"></div><div class="orbit-core">✦</div><span class="orbit-label orbit-model">MODEL <b>Think</b></span><span class="orbit-label orbit-tool">TOOL <b>Act</b></span><span class="orbit-label orbit-skill">SKILL <b>Guide</b></span></div></section>
   <div class="section-heading"><h2>Choose your next topic</h2><span class="muted">Choose your pace</span></div><section class="roadmap">${catalogCards()}</section>`;
 }
@@ -66,7 +67,7 @@ function practice() {
 }
 function quiz() {
   const info = S.summary(state);
-  if (info.correct === C.questions.length && questionIndex >= C.questions.length) return `<section class="panel quiz-finish"><span class="large-spark">✧</span><h2>You know the difference.</h2><p>All questions are understood. ${state.exercise === "practiced" ? "Your practical exercise is complete too. You earned AI Explorer." : "Complete the practical exercise to earn AI Explorer. Reading and answering alone do not complete this chapter."}</p>${button(state.exercise === "practiced" ? "See my milestone" : "Return to exercise", state.exercise === "practiced" ? "milestones" : "practice")}</section>`;
+  if (info.correct === C.questions.length && questionIndex >= C.questions.length) return `<section class="panel quiz-finish"><span class="large-spark">✧</span><h2>You know the difference.</h2><p>All questions are understood. ${state.exercise === "practiced" ? "Your practical exercise is complete too. Your learner XP has been updated." : "Complete the practical exercise to earn AI Explorer. Reading and answering alone do not complete this chapter."}</p>${button(state.exercise === "practiced" ? "See my progress" : "Return to exercise", state.exercise === "practiced" ? "home" : "practice")}</section>`;
   const q = C.questions[Math.min(questionIndex, C.questions.length - 1)];
   const attempts = state.quiz[q.id];
   const last = attempts.at(-1);
@@ -75,7 +76,7 @@ function quiz() {
   return `<section class="panel quiz-card"><div class="section-heading"><span class="pill">QUESTION ${questionIndex + 1} OF ${C.questions.length}</span><span class="muted">No rush. Retries are part of learning.</span></div><h2>${q.prompt}</h2><div class="answers">${C.concepts.map((c, i) => `<button data-answer="${i}" class="answer ${last === i ? correct ? "correct" : "incorrect" : ""}" ${correct || quizLocked(q,attempts) ? "disabled" : ""}><span>${String.fromCharCode(65 + i)}</span>${c.name}${correct && last === i ? "<b>✓</b>" : ""}</button>`).join("")}</div>${feedback ? `<div class="feedback ${correct ? "positive" : "retry"}" role="status"><strong>${correct ? "That's right." : "Not quite—give it another try."}</strong><p>${esc(q.feedback?.[last] || q.explanation)}</p></div>` : ""}${quizRetry(q,attempts)}${correct ? button(questionIndex === C.questions.length - 1 ? "Finish knowledge check →" : "Next question →", "next-question") : `<p class="muted">Choose the role that fits the action described.</p>`}</section>`;
 }
 function lesson() {
-  return `${intro("CHAPTER 01 · THE FOUNDATIONS", "Models, tools, and skills.", "Understand the roles. Create something real. Check your understanding.")}<div class="lesson-meta"><span class="pill accent">${chapterBadge()}</span><span>Exercise + knowledge check</span><span>Flexible pace</span></div><div class="tabs" role="tablist" aria-label="Chapter sections">${[["learn", "01", "Understand"], ["practice", "02", "Try it"], ["quiz", "03", "Check"], ["reference", "04", "Questions & sources"], ["notes", "05", "My note"]].map(([id, number, label]) => `<button role="tab" aria-selected="${tab === id}" data-tab="${id}" class="${tab === id ? "selected" : ""}"><span>${number}</span>${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="${tab}">${tab === "learn" ? learn() : tab === "practice" ? practice() : tab === "quiz" ? quiz() : tab === "reference" ? earlyReference("foundation") : noteEditor()}</section>${otherTools("foundation")}${nextChapterLink("foundation")}`;
+  return `${intro("CHAPTER 01 · THE FOUNDATIONS", "Models, tools, and skills.", "Understand the roles. Create something real. Check your understanding.")}<div class="lesson-meta"><span class="pill accent">${chapterBadge()}</span><span>Exercise + knowledge check</span><span class="study-time" title="Reading, practice and knowledge check; setup may take extra time.">${esc(J.estimate("foundation"))}</span></div><div class="tabs" role="tablist" aria-label="Chapter sections">${[["learn", "01", "Understand"], ["practice", "02", "Try it"], ["quiz", "03", "Check"], ["reference", "04", "Questions & sources"], ["notes", "05", "My note"]].map(([id, number, label]) => `<button role="tab" aria-selected="${tab === id}" data-tab="${id}" class="${tab === id ? "selected" : ""}"><span>${number}</span>${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="${tab}">${tab === "learn" ? learn() : tab === "practice" ? practice() : tab === "quiz" ? quiz() : tab === "reference" ? earlyReference("foundation") : noteEditor()}</section>${otherTools("foundation")}${nextChapterLink("foundation")}`;
 }
 function chapterLinks() {
   return `<div class="chapter-links" aria-label="Available chapters">${button("01 · Models, tools & skills", "start", "secondary")}${button("02 · Files, context & continuity", "context", "secondary")}${button("All chapters", "course", "secondary")}${button("I already know this", "prior-experience", "text-button")}</div>`;
@@ -96,7 +97,7 @@ function contextPractice() {
 }
 function contextQuiz() {
   const info = S.contextSummary(state);
-  if (contextQuestion >= C.context.questions.length) return `<section class="panel quiz-finish"><span class="large-spark">✧</span><h2>You can distinguish access from context.</h2><p>All questions understood. ${info.complete ? "You also practiced the file-and-resume exercise. Context Navigator earned." : "Complete the four practical steps to finish this chapter. Quiz answers alone do not complete external practice."}</p>${button("Return to practical steps", "context-practice")}</section>`;
+  if (contextQuestion >= C.context.questions.length) return `<section class="panel quiz-finish"><span class="large-spark">✧</span><h2>You can distinguish access from context.</h2><p>All questions understood. ${info.complete ? "You also practiced the file-and-resume exercise. Your learner XP has been updated." : "Complete the four practical steps to finish this chapter. Quiz answers alone do not complete external practice."}</p>${button("Return to practical steps", "context-practice")}</section>`;
   const q = C.context.questions[contextQuestion];
   const attempts = state.context.quiz[q.id];
   const correct = attempts.includes(q.correct);
@@ -106,27 +107,21 @@ function contextQuiz() {
 function contextLesson() {
   const info = S.contextSummary(state);
   const badge = info.complete ? "Practiced & checked" : state.context.exercise === "skipped" ? "Exercise skipped" : state.context.exercise === "deferred" ? "Exercise deferred" : state.context.checks.length || info.correct ? "In progress" : "Ready to explore";
-  return `${chapterLinks()}${intro("CHAPTER 02 · GIVE AI USEFUL CONTEXT", "Files, context, and continuity.", "Supply the right source. Inspect the answer. Save a useful record for the next chat.")}<div class="lesson-meta"><span class="pill accent">${badge}</span><span>${info.percent}% · ${info.correct} / ${C.context.questions.length} questions</span></div><div class="tabs" role="tablist" aria-label="Context chapter sections">${[["learn", "Understand"], ["practice", "Try it"], ["quiz", "Check"], ["reference", "Questions & sources"], ["notes", "My note"]].map(([id, label]) => `<button role="tab" aria-selected="${contextTab === id}" data-context-tab="${id}" class="${contextTab === id ? "selected" : ""}">${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="Context ${contextTab}">${contextTab === "practice" ? contextPractice() : contextTab === "quiz" ? contextQuiz() : contextTab === "notes" ? contextNoteEditor() : contextTab === "reference" ? earlyReference("context") : `<div class="callout"><span>↗</span><p><strong>Does putting a file in a project mean the AI has read it?</strong> File access makes a source available. Ask the assistant to read the relevant file, then check its answer against that source.</p></div><div class="concepts">${[["Available", "A supported attachment or workspace makes a file accessible. A path alone does not grant access."], ["Used for this task", "Ask the assistant to read the relevant source. Compare the answer with the actual file."], ["Useful next time", "Keep working preferences in project instructions and completed work in a progress note."]].map(([title, text]) => `<article class="panel concept"><h3>${title}</h3><p>${text}</p></article>`).join("")}</div><section class="panel"><h2>Choose how to supply the file</h2><p>In a chat with uploads, attach the note. In a supported local project, use its accessible workspace. A ChatGPT project's shared uploaded or connected sources are different from a folder on your computer.</p><h3>Keep useful instructions and progress</h3><p>Codex uses AGENTS.md for project guidance; other surfaces may provide instruction settings. Record what you completed and the next step in a progress note, then test resuming in another chat.</p><p>Memory is a separate capability and is not required for this exercise. If a tool is unavailable, note the limitation and use the supported alternative.</p>${button("Start the context exercise →", "context-practice")}</section><section class="sources panel"><h2>Official references</h2><p>Product controls can differ. Links need internet; the chapter itself works offline.</p>${contextSources()}</section>`}</section>${otherTools("context")}${nextChapterLink("context")}`;
-}
-function contextMilestone() {
-  const info = S.contextSummary(state);
-  return `<section class="panel award ${info.complete ? "earned" : ""}"><div class="award-symbol">✧</div><span class="pill">${info.complete ? "EARNED" : "CHAPTER TWO MILESTONE"}</span><h2>Context Navigator</h2><p>Supply a source, inspect an answer, and resume from a useful record.</p><ul class="award-requirements"><li>${state.context.exercise === "practiced" ? "✓" : "○"} All practical steps recorded</li><li>${info.correct === C.context.questions.length ? "✓" : "○"} Context check: ${info.correct} / ${C.context.questions.length} understood</li></ul>${button("Open context chapter", "context")}</section>`;
+  return `${chapterLinks()}${intro("CHAPTER 02 · GIVE AI USEFUL CONTEXT", "Files, context, and continuity.", "Supply the right source. Inspect the answer. Save a useful record for the next chat.")}<div class="lesson-meta"><span class="pill accent">${badge}</span><span>${info.percent}% · ${info.correct} / ${C.context.questions.length} questions</span><span class="study-time">${esc(J.estimate("context"))}</span></div><div class="tabs" role="tablist" aria-label="Context chapter sections">${[["learn", "Understand"], ["practice", "Try it"], ["quiz", "Check"], ["reference", "Questions & sources"], ["notes", "My note"]].map(([id, label]) => `<button role="tab" aria-selected="${contextTab === id}" data-context-tab="${id}" class="${contextTab === id ? "selected" : ""}">${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="Context ${contextTab}">${contextTab === "practice" ? contextPractice() : contextTab === "quiz" ? contextQuiz() : contextTab === "notes" ? contextNoteEditor() : contextTab === "reference" ? earlyReference("context") : `<div class="callout"><span>↗</span><p><strong>Does putting a file in a project mean the AI has read it?</strong> File access makes a source available. Ask the assistant to read the relevant file, then check its answer against that source.</p></div><div class="concepts">${[["Available", "A supported attachment or workspace makes a file accessible. A path alone does not grant access."], ["Used for this task", "Ask the assistant to read the relevant source. Compare the answer with the actual file."], ["Useful next time", "Keep working preferences in project instructions and completed work in a progress note."]].map(([title, text]) => `<article class="panel concept"><h3>${title}</h3><p>${text}</p></article>`).join("")}</div><section class="panel"><h2>Choose how to supply the file</h2><p>In a chat with uploads, attach the note. In a supported local project, use its accessible workspace. A ChatGPT project's shared uploaded or connected sources are different from a folder on your computer.</p><h3>Keep useful instructions and progress</h3><p>Codex uses AGENTS.md for project guidance; other surfaces may provide instruction settings. Record what you completed and the next step in a progress note, then test resuming in another chat.</p><p>Memory is a separate capability and is not required for this exercise. If a tool is unavailable, note the limitation and use the supported alternative.</p>${button("Start the context exercise →", "context-practice")}</section><section class="sources panel"><h2>Official references</h2><p>Product controls can differ. Links need internet; the chapter itself works offline.</p>${contextSources()}</section>`}</section>${otherTools("context")}${nextChapterLink("context")}`;
 }
 function referenceEntries() { return [...C.library, ...C.context.library, ...Course.chapters.flatMap(ch => ch.library)]; }
 function library() {
   return `${intro("A PLACE TO COME BACK TO", "Keep the useful bits close.", "Find clear answers about AI concepts, tools, and practical workflows.")}<label class="search-label" for="library-search">Search this reference library</label><input id="library-search" class="search" type="search" placeholder="Try “files”, “skill”, or “verification”…"><label class="search-label" for="library-topic">Filter by topic</label><select id="library-topic"><option value="">All topics</option>${[...new Set(referenceEntries().map(e=>e.tag))].map(tag=>`<option value="${esc(tag)}">${esc(tag)}</option>`).join("")}</select><p class="muted" id="search-count">${referenceEntries().length} entries</p><div class="library-grid">${referenceEntries().map(entry => `<article class="panel library-entry" data-tag="${esc(entry.tag)}" data-search="${esc((entry.title + " " + entry.tag + " " + entry.text).toLowerCase())}"><span class="pill">${entry.tag}</span><h2>${entry.title}</h2><p>${entry.text}</p></article>`).join("")}</div><p class="muted">This reference grows as chapters are added.</p><div class="sources panel"><h2>Go to the source</h2><p>These official references open in your browser and need an internet connection. Bundled chapters work offline.</p>${courseSources(Object.keys(Course.sources))}</div>`;
 }
-function milestones() {
-  const info = S.summary(state);
-  return `${intro("PROOF OF PRACTICE", "Small wins. Real understanding.", "Titles celebrate what you've tried and checked—not how many pages you've opened.")}<section class="panel award ${info.complete ? "earned" : ""}"><div class="award-symbol">✧</div><span class="pill ${info.complete ? "accent" : ""}">${info.complete ? "EARNED" : "YOUR FIRST MILESTONE"}</span><h2>AI Explorer</h2><p>Understand the model, tool, and skill behind your first AI-assisted task.</p><ul class="award-requirements"><li>${state.exercise === "practiced" ? "✓" : "○"} Practical exercise recorded as practiced</li><li>${info.correct === C.questions.length ? "✓" : "○"} Knowledge check: ${info.correct} / ${C.questions.length} understood</li></ul>${button(info.complete ? "Revisit the chapter" : "Continue the chapter", "start")}</section>`;
-}
 function render() {
+  renderLearnerHeader();
+  applySidebar();
   const active=document.activeElement;
   const focusAttrs=active && main.contains(active)?[...active.attributes].filter(a=>a.name.startsWith("data-")).map(a=>[a.name,a.value]):[];
   const focusId=active && main.contains(active)?active.id:null;
   for (const item of document.querySelectorAll("nav [data-view]")) { const active = item.dataset.view === view || (["context", "course", "chapter"].includes(view) && item.dataset.view === "lesson"); item.classList.toggle("active", active); item.setAttribute("aria-current", active ? "page" : "false"); }
   document.getElementById("breadcrumb").textContent = names[view];
-  main.innerHTML = view === "home" ? overview() : view === "lesson" ? chapterLinks() + lesson() : view === "context" ? contextLesson() : view === "course" ? courseIndex() : view === "chapter" ? courseChapter() : view === "journal" ? journeyJournal() : view === "library" ? library() : view === "notes" ? intro("YOUR PERSONAL FIELD NOTES", "Make it yours.", "Capture the examples, questions, and discoveries you want to remember.") + noteEditor() + contextNoteEditor() + courseNotePicker() : `<div class="milestone-grid">${milestones()}${contextMilestone()}${Course.chapters.map(ch => courseMilestone(ch)).join("")}</div>`;
+  main.innerHTML = view === "home" ? overview() : view === "lesson" ? chapterLinks() + lesson() : view === "context" ? contextLesson() : view === "course" ? courseIndex() : view === "chapter" ? courseChapter() : view === "journal" ? journeyJournal() : view === "library" ? library() : view === "notes" ? intro("YOUR PERSONAL FIELD NOTES", "Make it yours.", "Capture the examples, questions, and discoveries you want to remember.") + noteEditor() + contextNoteEditor() + courseNotePicker() : overview();
   for(const list of main.querySelectorAll('[role="tablist"]')) {
     const tabs=[...list.querySelectorAll('[role="tab"]')];const panel=main.querySelector('[role="tabpanel"]');
     tabs.forEach((el,i)=>{el.tabIndex=el.getAttribute('aria-selected')==='true'?0:-1;el.id=`section-tab-${i}`;el.setAttribute('aria-controls','chapter-panel');});
@@ -292,7 +287,9 @@ document.addEventListener("click", async event => {
     case "mark-practiced": if (state.checks.length === 3) { state.exercise = "practiced"; save(); render(); announce("Practical exercise recorded as practiced."); } break;
     case "skip": state.exercise = "skipped"; save(); render(); break;
     case "defer": state.exercise = "deferred"; save(); render(); break;
-    case "milestones": navigate("milestones"); break;
+    case "milestones":
+    case "home": navigate("home"); break;
+    case "profile": openProfile(); break;
     case "save-note": await save(); announce("Note save requested. Check the save status above."); break;
     case "copy-prompt": try { await navigator.clipboard.writeText(exercisePrompt); document.getElementById("copy-status").textContent = "Copied. Paste it into your chosen assistant."; announce("Prompt copied. Paste it into your assistant."); } catch { document.getElementById("copy-status").textContent = "Select the prompt text above and copy it with Ctrl+C."; } break;
   }
@@ -355,7 +352,7 @@ document.addEventListener("input", event => {
     filterQuery=event.target.value.trim().toLowerCase();filterLibrary();
   }
 });
-window.quest.load().then(saved => { state = S.normalize(saved); status.textContent = "All changes saved"; render(); }).catch(error => {
+window.quest.load().then(saved => { state = S.normalize(saved); status.textContent = "All changes saved"; render(); if(!state.profile.setupComplete)openProfile(); }).catch(error => {
   status.textContent = "Saved progress needs attention"; status.classList.add("error");
   main.innerHTML = `<section class="panel"><h1>Your progress has been kept intact.</h1><p>${esc(error.message)}</p><p>No new progress will be written in this session. Close this window and get help recovering the saved file.</p></section>`;
 });
@@ -390,3 +387,36 @@ window.quest.onCompanionAction?.(payload=>{
     chapterTab="notes"; navigate("chapter"); document.getElementById("course-note")?.focus();
   }
 });
+
+let previousLevel;
+function renderLearnerHeader() {
+  if(!state)return;
+  const info=S.courseSummary(state), earned=J.reward(info.complete,info.total);
+  document.getElementById("learner-header").innerHTML=`<div class="learner-heading"><div><p class="greeting">${esc(J.greeting(new Date().getHours()))}, <button class="learner-name" data-action="profile" aria-label="Edit learner name"><bdi>${esc(state.profile.name || "Learner")}</bdi></button></p><h2>${esc(earned.title)} <span>Level ${earned.level}</span></h2></div><div class="learner-totals"><strong>${earned.xp} XP</strong><span>${earned.complete} / ${earned.total} chapters · ${earned.percent}% complete</span></div></div><progress id="level-progress" max="100" value="${earned.levelPercent}" aria-label="Progress through current learner level">${earned.levelPercent}%</progress><div class="level-caption"><span>${earned.nextTitle ? `${earned.xpToNext} XP to ${esc(earned.nextTitle)}` : "Highest title reached. Keep putting your skills to use."}</span><span>100 XP per completed chapter</span></div>`;
+  if(previousLevel!==undefined && earned.level>previousLevel)announce(`Level up! You are now an ${earned.title}.`);
+  previousLevel=earned.level;
+}
+function applySidebar() {
+  const collapsed=state.ui.sidebarCollapsed;
+  document.body.classList.toggle("nav-collapsed",collapsed);
+  document.getElementById("sidebar").hidden=collapsed;
+  const control=document.getElementById("sidebar-toggle");
+  control.setAttribute("aria-expanded",String(!collapsed));
+  control.setAttribute("aria-label",collapsed?"Open navigation":"Close navigation");
+}
+document.getElementById("sidebar-toggle").addEventListener("click",()=>{state.ui.sidebarCollapsed=!state.ui.sidebarCollapsed;applySidebar();save();});
+function openProfile() {
+  const dialog=document.getElementById("profile-dialog");
+  document.getElementById("learner-name").value=state.profile.name;
+  if(!dialog.open)dialog.showModal();
+  document.getElementById("learner-name").focus();
+}
+async function finishProfile(name) {
+  state.profile={name,setupComplete:true};
+  await save();renderLearnerHeader();document.getElementById("profile-dialog").close();
+  document.querySelector(".learner-name")?.focus();
+}
+document.getElementById("profile-form").addEventListener("submit",event=>{event.preventDefault();finishProfile(document.getElementById("learner-name").value);});
+document.getElementById("profile-skip").addEventListener("click",()=>finishProfile(""));
+document.getElementById("profile-dialog").addEventListener("cancel",()=>finishProfile(state.profile.name));
+setInterval(()=>{if(state)renderLearnerHeader();},60000);

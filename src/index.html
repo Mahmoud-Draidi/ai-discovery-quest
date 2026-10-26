@@ -9,13 +9,14 @@
   <script defer src="content.js"></script>
   <script defer src="course.js"></script>
   <script defer src="state.js"></script>
+  <script defer src="journey.js"></script>
   <script defer src="course-ui.js"></script>
   <script defer src="learning-ui.js"></script>
   <script defer src="renderer.js"></script>
 </head>
 <body>
-  <aside class="sidebar">
-    <a href="#home" class="brand"><span class="brand-mark">q<span>✦</span></span><span>AI Discovery<br><strong>Quest</strong></span></a>
+  <aside class="sidebar" id="sidebar">
+    <a href="#home" class="brand"><img class="brand-logo" src="assets/quest-logo.png" alt="AI Discovery Quest"><span>AI Discovery<br><strong>Quest</strong></span></a>
     <div class="nav-label">YOUR LEARNING SPACE</div>
     <nav aria-label="Main navigation">
       <button data-view="home"><span aria-hidden="true">⌂</span> Overview</button>
@@ -23,16 +24,29 @@
       <button data-view="library"><span aria-hidden="true">▤</span> Reference library</button>
       <button data-view="notes"><span aria-hidden="true">✎</span> My notes</button>
       <button data-view="journal"><span aria-hidden="true">↻</span> Progress & backups</button>
-      <button data-view="milestones"><span aria-hidden="true">✧</span> Milestones</button>
     </nav>
     <div class="sidebar-bottom"><div class="local-dot">Saved on this device</div><p>Your pace. Your discoveries.</p><span class="version">PRACTICAL AI LEARNING</span></div>
   </aside>
   <div class="workspace">
-    <header class="topbar"><span>YOUR JOURNEY / <strong id="breadcrumb">Overview</strong></span><span class="save-status" id="save-status" role="status">Loading…</span></header>
+    <header class="topbar"><button id="sidebar-toggle" class="icon-button" aria-label="Close navigation" aria-controls="sidebar" aria-expanded="true">☰</button><span class="breadcrumb">YOUR JOURNEY / <strong id="breadcrumb">Overview</strong></span><span class="save-status" id="save-status" role="status">Loading…</span></header>
+    <div class="content-column">
+    <section class="learner-header" id="learner-header" aria-label="Your learner level"></section>
     <main id="main" tabindex="-1"><p>Opening your learning space…</p></main>
     <footer>Built for doing, understanding, and coming back. <span>Independent learning project.</span></footer>
+    </div>
   </div>
   <div id="notice" class="notice" role="status"></div>
   <div id="announcement" class="sr-only" aria-live="polite"></div>
+  <dialog id="profile-dialog" aria-labelledby="profile-title" aria-describedby="profile-description">
+    <form id="profile-form">
+      <img class="welcome-logo" src="assets/quest-logo.png" alt="">
+      <h2 id="profile-title">Your AI journey starts here</h2>
+      <p id="profile-description">What should this learning space call you? Your name and progress stay on this device.</p>
+      <label for="learner-name">Your name or nickname</label>
+      <input id="learner-name" name="name" type="text" maxlength="60" autocomplete="nickname" dir="auto" placeholder="How should we greet you?">
+      <div class="hero-actions"><button class="primary" type="submit">Save name</button><button class="secondary" type="button" id="profile-skip">Continue as Learner</button></div>
+      <p class="muted">You can change your name from the greeting at any time. Each completed chapter earns 100 XP.</p>
+    </form>
+  </dialog>
 </body>
 </html>

@@ -10,7 +10,49 @@ async function verify(){
   try{
     app=await electron.launch({executablePath:require('electron'),args:[root],cwd:root,env:{...process.env,QUEST_TEST_MODE:'1',QUEST_TEST_SHOW:'1',QUEST_TEST_DATA:data}});
     const page=await app.firstWindow();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.locator('#profile-dialog').waitFor({state:'visible'});
+    await page.screenshot({path:path.join(data,'welcome.png')});
+    await page.locator('#learner-name').fill('Avery');
+    await page.locator('#profile-form button[type="submit"]').click();
+    await page.locator('#profile-dialog').waitFor({state:'hidden'});
+    assert.match(await page.locator('#learner-header').innerText(),/Avery/);
+    assert.match(await page.locator('#learner-header').innerText(),/0 XP/);
+    assert.equal(await page.locator('.brand-logo').evaluate(img=>img.complete && img.naturalWidth>0),true);
+    await page.locator('#sidebar-toggle').click();
+    assert.equal(await page.locator('#sidebar').isHidden(),true);
+    await page.reload();
+    await page.locator('#learner-header').waitFor();
+    await page.waitForFunction(()=>document.querySelector('#learner-header').textContent.includes('Avery'));
+    assert.equal(await page.locator('#profile-dialog').isVisible(),false);
+    assert.equal(await page.locator('#sidebar').isHidden(),true,'sidebar preference survives reload');
+    await page.locator('#sidebar-toggle').click();
+    await page.getByRole('button',{name:'Edit learner name'}).click();
+    await page.locator('#learner-name').fill('Avery <Learner>');
+    await page.locator('#profile-form button[type="submit"]').click();
+    assert.equal(await page.locator('.learner-name').innerText(),'Avery <Learner>');
+    assert.equal(await page.locator('.learner-name learner').count(),0,'learner name is text, not HTML');
+    await page.getByRole('button',{name:'Edit learner name'}).click();
+    await page.locator('#learner-name').fill('Avery');
+    await page.locator('#profile-form button[type="submit"]').click();
     await page.locator('.hero').waitFor();
+    for(const width of [620,1240,2560]) {
+      await page.setViewportSize({width,height:width===2560?1440:860});
+      for(const collapsed of [false,true]) {
+        if(await page.locator('#sidebar').isHidden()!==collapsed)await page.locator('#sidebar-toggle').click();
+        const header=await page.locator('#learner-header').boundingBox();
+        const main=await page.locator('main').boundingBox();
+        const intro=await page.locator('main .page-intro').first().boundingBox();
+        assert.ok(Math.abs(header.x-main.x)<=1,`header/main left alignment at ${width}, collapsed=${collapsed}`);
+        assert.ok(Math.abs(header.width-main.width)<=1,`header/main width alignment at ${width}, collapsed=${collapsed}`);
+        assert.ok(Math.abs(header.x-intro.x)<=1,`header/intro alignment at ${width}, collapsed=${collapsed}`);
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+        if(width===2560 && !collapsed)await page.screenshot({path:path.join(data,'layout-wide.png')});
+      }
+    }
+    await page.setViewportSize({width:1240,height:860});
+    if(await page.locator('#sidebar').isHidden())await page.locator('#sidebar-toggle').click();
+    assert.equal(await page.locator('.roadmap .study-time').count(),course.chapters.length+2);
+    await page.screenshot({path:path.join(data,'learner-home.png')});
     await page.getByRole('button',{name:'Start with the app tour →',exact:true}).click();
     await page.getByRole('heading',{name:'Your app, at a glance'}).waitFor();
     assert.equal(await page.locator('.control-map article').count()>=12,true);
@@ -138,6 +180,7 @@ async function verify(){
     const urls=await page.locator('.sources [data-source]').evaluateAll(nodes=>nodes.map(n=>n.dataset.source));
     assert.equal(new Set(urls).size,urls.length,'source list is not duplicated');
     await page.locator('[data-view="journal"]').click();
+    assert.doesNotMatch(await page.locator('main').innerText(),/Unfinished or optional explorations/);
     assert.equal(await page.locator('.prior-experience').getAttribute('open'),null);
     assert.doesNotMatch(await page.locator('main').innerText(),/not-recorded/);
     await page.locator('[data-view="lesson"]').click();
@@ -145,12 +188,31 @@ async function verify(){
     await page.locator('[data-action="prior-experience"]').click();
     assert.equal(await page.locator('[data-record-id="memory"]').getAttribute('open'),'');
     assert.equal(await page.locator('[data-record-id="memory"] summary').evaluate(e=>e===document.activeElement),true);
-    await page.locator('[data-view="milestones"]').click();
-    assert.equal(await page.locator('.milestone-grid .award').count(),course.chapters.length+2);
+    assert.equal(await page.locator('[data-view="milestones"]').count(),0);
+    await page.evaluate(async()=>{
+      for(const ch of Course.chapters.slice(0,4))state.chapters[ch.id]={...state.chapters[ch.id],exercise:'practiced',checks:ch.steps.map((_,i)=>i+1),quiz:Object.fromEntries(ch.questions.map(q=>[q.id,[q.correct]]))};
+      await save();navigate('home');
+    });
+    assert.match(await page.locator('#learner-header').innerText(),/AI Explorer/);
+    assert.match(await page.locator('#learner-header').innerText(),/400 XP/);
+    assert.equal(await page.locator('#level-progress').getAttribute('value'),'0');
+    await page.screenshot({path:path.join(data,'level-up.png')});
     await page.setViewportSize({width:640,height:800});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.locator('#sidebar-toggle').click();
+    assert.equal(await page.locator('#sidebar').isHidden(),true);
+    await page.locator('#learner-header').screenshot({path:path.join(data,'learner-narrow.png')});
     assert.deepEqual(errors,[]);
-    console.log('PASS: orientation, chapter routes, references, library search/filter, visible copy feedback, keyboard focus/tabs, quiz retry feedback, companion synchronization/stale-step protection, milestones and narrow layout.');
+    await app.close();app=undefined;
+    app=await electron.launch({executablePath:require('electron'),args:[root],cwd:root,env:{...process.env,QUEST_TEST_MODE:'1',QUEST_TEST_SHOW:'1',QUEST_TEST_DATA:data+'-guest'}});
+    const guest=await app.firstWindow();
+    await guest.locator('#profile-dialog').waitFor({state:'visible'});
+    await guest.locator('#profile-skip').click();
+    await guest.locator('#profile-dialog').waitFor({state:'hidden'});
+    await guest.reload();
+    await guest.waitForFunction(()=>document.querySelector('#learner-header').textContent.includes('Learner'));
+    assert.equal(await guest.locator('#profile-dialog').isVisible(),false,'guest choice is remembered');
+    console.log('PASS: named profile/reload/rename, logo, XP/level header, chapter estimates, sidebar persistence, simplified backups, chapter routes, quiz/notes/search, companion controls and narrow layout.');
     console.log('Isolated profile and screenshots: '+data);
   }finally{if(app)await app.close();}
 }
