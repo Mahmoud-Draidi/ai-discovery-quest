@@ -36,5 +36,8 @@ jobs:
         run: |
           node --check src/course.js
           node --check src/course-ui.js
+          node --check src/state.js
+          node --check src/journey.js
+          node --check src/learning-ui.js
       - name: Verify progress and note storage
-        run: node --test tests/progress.test.cjs tests/course.test.cjs
+        run: node --test tests/*.test.cjs

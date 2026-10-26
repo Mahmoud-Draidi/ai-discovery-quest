@@ -80,3 +80,112 @@ dialog .muted { margin: 20px 0 0; }
 .content-column .hero { margin-bottom: 28px; }
 @media(max-width:1050px) { .content-column { padding-inline: 25px; } .content-column > main { padding-top: 32px; } }
 @media(max-width:760px) { .content-column { padding-inline: 20px; } .content-column > main { padding-top: 28px; } .content-column > footer { padding-bottom: 20px; } }
+/* Completion feedback and a shared green progress indicator. */
+:root { --progress: #4cc38a; --nav-width: 228px; }
+progress { accent-color: var(--progress); }
+progress::-webkit-progress-value { background: var(--progress); }
+progress::-moz-progress-bar { background: var(--progress); }
+.roadmap-card.chapter-completed { background: #20372c; border-color: #397a57; }
+.chapter-completed .pill { color: #a4efc6; border-color: #397a57; }
+.chapter-completed h3::before { content: '✓ '; color: var(--progress); }
+.finish-panel { margin-top: 24px; }
+.finish-panel button { margin: 6px 10px 0 0; }
+.sidebar { width: var(--nav-width); transform: translateX(0); transition: transform .24s ease, visibility .24s; }
+.workspace { margin-left: var(--nav-width); transition: margin-left .24s ease; }
+.nav-collapsed .sidebar { transform: translateX(-100%); visibility: hidden; }
+.nav-collapsed .workspace { margin-left: 0; }
+.chapter-celebration { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: #111b; padding: 20px; }
+.celebration-card { z-index: 1; text-align: center; background: #26382e; border: 1px solid #4c9d70; border-radius: 22px; padding: 30px; width: min(440px,100%); box-shadow: 0 24px 80px #0007; animation: celebrate-in .4s ease-out; }
+.celebration-card h2 { margin: 12px 0; }
+.celebration-card p { margin: 12px 0; }
+.celebration-card strong { color: #9ceaba; font-size: 24px; }
+.celebration-check { display: inline-grid; place-items: center; border-radius: 50%; background: var(--progress); color: #14271d; width: 65px; height: 65px; font-size: 36px; }
+.confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.confetti i { position: absolute; top: -8%; left: 8%; width: 9px; height: 16px; background: #4cc38a; animation: confetti-fall 2.4s ease-in both; }
+.confetti i:nth-child(3n) { background: #d5e8df; width: 7px; height: 7px; border-radius: 50%; }
+.confetti i:nth-child(3n+1) { background: #99c6df; }
+.confetti i:nth-child(2n) { animation-delay: .25s; }
+.confetti i:nth-child(4n) { animation-delay: .6s; }
+.confetti i:nth-child(9n+2) { left: 18%; }
+.confetti i:nth-child(9n+3) { left: 28%; }
+.confetti i:nth-child(9n+4) { left: 38%; }
+.confetti i:nth-child(9n+5) { left: 48%; }
+.confetti i:nth-child(9n+6) { left: 58%; }
+.confetti i:nth-child(9n+7) { left: 68%; }
+.confetti i:nth-child(9n+8) { left: 78%; }
+.confetti i:nth-child(9n+9) { left: 90%; }
+@keyframes celebrate-in { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes confetti-fall { to { top: 110%; transform: translateX(50px) rotate(460deg); } }
+@media(max-width:1050px) { :root { --nav-width:190px; } }
+@media(max-width:760px) {
+ .sidebar { position: fixed; inset: 0 auto 0 0; width: var(--nav-width); padding: 24px 14px; border-right: 1px solid var(--border); border-bottom: 0; }
+ .sidebar nav { display: grid; margin-top: 18px; }
+ .sidebar .nav-label { display: block; margin: 32px 8px 10px; }
+ .sidebar .sidebar-bottom { display: block; padding-inline: 8px; }
+ .topbar { padding-inline: 14px; gap: 10px; }
+ .save-status { font-size: 10px; }
+ .tabs { flex-wrap: wrap; }
+}
+@media(prefers-reduced-motion:reduce) { .sidebar,.workspace { transition: none; } .confetti { display:none; } .celebration-card { animation:none; } }
+/* Shared completion badge, merged overview and a distinct title reward. */
+.lesson-meta .pill.completed-badge { color: #a4efc6; background: #20372c; border-color: #397a57; }
+.overview-journey { gap: 40px 28px; }
+.overview-journey .orbit { min-height: 330px; }
+.overview-journey .orbit-model { animation: float-model 9s linear infinite; }
+.overview-journey .orbit-tool { animation: float-tool 11s linear -3s infinite; }
+.overview-journey .orbit-skill { animation: float-skill 10s linear -5s infinite; }
+@keyframes float-model {
+  0%,100% { transform: translate(-30px,5px); }
+  25% { transform: translate(0,-8px); }
+  50% { transform: translate(36px,10px); }
+  75% { transform: translate(4px,30px); }
+}
+@keyframes float-tool {
+  0%,100% { transform: translate(0,-14px); }
+  25% { transform: translate(28px,-44px); }
+  50% { transform: translate(48px,-8px); }
+  75% { transform: translate(20px,14px); }
+}
+@keyframes float-skill {
+  0%,100% { transform: translate(-8px,10px); }
+  25% { transform: translate(-42px,-6px); }
+  50% { transform: translate(-24px,-44px); }
+  75% { transform: translate(0,-18px); }
+}
+@media(prefers-reduced-motion:reduce) { .overview-journey .orbit-label { animation: none; } }
+.overview-journey h2 { font-size: clamp(26px, 2.8vw, 36px); overflow-wrap: anywhere; }
+.overview-journey .hero-copy { min-width: 0; }
+.overview-journey .hero-actions { flex-wrap: wrap; }
+.overview-progress { grid-column: 1 / -1; padding-top: 18px; border-top: 1px solid var(--border); }
+.overview-progress .section-heading { font-size: 12px; margin: 0; }
+.overview-progress progress { height: 6px; margin-bottom: 0; }
+.level-celebration .celebration-card { background: #293440; border-color: #91bfdc; }
+.level-celebration .celebration-check { background: #b4d9ef; color: #243b4b; animation: title-spark 1s ease-out; }
+.level-celebration .celebration-card strong { color: #b4d9ef; }
+@keyframes title-spark { from { transform: rotate(-70deg) scale(.5); } to { transform: rotate(0) scale(1); } }
+@media(prefers-reduced-motion:reduce) { .level-celebration .celebration-check { animation:none; } }
+/* Sidebar controls stay beside the brand, including in the compact rail. */
+.sidebar-brand-row { display:flex; align-items:center; gap:8px; min-height:48px; }
+.sidebar-brand-row .icon-button { min-width:32px; min-height:34px; font-size:19px; flex-shrink:0; }
+.sidebar-brand-row .brand { gap:5px; font-size:11px; }
+.sidebar-brand-row .brand strong { font-size:16px; }
+.sidebar-brand-row .brand-logo { width:40px; height:40px; }
+.sidebar { transition:width .24s ease; overflow-x:hidden; }
+.nav-collapsed .sidebar { width:76px; transform:none; visibility:visible; padding-inline:16px; }
+.nav-collapsed .sidebar-brand-row { flex-direction:column; gap:12px; }
+.nav-collapsed .brand span,.nav-collapsed .sidebar nav,.nav-collapsed .nav-label,.nav-collapsed .sidebar-bottom { display:none; }
+.nav-collapsed .workspace { margin-left:76px; }
+.exercise-controls { margin-top:24px; }
+.exercise-controls .exercise-counter { font-size:13px; margin:12px 0; }
+.exercise-done { color:var(--progress); font-weight:600; }
+.exercise-verify { margin-top:24px; font-size:13px; }
+@media(prefers-reduced-motion:reduce) { .sidebar { transition:none; } }
+/* Rich select options let only the note status use the logo blue. */
+#notes-chapter-picker, #notes-chapter-picker::picker(select) { appearance:base-select; }
+#notes-chapter-picker { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+#notes-chapter-picker > button { display:flex; flex:1; min-width:0; padding:0; border:0; background:transparent; text-align:left; }
+#notes-chapter-picker selectedcontent { display:block; }
+#notes-chapter-picker .added-note { color:#99c6df; }
+#notes-chapter-picker::picker(select) { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; max-height:360px; }
+#notes-chapter-picker option { padding:10px 12px; }
+#notes-chapter-picker option:checked { background:#303030; }

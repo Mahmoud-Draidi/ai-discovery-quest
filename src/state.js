@@ -35,7 +35,7 @@
     for (const q of content.context.questions) quiz[q.id] = Array.isArray(source.quiz?.[q.id]) ? source.quiz[q.id].filter(a => Number.isInteger(a) && a >= 0 && a < 3).slice(-100) : [];
     let exercise = ["not-started", "practiced", "skipped", "deferred"].includes(source.exercise) ? source.exercise : "not-started";
     if (exercise === "practiced" && checks.length !== content.context.steps.length) exercise = "not-started";
-    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, content.context.steps.length - 1)) : 0 };
+    return { bookmarked:source.bookmarked === true, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, content.context.steps.length - 1)) : 0 };
   }
   function normalize(raw = {}) {
     const source = raw && typeof raw === "object" ? raw : {};
@@ -51,42 +51,68 @@
     const chapters = {};
     for (const chapter of course.chapters) chapters[chapter.id] = normalizeChapter(source.chapters?.[chapter.id], chapter);
     const name=typeof source.profile?.name==="string"?source.profile.name.replace(/[\u0000-\u001f\u007f]/g,"").trim().slice(0,60):"";
-    return { version: 1, profile:{name,setupComplete:source.profile?.setupComplete===true || !!name}, ui:{sidebarCollapsed:source.ui?.sidebarCollapsed===true}, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", exercise, checks, quiz, bookmarked: source.bookmarked === true, lessonSeen: source.lessonSeen === true, context: normalizeContext(source.context), chapters,
+    const result = { version: 1, step:Number.isInteger(source.step)?Math.max(0,Math.min(2,source.step)):0,
+      stepStatus:Object.fromEntries([1,2,3].filter(n=>!checks.includes(n)&&['skipped','deferred'].includes(source.stepStatus?.[n])).map(n=>[n,source.stepStatus[n]])), profile:{name,setupComplete:source.profile?.setupComplete===true || !!name}, ui:{sidebarCollapsed:source.ui?.sidebarCollapsed===true}, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", exercise, checks, quiz, bookmarked: source.bookmarked === true, lessonSeen: source.lessonSeen === true, context: normalizeContext(source.context), chapters,
       resume: normalizeResume(source.resume || {view:"chapter",chapter:"orientation",tab:"learn"}), records: normalizeRecords(source.records), followUps: normalizeRecords(source.followUps, course.followUps.map(item => item.id)) };
+    result.completionFlow = 1;
+    result.completions = Object.fromEntries(["foundation", "context", ...course.chapters.map(ch => ch.id)].map(id => {
+      const old = source.completions?.[id];
+      const info = getSummary(result, id);
+      const legacy = source.completionFlow !== 1 && info.ready;
+      return [id, { referencesReviewed: legacy || old?.referencesReviewed === true,
+        notesVisited: legacy || old?.notesVisited === true, completed: legacy || old?.completed === true }];
+    }));
+    return result;
   }
   function solved(state, question) { return state.quiz[question.id].includes(question.correct); }
   function summary(state) {
     const correct = content.questions.filter(q => solved(state, q)).length;
-    const complete = correct === content.questions.length && state.exercise === "practiced";
     const started = state.lessonSeen || state.checks.length > 0 || correct > 0 || state.exercise !== "not-started";
-    return { correct, complete, started, percent: Math.round(((state.exercise === "practiced" ? 1 : 0) + correct) / (content.questions.length + 1) * 100) };
+    return resultSummary(state, "foundation", correct, content.questions.length, state.exercise, started);
   }
   function nextAction(state) {
     const ids=course.order || ["foundation","context",...course.chapters.map(ch=>ch.id)];
     for(const id of ids){
       const ch=course.chapters.find(ch=>ch.id===id);
       const info=id==="foundation"?summary(state):id==="context"?contextSummary(state):chapterSummary(state,ch);
-      if(!info.complete)return `Next unfinished topic: ${id==="foundation"?"Models, tools & skills":id==="context"?"Files, context & continuity":ch.title}. Try its practice, inspect the result, then check your understanding.`;
+      if(!info.complete) {
+        const title=id==="foundation"?"Models, tools & skills":id==="context"?"Files, context & continuity":ch.title;
+        return info.ready ? `Ready to finish: ${title}. Review Questions & sources, then mark the chapter completed from My note.` : `Next unfinished topic: ${title}. Try its practice, inspect the result, then check your understanding.`;
+      }
     }
-    return "Revisit your field guide or choose an optional exploration.";
+    return "All chapters completed. Revisit a chapter or put your skills to work.";
   }
   function contextSummary(state) {
     const value = normalizeContext(state.context);
     const correct = content.context.questions.filter(q => value.quiz[q.id].includes(q.correct)).length;
-    return { correct, complete: correct === content.context.questions.length && value.exercise === "practiced", percent: Math.round(((value.exercise === "practiced" ? 1 : 0) + correct) / (content.context.questions.length + 1) * 100) };
+    return resultSummary(state, "context", correct, content.context.questions.length, value.exercise, value.checks.length > 0 || correct > 0 || value.exercise !== "not-started");
   }
   function chapterSummary(state, chapter) {
     const value = normalizeChapter(state.chapters?.[chapter.id], chapter);
     const correct = chapter.questions.filter(q => value.quiz[q.id].includes(q.correct)).length;
-    return { correct, complete: correct === chapter.questions.length && value.exercise === "practiced",
-      started: value.seen || value.checks.length > 0 || correct > 0 || value.exercise !== "not-started",
-      percent: Math.round(((value.exercise === "practiced" ? 1 : 0) + correct) / (chapter.questions.length + 1) * 100) };
+    return resultSummary(state, chapter.id, correct, chapter.questions.length, value.exercise, value.seen || value.checks.length > 0 || correct > 0 || value.exercise !== "not-started");
+  }
+  function resultSummary(state, id, correct, total, exercise, started) {
+    const flow = state.completions?.[id];
+    const ready = correct === total && exercise === "practiced";
+    const complete = ready && flow?.completed === true && flow.referencesReviewed && flow.notesVisited;
+    const units = (exercise === "practiced" ? 1 : 0) + correct;
+    return { correct, ready, complete, started, percent: complete ? 100 : Math.round((units + (flow?.referencesReviewed ? 1 : 0)) / (total + 3) * 100) };
+  }
+  function getSummary(state, id) {
+    return id === "foundation" ? summary(state) : id === "context" ? contextSummary(state) : chapterSummary(state, course.chapters.find(ch => ch.id === id));
+  }
+  function finish(state, id) {
+    const flow = state.completions?.[id];
+    if (!flow || !getSummary(state, id).ready || !flow.referencesReviewed || !flow.notesVisited) return false;
+    flow.completed = true;
+    return true;
   }
   function courseSummary(state) {
     const items = [summary(state), contextSummary(state), ...course.chapters.map(ch => chapterSummary(state, ch))];
     return { total: items.length, complete: items.filter(i => i.complete).length, percent: Math.round(items.reduce((sum, item) => sum + item.percent, 0) / items.length) };
   }
-  const api = { normalize, solved, summary, nextAction, contextSummary, chapterSummary, courseSummary };
+  const api = { normalize, solved, summary, nextAction, contextSummary, chapterSummary, courseSummary, getSummary, finish };
   if (typeof module !== "undefined") module.exports = api;
   else root.QuestState = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -1,4 +1,71 @@
 // Shared navigation, feedback, and study support. No external actions are automated here.
+function activeChapterId() { return view === "lesson" ? "foundation" : view === "context" ? "context" : selectedChapter; }
+function setChapterTab(next) {
+  if (view === "lesson") tab = next;
+  else if (view === "context") contextTab = next;
+  else chapterTab = next;
+  save(); render();
+  const panel = main.querySelector('.tab-content');
+  if (panel) { panel.tabIndex = -1; panel.focus({preventScroll:true}); }
+  window.scrollTo({top:0,left:0,behavior:"instant"});
+}
+function quizRecap() {
+  return `<section class="panel quiz-finish"><h2>Knowledge check finished</h2><p>Next, explore the chapter’s questions and sources before your optional note.</p>${button("Continue to Questions & sources →", "review-questions")}</section>`;
+}
+function chapterFinishPanel(id, activeTab) {
+  const info = S.getSummary(state,id), flow = state.completions[id];
+  if (activeTab === "reference") return `<section class="panel finish-panel"><h2>Ready for a quick reflection?</h2><p>Expand every Common question before continuing to My note. Writing a note is optional.</p><p class="muted" id="question-review-status" role="status"></p><button class="primary" data-action="review-references" aria-describedby="question-review-status" disabled>I’ve reviewed this — continue to My note →</button></section>`;
+  if (activeTab !== "notes") return "";
+  if (info.complete) return `<section class="panel finish-panel"><h2>Chapter completed ✓</h2><p>Your progress and XP are saved. You can revisit or add a note anytime.</p>${button("Back to overview", "home")}</section>`;
+  return `<section class="panel finish-panel"><h2>Finish this chapter</h2><p>Your note is optional. ${!info.ready ? "Complete the practical exercise and knowledge check first." : !flow.referencesReviewed || !flow.notesVisited ? "Review Questions & sources, then use its continue button to return here." : "You’re ready. Mark the chapter completed to earn 100 XP."}</p>${!flow.referencesReviewed || !flow.notesVisited ? button("Review Questions & sources →", "review-questions", "secondary") : ""}<button class="primary" data-action="finish-chapter" ${info.ready && flow.referencesReviewed && flow.notesVisited ? "" : "disabled"}>Mark chapter completed ✓</button></section>`;
+}
+function allCommonQuestionsExpanded() {
+  const questions = [...main.querySelectorAll('.tab-content .chapter-questions > details')];
+  return questions.length > 0 && questions.every(question => question.open);
+}
+function updateQuestionReview() {
+  const control = main.querySelector('[data-action="review-references"]');
+  if (!control) return;
+  const questions = [...main.querySelectorAll('.tab-content .chapter-questions > details')];
+  const expanded = questions.filter(question => question.open).length;
+  control.disabled = !allCommonQuestionsExpanded();
+  document.getElementById('question-review-status').textContent = `${expanded} of ${questions.length} questions expanded${control.disabled ? ' — expand all to continue.' : ' — ready to continue.'}`;
+}
+let celebrationTimer;
+function showCelebration(kind, heading, detail, reward, next) {
+  document.querySelector('.chapter-celebration')?.remove();
+  clearTimeout(celebrationTimer);
+  const celebration = document.createElement('div');
+  celebration.id = kind === 'level' ? 'level-celebration' : 'chapter-celebration';
+  celebration.className = `chapter-celebration ${kind === 'level' ? 'level-celebration' : ''}`;
+  celebration.innerHTML = `<div class="celebration-card" role="status"><span class="celebration-check" aria-hidden="true">${kind === 'level' ? '✦' : '✓'}</span><h2>${esc(heading)}</h2><p>${esc(detail)}</p><strong>${esc(reward)}</strong><p>${kind === 'level' ? 'A new title for the skills you’ve earned.' : 'One more skill to put to use.'}</p><button class="secondary" id="dismiss-celebration">${next ? 'See my new title →' : 'Keep exploring →'}</button></div><div class="confetti" aria-hidden="true">${Array.from({length:18},()=>'<i></i>').join('')}</div>`;
+  const dismiss = () => { clearTimeout(celebrationTimer); celebration.remove(); if(next)next();else main.focus({preventScroll:true}); };
+  celebration.querySelector('button').addEventListener('click',dismiss,{once:true});
+  celebration.addEventListener('keydown',event=>{if(event.key==='Escape')dismiss();});
+  document.body.append(celebration);
+  celebration.querySelector('button').focus({preventScroll:true});
+  announce(`${heading} ${detail}. ${reward}.`);
+  celebrationTimer = setTimeout(dismiss,kind === 'level' ? 6000 : 4200);
+}
+function celebrateChapter(id, newLevel) {
+  showCelebration('chapter','Chapter completed!',chapterTitle(id),'+100 XP',newLevel ? ()=>showCelebration('level','Level up!',`You are now an ${newLevel.title}`,`Level ${newLevel.level}`) : null);
+}
+function chapterNavigation(id) {
+  const value = id === 'foundation' ? state : id === 'context' ? state.context : state.chapters[id];
+  return `<div class="chapter-links chapter-navigation" aria-label="Chapter navigation">${button("← All chapters", "course", "secondary")}${button(value.bookmarked ? "★ Chapter saved" : "☆ Save this chapter", "toggle-chapter-bookmark", "text-button")}</div>`;
+}
+function recommendedChapters(id) {
+  if(id === 'foundation')return ['orientation'];
+  if(id === 'context')return ['foundation'];
+  return Course.chapters.find(ch=>ch.id===id)?.prerequisites || [];
+}
+function chapterLabel(id) {
+  return id === 'orientation' ? 'App tour' : `Chapter ${id==='foundation'?1:id==='context'?2:Course.chapters.find(ch=>ch.id===id)?.number} — ${chapterTitle(id)}`;
+}
+function recommendationText(id) {
+  const ids=recommendedChapters(id);
+  return ids.length ? `Recommended first: ${ids.map(chapterLabel).join('; ')}` : id==='orientation' ? 'Recommended first: None — start here.' : 'Recommended first: None — explore anytime.';
+}
 function chapterTitle(id) {
   return id === "foundation" ? "Models, tools & skills" : id === "context" ? "Files, context & continuity" : Course.chapters.find(ch => ch.id === id)?.title || id;
 }
@@ -15,9 +82,8 @@ function nextChapterLink(id) {
   return next ? `<section class="panel next-chapter"><h2>Up next: ${esc(chapterTitle(next))}</h2>${prerequisitePanel(next)}${chapterButton(next,"Next chapter →")}</section>` : `<section class="panel next-chapter"><h2>Keep using what you learned</h2><p>Revisit your field guide, unfinished practice, and reference notes. Try the tracker workflow on a small task of your own.</p>${button("Open progress & backups", "journal", "secondary")}</section>`;
 }
 function prerequisitePanel(id) {
-  const ch = Course.chapters.find(ch => ch.id === id);
-  if (!ch?.prerequisites?.length) return "";
-  return `<div class="prerequisite"><p><strong>Bring this preparation:</strong> ${ch.prerequisites.map(id => esc(chapterTitle(id))).join("; ")}. Completion is not locked: bring equivalent work or defer unavailable steps.</p><div class="chapter-links">${ch.prerequisites.map(id => chapterButton(id)).join("")}</div></div>`;
+  const ids = recommendedChapters(id);
+  return `<div class="prerequisite"><p>${esc(recommendationText(id))}</p>${ids.length ? `<p class="muted">Suggested preparation. You can explore chapters in any order.</p><div class="chapter-links">${ids.map(id=>chapterButton(id,chapterLabel(id))).join("")}</div>` : ""}</div>`;
 }
 function otherTools(id) {
   const ch = Course.chapters.find(ch => ch.id === id);
@@ -33,7 +99,7 @@ function otherTools(id) {
 function earlyReference(id) {
   const entries = id === "context" ? C.context.library : C.library;
   const ids = id === "context" ? ["projects","memories","files"] : ["plugins","prompting"];
-  return `<section class="chapter-questions">${entries.map(item => `<details class="panel"><summary>${esc(item.title)}</summary><p>${esc(item.text)}</p></details>`).join("")}</section><section class="panel sources"><h2>Official references</h2><p>Content review: ${esc(Course.checkedOn)}. Check the source and your app before relying on a product-specific control.</p>${courseSources(ids)}</section>`;
+  return `<section class="chapter-questions"><h2>Common questions</h2>${entries.map(item => `<details class="panel"><summary>${esc(item.title)}</summary><p>${esc(item.text)}</p></details>`).join("")}</section><section class="panel sources"><h2>Official references</h2><p>Content review: ${esc(Course.checkedOn)}. Check the source and your app before relying on a product-specific control.</p>${courseSources(ids)}</section>`;
 }
 function scopeGuide(ch) {
   const guide=ch.scopeGuide;
@@ -63,6 +129,19 @@ function controlMap() {
     ["Code Review / Git", "Inspect proposed changes", "Review the relevant project and tests before a merge decision."]
   ];
   return `<section class="panel"><h2>Your app, at a glance</h2><p>This is a schematic legend, not a screenshot of your exact app. Find each available control on your screen; labels move across releases.</p><div class="control-map">${controls.map(([area,title,text]) => `<article><span class="pill">${esc(area)}</span><h3>${esc(title)}</h3><p>${esc(text)}</p></article>`).join("")}</div></section>`;
+}
+function exerciseValue() { return view === 'lesson' ? state : view === 'context' ? state.context : state.chapters[selectedChapter]; }
+function exerciseTotal() { return view === 'lesson' ? 3 : view === 'context' ? C.context.steps.length : currentChapter().steps.length; }
+function exerciseControls(value, total) {
+  const done=value.checks.includes(value.step+1), all=value.checks.length===total;
+  return `<div class="exercise-controls"><div class="hero-actions">${done ? `<span class="exercise-done">Done ✓</span>${button('Undo','exercise-undo','text-button')}` : button('Mark exercise done ✓','exercise-done')}</div><p class="exercise-counter" role="status">${value.checks.length} of ${total} exercises done</p><div class="hero-actions">${value.step>0?button('← Previous exercise','exercise-back','secondary'):''}${value.step<total-1?button('Next exercise →','exercise-next',done?'primary':'secondary'):''}${all?button('Continue to knowledge check →',view==='lesson'?'quiz':view==='context'?'context-quiz':'course-quiz'):''}</div><div class="exercise-options">${button('Skip','exercise-skip','text-button')}${button('Revisit later','exercise-defer','text-button')}</div></div>`;
+}
+function setExerciseDone(done) {
+  const value=exerciseValue(), number=value.step+1;
+  value.checks=done?[...new Set([...value.checks,number])]:value.checks.filter(n=>n!==number);
+  delete value.stepStatus[number];
+  value.exercise=value.checks.length===exerciseTotal()?'practiced':'not-started';
+  save();render();
 }
 function companionStep() {
   if (view === "chapter" && chapterTab === "practice") {
