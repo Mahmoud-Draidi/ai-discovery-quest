@@ -10,6 +10,9 @@ if (testMode && process.env.QUEST_TEST_DATA) app.setPath("userData", process.env
 app.setName("AI Discovery Quest");
 if (process.platform === "win32") app.setAppUserModelId("io.github.mahmoud-draidi.ai-discovery-quest");
 let store;
+let primaryWindow;
+let companionWindow;
+let companionData = { key: "none", title: "Practice companion", text: "Open a practice step in the main window.", readOnly: true };
 let quitting = false;
 const page = pathToFileURL(path.join(__dirname, "index.html")).href;
 const allowedSources = new Set([
@@ -31,6 +34,8 @@ async function createWindow() {
     show: !testMode || process.env.QUEST_TEST_SHOW === "1",
     webPreferences: { preload: path.join(__dirname, "preload.cjs"), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
+  primaryWindow = win;
+  win.on("closed", () => { primaryWindow = null; if (companionWindow && !companionWindow.isDestroyed()) companionWindow.close(); });
   win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   win.webContents.on("will-navigate", event => event.preventDefault());
   await win.loadFile(path.join(__dirname, "index.html"));
@@ -40,7 +45,7 @@ if (!primaryInstance) {
   app.quit();
 } else {
 app.on("second-instance", () => {
-  const win = BrowserWindow.getAllWindows()[0];
+  const win = primaryWindow;
   if (win) {
     if (win.isMinimized()) win.restore();
     win.show();
@@ -49,6 +54,34 @@ app.on("second-instance", () => {
 });
 app.whenReady().then(async () => {
   store = createStore(app.getPath("userData"));
+  function updateCompanion(value) {
+    // Only the primary lesson renderer supplies bounded text, never arbitrary HTML or navigation.
+    const data = {};
+    for (const key of ["key", "title", "text", "prompt", "check"]) data[key] = typeof value?.[key] === "string" ? value[key].slice(0, 12000) : "";
+    data.checked = value?.checked === true; data.readOnly = value?.readOnly === true;
+    companionData = data;
+    if (companionWindow && !companionWindow.isDestroyed()) companionWindow.webContents.send("quest:companion-data", data);
+  }
+  ipcMain.handle("quest:companion-update", (event, value) => { validateSender(event); updateCompanion(value); });
+  ipcMain.handle("quest:companion-open", async (event, value) => {
+    validateSender(event); updateCompanion(value);
+    if (companionWindow && !companionWindow.isDestroyed()) { companionWindow.show(); companionWindow.focus(); return; }
+    companionWindow = new BrowserWindow({title:"AI Discovery Quest · Practice companion",width:440,height:650,minWidth:340,minHeight:400,alwaysOnTop:true,autoHideMenuBar:true,backgroundColor:"#191b1b",show:!testMode||process.env.QUEST_TEST_SHOW==="1",webPreferences:{preload:path.join(__dirname,"companion-preload.cjs"),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+    companionWindow.webContents.setWindowOpenHandler(()=>({action:"deny"}));
+    companionWindow.webContents.on("will-navigate",event=>event.preventDefault());
+    companionWindow.on("closed",()=>{companionWindow=null;});
+    await companionWindow.loadFile(path.join(__dirname,"companion.html"));
+  });
+  function validateCompanion(event) {
+    if (!companionWindow || event.sender !== companionWindow.webContents || event.senderFrame?.url !== pathToFileURL(path.join(__dirname,"companion.html")).href) throw new Error("Unrecognized companion.");
+  }
+  ipcMain.handle("quest:companion-load", event => {validateCompanion(event);return companionData;});
+  ipcMain.handle("quest:companion-check", (event, value) => {
+    validateCompanion(event);
+    if (value?.key !== companionData.key || companionData.readOnly || typeof value?.checked !== "boolean") return;
+    if (primaryWindow && !primaryWindow.isDestroyed()) primaryWindow.webContents.send("quest:companion-check", {key:value.key,checked:value.checked});
+  });
+  ipcMain.handle("quest:companion-pin", (event, value) => {validateCompanion(event);companionWindow.setAlwaysOnTop(value===true);});
   ipcMain.handle("quest:load", event => { validateSender(event); return store.load(); });
   ipcMain.handle("quest:save", (event, value) => { validateSender(event); return store.save(value); });
   ipcMain.handle("quest:export", async event => {

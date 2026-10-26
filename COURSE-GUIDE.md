@@ -1,121 +1,244 @@
 # AI course guide
 
-A standalone practical course for learning to use real AI tools. No knowledge of the authors or project history is required.
+A practical course for using real AI tools. Follow Understand → Try it → Check, inspect actual results, and keep private notes. No knowledge of the authors is needed.
 
-## Course topics
+This guide is generated from course data with `node scripts/generate-course-guide.cjs`. Do not maintain a separate chapter count or duplicate lesson list.
 
-1. Models, tools, and skills: create a note and identify the roles.
-2. Files, context, and continuity: supply sources, check answers, and resume from saved instructions/progress.
-3. Ask, steer, and verify: Direct useful work without needing a perfect first prompt.
-4. Research with evidence: Find an answer, open its sources, and preserve what you verified.
-5. Create useful artifacts: Work with files and visuals, then inspect the actual result.
-6. Show AI what you see: Distinguish a snapshot, a browser connection, and authorized computer actions.
-7. Plugins, MCP, and reusable skills: Know what extends the assistant and what grants access.
-8. Plans, goals, schedules, and chat controls: Choose the right control for proposing, pursuing, or repeating work.
-9. Develop with AI and Git: Direct a small program, review its changes, and save meaningful versions.
-10. Collaborate through pull requests: Make the review conversation part of the work.
-11. Local, worktree, and cloud: Know where changes live before running concurrent work.
-12. Subagents and coordinated chats: Split independent work, make handoffs explicit, and review the combined result.
-13. Hooks and cross-product workflows: Automate the right check and recognize related concepts in other tools.
+## Course route
+
+- **Start here: find your controls**
+- **Models, tools, and skills**
+- **Files, context, and continuity**
+- **Memory, instructions, and account boundaries**
+- **Maps, images, and your working interface**
+- **Ask, steer, and verify**
+- **Research with evidence**
+- **Create useful artifacts**
+- **Show AI what you see**
+- **Plugins, MCP, and reusable skills**
+- **Plans, goals, schedules, and chat controls**
+- **Develop with AI and Git**
+- **Collaborate through pull requests**
+- **Local, worktree, and cloud**
+- **Subagents and coordinated chats**
+- **Hooks and cross-product workflows**
+- **Put the workflow together**
 
 ## Preparation and practice
 
-### 3. Ask, steer, and verify
+### Start here: find your controls
+
+An AI account and its web or desktop app. No coding, Git, API key, payment change, or broad permissions are needed. Use an empty folder you own if local file access is available.
+
+Project thread: Create a control inventory and choose the private practice location for your AI field guide.
+
+- Inspect your actual screen
+- Find a harmless workspace
+- Inspect menus and permissions
+
+### Models, tools, and skills
+
+An AI chat and a text editor, or a file-capable workspace after the app tour.
+
+- Create a first note and inspect the definitions and everyday examples
+- Request an edit and inspect the saved result
+- Identify model, tool, and reusable instructions
+
+### Files, context, and continuity
+
+The first note or the supplied sample, plus an upload-capable chat or accessible workspace.
+
+- Bring your first note
+- Read it and check the answer
+- Keep instructions and progress
+- Resume in another chat
+
+### Memory, instructions, and account boundaries
+
+An AI app with visible personalization or instruction settings. Inspect only; enabling memory, clearing it, or changing accounts is optional and not required.
+
+Bring: Files, context, and continuity. Equivalent work is accepted; prerequisites guide rather than lock the route.
+
+Project thread: Add a scope table to the field guide: chat context, project instructions, progress record, and optional automatic memory.
+
+- Inspect without changing
+- Test explicit context
+- Resume from a record
+
+### Maps, images, and your working interface
+
+Use only features present in your account. Maps/visuals, image tools, Pets/Mini, legacy GPTs or plugins, and hosted computer access may differ by platform. Sign in privately; never paste passwords. No paid competitor account is required.
+
+Bring: Start here: find your controls. Equivalent work is accepted; prerequisites guide rather than lock the route.
+
+Project thread: Add a checked public-destination map and a visual to your field guide; record interface and hosted-access limits separately.
+
+- Make and inspect a map
+- Try a visual feature
+- Inspect interface and reusable assistants
+- Inspect hosted access and credentials
+
+### Ask, steer, and verify
 
 A text AI chat. The supplied app-planning scenario is a prompt-writing exercise; no coding or paid API is needed.
 
-1. Refine the actual journey request
-2. Specify the learning result
-3. Give a targeted revision
+Bring: Models, tools, and skills. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-### 4. Research with evidence
+Project thread: Use your field-guide goal to practice an outcome, a success check, and one targeted correction before implementation.
+
+- Refine a vague request
+- Specify the learning result
+- Give a targeted revision
+
+### Research with evidence
 
 An AI assistant with web search and an internet connection. A text editor or file tool can save the finding. The exercise does not require an API account or payment.
 
-1. Search official documentation
-2. Inspect a source
-3. Save the finding
+Bring: Ask, steer, and verify. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-### 5. Create useful artifacts
+Project thread: Save RESEARCH-NOTES.md in the field guide, including the claim, supporting passage, source URL, and date.
+
+- Search official documentation
+- Inspect a source
+- Save the finding
+
+### Create useful artifacts
 
 An assistant with the relevant file or visual tools and a viewer for the result. Features may require plugins or a supported account. Use fictional sample data. Missing tools can be marked deferred; do not buy software just to tick a box.
 
-1. Inspect a short PDF
-2. Change a spreadsheet input
-3. Direct a presentation edit
-4. Try an interactive visual
-5. Preview a small learning site
+Bring: Research with evidence. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-### 6. Show AI what you see
+Project thread: Create a shareable learning recap from fictional practice notes, inspect the rendered files and links, and keep the checked result.
+
+- Inspect a short PDF
+- Change a spreadsheet input
+- Direct a presentation edit
+- Try an interactive visual
+- Preview a small learning site
+
+### Show AI what you see
 
 A supported screenshot/Appshot feature, connected browser, and computer tool for desktop practice. You handle sign-in and permission prompts. Use a fresh blank note; preserve existing work.
 
-1. Share a harmless snapshot
-2. Read a connected browser tab
-3. Observe one computer action
+Bring: Start here: find your controls. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-### 7. Plugins, MCP, and reusable skills
+Project thread: Use a harmless field-guide sentence to compare snapshot, connected-browser reading, and a supported computer action.
+
+- Share a harmless snapshot
+- Read a connected browser tab
+- Observe one computer action
+
+### Plugins, MCP, and reusable skills
 
 A client supporting skills or plugins. Account authorization is only needed for external resources you choose. This lesson can use supplied notes without an external account. Creation tools and UI labels vary by product/version.
 
-1. Inspect one connection
-2. Create a bounded recap method
-3. Test behavior, including missing input
+Bring: Files, context, and continuity. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-### 8. Plans, goals, schedules, and chat controls
+Project thread: Turn the first note into a reusable recap method and test both supplied notes and missing input.
+
+- Inspect one connection
+- Create a bounded recap method
+- Test behavior, including missing input
+
+### Plans, goals, schedules, and chat controls
 
 A supported app/client for the controls. Menu labels and availability vary. The core exercise needs planning and a bounded task; scheduling is an explicitly optional extension, not automatically enabled by reading this chapter.
 
-1. Inspect controls without changing them
-2. Propose a bounded plan
-3. Implement only the agreed task
+Bring: Ask, steer, and verify. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-### 9. Develop with AI and Git
+Project thread: Plan a small field-guide task, agree its boundary, and inspect implementation. Save the difference between planning and scheduling.
+
+- Inspect controls without changing them
+- Propose a bounded plan
+- Implement only the agreed task
+
+### Develop with AI and Git
 
 A file-capable coding assistant, Node.js and Git in a disposable practice repository. Ask the assistant to inspect prerequisites and install only through the appropriate authorized workflow. No GitHub account is needed for local Git.
 
-1. Create and run the tiny tracker
-2. Change one input and check behavior
-3. Save a local version and compare a change
-4. Try a targeted undo
+Bring: Models, tools, and skills. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-### 10. Collaborate through pull requests
+Project thread: Create learning-tracker.cjs and README.md for a tiny learning tracker. Reuse them in every later repository exercise.
 
-A GitHub account and access to a practice repository, plus a local Git working copy or appropriate connected tools. Work only in your chosen repository. Publishing, comments, merge, and deletion are distinct actions; do not affect an unrelated public project.
+- Create and run the tiny tracker
+- Change one input and check behavior
+- Save a local version and compare a change
+- Try a targeted undo
 
-1. Publish a reviewed practice branch
-2. Open and inspect a draft PR
-3. Simulate a disclosed review exchange
-4. Understand the maintainer decision
+### Collaborate through pull requests
 
-### 11. Local, worktree, and cloud
+A GitHub account and access to a practice repository, plus a local Git working copy or appropriate connected tools. Work only in your chosen repository. Publishing, comments, merge, and deletion are distinct actions; do not affect an unrelated public project. Reuse the tracker and README from Coding and Git, or complete that chapter first.
 
-A clean-enough practice Git repository for a worktree. A cloud task needs an accessible published environment and source repository. Cloud accounts, network policy, dependencies, and secrets are separate setup concerns.
+Bring: Develop with AI and Git. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-1. Inspect the execution location
-2. Create an isolated practice checkout
-3. Run a read-only cloud task
+Project thread: Put a reviewed tracker improvement through a practice pull request, including feedback and an explicit maintainer decision.
 
-### 12. Subagents and coordinated chats
+- Publish a reviewed practice branch
+- Open and inspect a draft PR
+- Simulate a disclosed review exchange
+- Understand the maintainer decision
 
-A client with subagents or separate-chat coordination, and the practice tracker/README. A smaller-model handoff requires an available model and explicit selection. Separate checkouts are needed for concurrent edits; the first exercise is read-only.
+### Local, worktree, and cloud
 
-1. Run two read-only subagents
-2. Make a bounded model handoff
-3. Coordinate a dependent pair of chats
+A clean-enough practice Git repository for a worktree. A cloud task needs an accessible published environment and source repository. Cloud accounts, network policy, dependencies, and secrets are separate setup concerns. Reuse the tracker and README from Coding and Git, or complete that chapter first.
 
-### 13. Hooks and cross-product workflows
+Bring: Develop with AI and Git; Collaborate through pull requests. Equivalent work is accepted; prerequisites guide rather than lock the route.
+
+Project thread: Run the same tracker from isolated local and supported cloud source states; compare observed output and file locations.
+
+- Inspect the execution location
+- Create an isolated practice checkout
+- Run a read-only cloud task
+
+### Subagents and coordinated chats
+
+A client with subagents or separate-chat coordination, and the tracker and README from Coding and Git. A smaller-model handoff requires an available model and explicit selection. Separate checkouts are needed for concurrent edits; the first exercise is read-only. Reuse the tracker and README from Coding and Git, or complete that chapter first.
+
+Bring: Develop with AI and Git; Local, worktree, and cloud. Equivalent work is accepted; prerequisites guide rather than lock the route.
+
+Project thread: Ask bounded agents to explain the tracker and check its README; inspect and combine their findings before edits.
+
+- Run two read-only subagents
+- Make a bounded model handoff
+- Coordinate a dependent pair of chats
+
+### Hooks and cross-product workflows
 
 For actual hooks: supported lifecycle hooks, a practice repository, and the required runtime. Review/trust local configuration through supported controls. Competitor comparisons can be read without subscriptions or installations.
 
-1. Create and manually test a check
-2. Trust and verify one actual lifecycle event
-3. Disable the demo and compare a portable task
+Bring: Develop with AI and Git. Equivalent work is accepted; prerequisites guide rather than lock the route.
 
-## Learning progress
+Project thread: Add a bounded syntax-check hook for the practice tracker, verify an automatic event, then disable the demonstration.
 
-Follow the practical steps in the relevant real AI tool. Inspect each result, then record your practice. A chapter milestone requires practical completion and a completed knowledge check. Skip and defer remain separate options.
+- Create and manually test a check
+- Trust and verify one actual lifecycle event
+- Disable the demo and compare a portable task
 
-Notes, bookmarks, resume points, backups, and existing-experience records are local personal data. Existing experience does not automatically change quiz answers. Optional follow-ups let you revisit additional topics when the necessary tools are available.
+### Put the workflow together
 
-Project history and source provenance are recorded in CHAPTER-SOURCES.md; they are not part of the course interface.
+The learning tracker and README from Coding and Git, an accessible practice repository, and the review/worktree/delegation chapters. A scheduled run requires a supported scheduler and available host. Use your own repository; no app-store publishing is involved.
+
+Bring: Develop with AI and Git; Collaborate through pull requests; Local, worktree, and cloud; Subagents and coordinated chats; Hooks and cross-product workflows. Equivalent work is accepted; prerequisites guide rather than lock the route.
+
+Project thread: Extend the existing tracker through plan, isolated implementation, delegated review, a PR, and an inspected recurring check.
+
+- Plan a bounded improvement
+- Implement in isolation
+- Review through a PR
+- Verify a recurring check
+
+## Honest progress
+
+The app records your report; it cannot observe external chats or files. Quizzes alone do not earn practice titles. If tools are missing, defer the exercise and preserve what remains unverified. Existing experience is optional and separate from checked practice.
+
+## Study support
+
+Use the compact companion from Try it to keep the current step visible beside your AI tool. The companion can stay on top and synchronizes its checkbox with the main lesson; only the main app saves progress. Use chapter questions/sources, library search and topic filters, and your notes when returning.
+
+## Capstone
+
+Extend the same tiny tracker through planning, a worktree, bounded delegation, a pull request and review, and an inspected recurring check. This is different from developing or releasing this learning app.
+
+## Product availability
+
+Inspect the mode, account, tool and host before each external task. Labels and capabilities change. Product comparisons are reference unless you actually try them; extra competitor subscriptions are optional. Never paste credentials into lesson notes or chat.

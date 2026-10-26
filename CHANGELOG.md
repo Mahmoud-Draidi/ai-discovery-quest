@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Adds a setup tour, memory/account boundaries, feature lab, and tracker-workflow capstone.
+- Makes prerequisites, project outputs, next chapters, and cross-product comparisons visible.
+- Improves scenario questions, choice-specific feedback, reviewed retries, references, topic filters, label readability, and keyboard focus.
+- Adds an optional compact practice companion that follows the current step without a second progress writer.
+- Generates the course guide from content and preserves existing lesson IDs and saved progress.
+
 ## 0.2.2 — 26 October 2026
 
 - Removes fixed course-size claims from the app and public documentation.

@@ -25,19 +25,34 @@
       "id": "q1",
       "prompt": "You ask for dinner ideas. What interprets your request and decides what to suggest?",
       "correct": 0,
-      "explanation": "The model interprets the request and reasons about a response. A tool may help it take an action."
+      "explanation": "The model interprets the request and reasons about a response. A tool may help it take an action.",
+      "feedback": [
+        "The model interprets the request and reasons about a response. A tool may help it take an action.",
+        "A tool serves a different role here. The model interprets the request and reasons about a response. A tool may help it take an action.",
+        "A skill serves a different role here. The model interprets the request and reasons about a response. A tool may help it take an action."
+      ]
     },
     {
       "id": "q2",
       "prompt": "The assistant checks a store's current opening hours using web search. What performs that search?",
       "correct": 1,
-      "explanation": "The search tool performs the action. The model decides how to use its result."
+      "explanation": "The search tool performs the action. The model decides how to use its result.",
+      "feedback": [
+        "A model serves a different role here. The search tool performs the action. The model decides how to use its result.",
+        "The search tool performs the action. The model decides how to use its result.",
+        "A skill serves a different role here. The search tool performs the action. The model decides how to use its result."
+      ]
     },
     {
       "id": "q3",
       "prompt": "A reusable checklist tells the assistant how to review an essay. What is that checklist?",
       "correct": 2,
-      "explanation": "A skill supplies reusable instructions for a type of task. It isn't the model or the action-performing tool."
+      "explanation": "A skill supplies reusable instructions for a type of task. It isn't the model or the action-performing tool.",
+      "feedback": [
+        "A model serves a different role here. A skill supplies reusable instructions for a type of task. It isn't the model or the action-performing tool.",
+        "A tool serves a different role here. A skill supplies reusable instructions for a type of task. It isn't the model or the action-performing tool.",
+        "A skill supplies reusable instructions for a type of task. It isn't the model or the action-performing tool."
+      ]
     }
   ],
   "library": [
@@ -79,7 +94,12 @@
           "Enable automatic memory first"
         ],
         "correct": 1,
-        "explanation": "A file's location and its use in a task are different. Supply access and ask for a source-grounded answer; inspect the note to check it."
+        "explanation": "A file's location and its use in a task are different. Supply access and ask for a source-grounded answer; inspect the note to check it.",
+        "feedback": [
+          "This choice assumes assume every word is already in the chat. A file's location and its use in a task are different. Supply access and ask for a source-grounded answer; inspect the note to check it.",
+          "A file's location and its use in a task are different. Supply access and ask for a source-grounded answer; inspect the note to check it.",
+          "This choice assumes enable automatic memory first. A file's location and its use in a task are different. Supply access and ask for a source-grounded answer; inspect the note to check it."
+        ]
       },
       {
         "id": "context2",
@@ -90,7 +110,12 @@
           "It enabled account-wide memory"
         ],
         "correct": 0,
-        "explanation": "The record can supply enough context to resume. This does not prove that the new chat inherited the full original conversation."
+        "explanation": "The record can supply enough context to resume. This does not prove that the new chat inherited the full original conversation.",
+        "feedback": [
+          "The record can supply enough context to resume. This does not prove that the new chat inherited the full original conversation.",
+          "This choice assumes it received every message from the original chat. The record can supply enough context to resume. This does not prove that the new chat inherited the full original conversation.",
+          "This choice assumes it enabled account-wide memory. The record can supply enough context to resume. This does not prove that the new chat inherited the full original conversation."
+        ]
       },
       {
         "id": "context3",
@@ -101,7 +126,12 @@
           "In supported project instructions, with progress recorded separately"
         ],
         "correct": 2,
-        "explanation": "Instructions guide behavior; progress records describe what happened and what comes next. Use your product's supported instruction mechanism; memory need not be enabled for this exercise."
+        "explanation": "Instructions guide behavior; progress records describe what happened and what comes next. Use your product's supported instruction mechanism; memory need not be enabled for this exercise.",
+        "feedback": [
+          "This choice assumes only in the filename of your note. Instructions guide behavior; progress records describe what happened and what comes next. Use your product's supported instruction mechanism; memory need not be enabled for this exercise.",
+          "This choice assumes only in an unrelated old chat. Instructions guide behavior; progress records describe what happened and what comes next. Use your product's supported instruction mechanism; memory need not be enabled for this exercise.",
+          "Instructions guide behavior; progress records describe what happened and what comes next. Use your product's supported instruction mechanism; memory need not be enabled for this exercise."
+        ]
       }
     ],
     "steps": [

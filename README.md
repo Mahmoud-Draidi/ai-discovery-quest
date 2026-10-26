@@ -2,7 +2,7 @@
 
 **Learn to use AI through practical exercises—not just explanations.**
 
-A beginner-friendly Windows desktop course with hands-on chapters, practice questions, searchable reference, and personal notes and progress. Start with models, tools, and skills, then explore files, research, browsers, coding, GitHub, agents, and automation.
+A beginner-friendly Windows desktop course with hands-on chapters, practice questions, searchable reference, and personal notes and progress. Start with a guided app tour, then explore models, tools, skills, memory, files, research, browsers, coding, GitHub, agents, and automation.
 
 [**Download for Windows x64**](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/latest) · [Release notes & checksums](https://github.com/Mahmoud-Draidi/ai-discovery-quest/releases/latest) · [Course guide](COURSE-GUIDE.md) · [Contribute](CONTRIBUTING.md)
 
@@ -23,20 +23,24 @@ You do **not** need Node.js, developer tools, or an API key to use the downloade
 
 - Short explanations followed by practical tasks in real AI tools.
 - Ready-to-use prompts, clear preparation, and checks for inspecting the actual result.
-- Knowledge checks with feedback and retries.
+- Scenario knowledge checks with choice-specific feedback and reviewed retries.
+- A compact, optionally always-on-top companion for practice alongside another app.
+- Visible prerequisites and next-chapter links; a field guide and tracker project connect the work.
 - Personal chapter notes, bookmarks, a saved resume point, and earned milestones.
 - Searchable answers and official references for revisiting a topic.
 - Optional follow-up tasks, plus separate records for prior experience, skipped work, and missing preparation.
 
 The app guides your practice. Exercises use the relevant AI chat, browser, file tool, coding assistant, or connected service. Those tools may need an account, connection, or runtime; each chapter explains its preparation. Bundled lessons, quizzes, and personal progress work offline. External practice and source links may need internet access.
 
-![AI Discovery Quest chapter overview](docs/images/course-overview.png)
+![AI Discovery Quest setup tour](docs/images/orientation-preview.png)
 
 ## Explore the course
 
 | Start here | Build confidence | Go further |
 |---|---|---|
-| Models, tools, and skills | Research with evidence | Develop with AI and Git |
+| App tour and safe setup | Research with evidence | Develop with AI and Git |
+| Models, tools, and skills | Maps, images and interface features | Tracker workflow capstone |
+| Memory and account boundaries | | |
 | Files, context, and continuity | Create useful artifacts | Collaborate through pull requests |
 | Ask, steer, and verify | Show AI what you see | Local, worktree, and cloud |
 | | Plugins, MCP, and reusable skills | Subagents and coordinated chats |
@@ -53,7 +57,7 @@ Everything is saved locally on your computer. On Windows, the app uses:
 ```
 
 - **Continue where I left off** returns to the saved chapter, section, and step.
-- **My journey** lets you record existing experience and export/import a personal backup.
+- **Progress & backups** lets you record existing experience and export/import a personal backup.
 - Import previews the replacement and keeps a local recovery copy.
 - Your notes and resume point are not uploaded to this repository or included in the app download.
 
@@ -107,3 +111,12 @@ The renderer is sandboxed with context isolation and no Node integration. No pro
 [Report a bug or suggest an improvement](https://github.com/Mahmoud-Draidi/ai-discovery-quest/issues). Include the app version and reproducible steps; omit private notes, credentials, and personal progress files.
 
 Original source and course documentation use the [MIT License](LICENSE). You may use, modify, and redistribute them, including commercially, while preserving the required notice. Dependencies retain their own licenses. Contributions back are welcome, not required.
+
+
+### Maintainer content and desktop checks
+
+Run `node scripts/generate-course-guide.cjs` after editing lesson metadata. `node scripts/generate-course-guide.cjs --check` verifies that the guide matches the course.
+
+Optional desktop QA uses an existing Playwright installation: set `QUEST_PLAYWRIGHT` to its module path, or make `playwright` available to Node, then run `node scripts/verify-desktop.cjs`. It launches a separate test profile under ignored `test-results/`, tests interaction and companion-window behavior, and closes its windows. It does not modify the real learner profile.
+
+See [review response](REVIEW-RESPONSE.md) for changes and limitations. New source features may not yet be in the latest downloadable release; check release notes for the shipped version.

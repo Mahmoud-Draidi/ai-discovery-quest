@@ -13,9 +13,10 @@ function completed(chapter) {
     quiz: Object.fromEntries(chapter.questions.map(q => [q.id, [q.correct]])) };
 }
 
-test("all 13 chapters have usable content, preparation, exercises and answer feedback", () => {
-  assert.deepEqual(course.chapters.map(ch => ch.number), Array.from({length: 11}, (_, i) => i + 3));
-  assert.equal(new Set(course.chapters.map(ch => ch.id)).size, 11);
+test("every course chapter has usable content, preparation, exercises and answer feedback", () => {
+  assert.equal(course.chapters[0].id, "orientation");
+  assert.equal(new Set(course.chapters.map(ch=>ch.number)).size,course.chapters.length);
+  assert.equal(new Set(course.chapters.map(ch => ch.id)).size, course.chapters.length);
   const ids = new Set();
   for (const ch of course.chapters) {
     assert.ok(ch.title && ch.preparation && ch.award);
@@ -34,13 +35,13 @@ test("all 13 chapters have usable content, preparation, exercises and answer fee
       assert.equal(new URL(course.sources[id][1]).protocol, "https:");
     }
   }
-  assert.equal(courseSummary(normalize()).total, 13);
+  assert.equal(courseSummary(normalize()).total, course.chapters.length+2);
   assert.equal(courseSummary(normalize()).complete, 0);
 });
 
 test("learner-facing content does not require knowledge of the course authors' history", () => {
   const content = require("../src/content.js");
-  const forbidden = /\bour\b|\bwe\b|original learner|original journey|historical checkpoint|originally (skipped|deferred)/i;
+  const forbidden = /\bour\b|\bwe\b|original learner|original journey|historical checkpoint|originally (skipped|deferred)|the original course|this journey did not|lets us|actual journey request|coach was tested|Did choosing Riyadh|Are you the parent agent|Was Attach Discord/i;
   const visible = { chapters: course.chapters, followUps: course.followUps, context: content.context };
   assert.doesNotMatch(JSON.stringify(visible), forbidden);
   for (const ch of course.chapters) assert.equal(ch.evidence, undefined);
@@ -82,7 +83,7 @@ test("aggregate course progress includes old chapters without marking new ones l
   assert.equal(courseSummary(state).complete,2);
   for (const ch of course.chapters) assert.equal(chapterSummary(state,ch).percent,0);
   for (const ch of course.chapters) state.chapters[ch.id] = completed(ch);
-  assert.deepEqual(courseSummary(state), {total:13,complete:13,percent:100});
+  assert.deepEqual(courseSummary(state), {total:course.chapters.length+2,complete:course.chapters.length+2,percent:100});
   assert.deepEqual(normalize(state), state);
 });
 
@@ -93,7 +94,7 @@ test("all chapter notes, bookmarks, attempts, steps and legacy progress survive 
     await createStore(directory).save(value);
     const restored = await createStore(directory).load();
     assert.deepEqual(restored,value);
-    assert.equal(courseSummary(restored).complete,11);
+    assert.equal(courseSummary(restored).complete,course.chapters.length);
     assert.equal(restored.notes,"Original chapter");
     assert.equal(restored.context.notes,"Context chapter");
   } finally {await fs.rm(directory,{recursive:true,force:true});}
@@ -137,4 +138,41 @@ test("course and earlier quiz totals follow content changes without separate cou
   } finally {
     content.questions.length=firstLength;content.context.questions.length=contextLength;course.chapters.length=chapterLength;
   }
+});
+
+
+test("course route, prerequisites, feedback and new lessons remain consistent", () => {
+  const ids=new Set(["foundation","context",...course.chapters.map(ch=>ch.id)]);
+  assert.equal(course.order.length,ids.size);
+  assert.deepEqual(new Set(course.order),ids);
+  assert.equal(course.order[0],"orientation");
+  for(const id of ["orientation","memory","feature-lab","capstone"]) assert.ok(ids.has(id));
+  for(const ch of course.chapters){
+    for(const dep of ch.prerequisites){assert.ok(ids.has(dep));assert.ok(course.order.indexOf(dep)<course.order.indexOf(ch.id));}
+    assert.ok(ch.reviewedOn && ch.otherTools.length && ch.projectTask);
+    for(const item of ch.otherTools)for(const id of item.sources)assert.ok(course.sources[id],`Missing comparison source ${id}`);
+    for(const q of ch.questions){assert.equal(q.feedback.length,q.choices.length);assert.equal(new Set(q.feedback).size,q.feedback.length);}
+  }
+  for(const id of ["github","environments","delegation"]) assert.ok(course.chapters.find(ch=>ch.id===id).prerequisites.includes("coding"));
+  assert.match(course.chapters.find(ch=>ch.id==="coding").steps[0].prompt,/README/);
+});
+
+test("legacy completed chapters keep their IDs and progress while new topics start unfinished",()=>{
+  const ids=["prompting","research","artifacts","seeing","extensions","control","coding","github","environments","delegation","automation"];
+  const saved={chapters:Object.fromEntries(ids.map(id=>{const ch=course.chapters.find(ch=>ch.id===id);return [id,completed(ch)];}))};
+  const value=normalize(saved);
+  for(const id of ids)assert.equal(chapterSummary(value,course.chapters.find(ch=>ch.id===id)).complete,true);
+  for(const id of ["orientation","memory","feature-lab","capstone"])assert.equal(chapterSummary(value,course.chapters.find(ch=>ch.id===id)).complete,false);
+});
+
+test("the generated course guide stays consistent with course data",()=>{
+  const {execFileSync}=require("node:child_process");
+  execFileSync(process.execPath,[path.join(__dirname,"../scripts/generate-course-guide.cjs"),"--check"]);
+});
+
+test("legacy saved-answer indices still mean the same accepted answers",()=>{
+  const expected=require('./fixtures/legacy-answer-map.json');
+  const questions=course.chapters.flatMap(ch=>ch.questions);
+  for(const [id,index] of Object.entries(expected))assert.equal(questions.find(q=>q.id===id)?.correct,index,id);
+  assert.equal(require('../src/state.js').nextAction(normalize()).startsWith('Next unfinished topic: Start here'),true);
 });

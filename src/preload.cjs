@@ -4,5 +4,8 @@ contextBridge.exposeInMainWorld("quest", {
   save: value => ipcRenderer.invoke("quest:save", value),
   openSource: url => ipcRenderer.invoke("quest:source", url),
   exportProgress: () => ipcRenderer.invoke("quest:export"),
-  importProgress: value => ipcRenderer.invoke("quest:import", value)
+  importProgress: value => ipcRenderer.invoke("quest:import", value),
+  openCompanion: value => ipcRenderer.invoke("quest:companion-open", value),
+  updateCompanion: value => ipcRenderer.invoke("quest:companion-update", value),
+  onCompanionCheck: callback => ipcRenderer.on("quest:companion-check", (_event, value) => callback(value))
 });
