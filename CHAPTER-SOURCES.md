@@ -55,3 +55,29 @@ Personal resumes and progress are runtime user data and are never seeded into th
 ## Standalone learner presentation
 
 Source history is editorial context, not prerequisite knowledge for the learner. Version 0.2.1 removes the author-history panel and retrospective first-person narration from all lesson screens, quizzes, references, and optional topics. Runtime content contains direct explanations and exercises. IDs, personal notes, progress, and quiz answer mappings remain compatible. Historical evidence stays in project documentation rather than the course interface.
+
+
+## Learner-review additions — 26 October 2026
+
+New scenarios extend the course rather than claiming the original learner completed new tasks. The intro inspects modes, workspace and approvals without changing settings. Memory distinguishes explicit records from recall and scope. The feature lab uses public sample destinations and harmless visuals; credentials are never requested as chat input. The capstone extends the existing tracker, not this learning app.
+
+Sources inspected for these additions:
+
+- [OpenAI memory scopes](https://learn.chatgpt.com/docs/customization/memories)
+- [OpenAI settings](https://learn.chatgpt.com/docs/reference/settings)
+- [OpenAI browser and private sign-in](https://learn.chatgpt.com/docs/browser)
+- [OpenAI environments](https://learn.chatgpt.com/docs/environments/modes)
+- [OpenAI Pets](https://learn.chatgpt.com/docs/pets)
+- [Claude Code overview](https://code.claude.com/docs/en/overview)
+- [Claude Code extensions](https://code.claude.com/docs/en/features-overview)
+- [Claude Code instructions and memory](https://code.claude.com/docs/en/memory)
+- [Claude Code subagents](https://code.claude.com/docs/en/sub-agents)
+- [Claude Code hooks](https://code.claude.com/docs/en/hooks)
+- [Claude Code checkpoints](https://code.claude.com/docs/en/checkpointing)
+- [Copilot on GitHub](https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-on-github)
+- [Copilot repository instructions](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions)
+- [Copilot MCP](https://docs.github.com/en/copilot/concepts/customizations/mcp)
+
+Per-chapter dates describe content review, not guaranteed account availability or practical execution. No universal Passwords menu control or paid competitor access is promised.
+
+- [Claude Projects](https://support.claude.com/en/articles/9517075-what-are-projects) and [Claude Artifacts](https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them) were also inspected for the context and artifact comparisons.

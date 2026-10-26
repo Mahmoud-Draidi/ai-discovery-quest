@@ -10,6 +10,7 @@
   <script defer src="course.js"></script>
   <script defer src="state.js"></script>
   <script defer src="course-ui.js"></script>
+  <script defer src="learning-ui.js"></script>
   <script defer src="renderer.js"></script>
 </head>
 <body>
@@ -21,7 +22,7 @@
       <button data-view="lesson"><span aria-hidden="true">◇</span> Learning journey</button>
       <button data-view="library"><span aria-hidden="true">▤</span> Reference library</button>
       <button data-view="notes"><span aria-hidden="true">✎</span> My notes</button>
-      <button data-view="journal"><span aria-hidden="true">↻</span> My journey</button>
+      <button data-view="journal"><span aria-hidden="true">↻</span> Progress & backups</button>
       <button data-view="milestones"><span aria-hidden="true">✧</span> Milestones</button>
     </nav>
     <div class="sidebar-bottom"><div class="local-dot">Saved on this device</div><p>Your pace. Your discoveries.</p><span class="version">PRACTICAL AI LEARNING</span></div>
@@ -31,6 +32,7 @@
     <main id="main" tabindex="-1"><p>Opening your learning space…</p></main>
     <footer>Built for doing, understanding, and coming back. <span>Independent learning project.</span></footer>
   </div>
+  <div id="notice" class="notice" role="status"></div>
   <div id="announcement" class="sr-only" aria-live="polite"></div>
 </body>
 </html>

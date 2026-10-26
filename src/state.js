@@ -49,7 +49,7 @@
     const chapters = {};
     for (const chapter of course.chapters) chapters[chapter.id] = normalizeChapter(source.chapters?.[chapter.id], chapter);
     return { version: 1, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", exercise, checks, quiz, bookmarked: source.bookmarked === true, lessonSeen: source.lessonSeen === true, context: normalizeContext(source.context), chapters,
-      resume: normalizeResume(source.resume), records: normalizeRecords(source.records), followUps: normalizeRecords(source.followUps, course.followUps.map(item => item.id)) };
+      resume: normalizeResume(source.resume || {view:"chapter",chapter:"orientation",tab:"learn"}), records: normalizeRecords(source.records), followUps: normalizeRecords(source.followUps, course.followUps.map(item => item.id)) };
   }
   function solved(state, question) { return state.quiz[question.id].includes(question.correct); }
   function summary(state) {
@@ -59,9 +59,13 @@
     return { correct, complete, started, percent: Math.round(((state.exercise === "practiced" ? 1 : 0) + correct) / (content.questions.length + 1) * 100) };
   }
   function nextAction(state) {
-    if (summary(state).complete) return "Revisit your notes or explore the reference library.";
-    if (state.exercise !== "practiced") return "Try the note exercise and inspect the actual result.";
-    return "Finish your knowledge check.";
+    const ids=course.order || ["foundation","context",...course.chapters.map(ch=>ch.id)];
+    for(const id of ids){
+      const ch=course.chapters.find(ch=>ch.id===id);
+      const info=id==="foundation"?summary(state):id==="context"?contextSummary(state):chapterSummary(state,ch);
+      if(!info.complete)return `Next unfinished topic: ${id==="foundation"?"Models, tools & skills":id==="context"?"Files, context & continuity":ch.title}. Try its practice, inspect the result, then check your understanding.`;
+    }
+    return "Revisit your field guide or choose an optional exploration.";
   }
   function contextSummary(state) {
     const value = normalizeContext(state.context);
