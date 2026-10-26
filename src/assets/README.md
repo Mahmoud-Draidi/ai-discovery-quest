@@ -1,9 +1,9 @@
 # Simple app icon
 
-`quest-logo.png` is the user-requested pale-blue atom-style icon on a transparent background, replacing the earlier book-and-compass artwork. It is used by the sidebar, welcome screen and desktop windows.
+`quest-logo.png` is a pale-blue orbital mark with two open, asymmetric curves and no center or satellite dots. It has a transparent background and is used by the sidebar, welcome screen and desktop windows.
 
-Edited with the built-in Imagegen tool on 26 October 2026 from the tiny icon screenshot supplied by the project owner. The saved PNG has an RGBA alpha range of 0–255.
+Simplified with the built-in Imagegen tool on 26 October 2026 from the previously isolated atom-style reference. The saved PNG has an RGBA alpha range of 0–255.
 
 Final edit prompt:
 
-> Edit target: the attached tiny app-icon screenshot. Remove the entire dark gray square background and all edge shadows. Preserve the simple pale blue atom/orbit-like symbol with its small central negative space and fine circular orbital loops, matching the reference shape and proportions. Reconstruct clean antialiased edges suitable for a small desktop app icon because the reference is tiny. Single flat pale blue (#a8c9dc) symbol only, centered, modest 10 percent padding, genuine transparent alpha background. No book, no compass, no text, no badge, no enclosing square or circular disk, no gradients, no glow, no shadow, no added decoration. This should look like the same small atom-style icon from the screenshot, simply clean and isolated.
+> Simplify the attached app logo substantially. Keep the pale ice-blue flat stroke color and a genuinely transparent background. Remove the central dot completely; the center must be empty. Remove all satellite dots too. Replace the three complete symmetric orbital ellipses with exactly TWO sparse open curved strokes of different lengths and different angles, loosely suggesting the original orbital motion. Deliberately asymmetric curves: one longer sweeping arc and one shorter off-center arc. Neither should be a closed ellipse. No rotational or mirror symmetry, no dense crossings, no circular enclosing border. Clean consistent line thickness, softly rounded stroke ends, generous empty space, legible at 24 pixels. No text, no gradients, no shading, no glow, no square background, no texture. A very simple restrained desktop app symbol; retain an orbital/scientific feel without looking like a standard symmetric atom or React logo. Center the overall visual weight in a square with modest 12 percent transparent padding.
