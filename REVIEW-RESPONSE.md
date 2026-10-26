@@ -1,5 +1,9 @@
 # Learner review response
 
+## Files and memory follow-up
+
+The memory lesson now provides the scope comparison it previously asked learners to create unaided, with a direct practice-to-table link and official references. Both continuity lessons show expected results and recovery guidance. A copyable fictional handoff supplies all its own inputs, while the personal progress prompt waits for confirmation of actual actions. Context-quiz retries explain each mistaken assumption directly. These additions preserve existing exercise and accepted-answer IDs without awarding new completion credit.
+
 ## Follow-up learner-flow improvements
 
 The setup practice now supplies a concrete screen-inventory example and a direct control-map link. Curated chapters and the context chapter let learners navigate between steps without recording false completion. Each step can retain its own skipped/deferred status across reloads; checking actual work clears that status. The final practice gate still requires every check.

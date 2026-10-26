@@ -1,5 +1,11 @@
 # Chapter sources and evidence
 
+## Context and memory teaching aids — 26 October 2026
+
+Rechecked [Projects and chats](https://learn.chatgpt.com/docs/projects) and [Memories](https://learn.chatgpt.com/docs/customization/memories) for the scope comparison. The table distinguishes supplied chat context, project guidance, local files, explicit progress, ChatGPT memory and host-local Codex memories. It asks learners to inspect their own controls and does not infer account isolation or full-transcript transfer from a successful recap.
+
+Expected-result and recovery panels are teaching examples, not claims that external AI exercises were run. The fictional handoff is explicitly separate from the learner's actual history. The progress-writing prompt now waits for the learner to report actual actions before drafting completion claims. Existing lesson/quiz IDs, accepted answers and saved progress remain unchanged.
+
 ## Chapter 2: Files, context, and continuity
 
 Based on actual learning activities: locating and attaching the first note, checking its tool example, saving teaching preferences in project instructions, and asking a new project chat to resume from records. The resume exercise exposed a stale checkpoint that needed correction. This demonstrates useful file-based continuity, not inheritance of an entire transcript or automatic memory.
