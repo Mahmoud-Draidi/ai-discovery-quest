@@ -1,18 +1,32 @@
 (function (root) {
   const content = typeof module !== "undefined" ? require("./content.js") : root.QuestContent;
   const course = typeof module !== "undefined" ? require("./course.js") : root.QuestCourse;
+  const learningMap = typeof module !== "undefined" ? require("./learning-map.js") : root.QuestLearningMap;
+  const minis = typeof module !== "undefined" ? require("./mini-lessons.js") : root.QuestMiniLessons;
+  const workflows = typeof module !== "undefined" ? require("./workflow-labs.js") : root.QuestWorkflows;
+  const tutorials = typeof module !== "undefined" ? require("./feature-tutorials.js") : root.QuestFeatureTutorials;
   const chapterIds = ["foundation", "context", ...course.chapters.map(ch => ch.id)];
   function normalizeResume(raw = {}) {
-    const view = ["lesson", "context", "chapter", "journal"].includes(raw?.view) ? raw.view : "lesson";
-    const chapter = course.chapters.some(ch => ch.id === raw?.chapter) ? raw.chapter : course.chapters[0].id;
+    const view = ["lesson", "context", "chapter", "journal", "mini", "feature"].includes(raw?.view) ? raw.view : "lesson";
+    const chapter = view==="mini"&&minis.get(raw?.mini)?minis.get(raw.mini).chapter:course.chapters.some(ch => ch.id === raw?.chapter) ? raw.chapter : course.chapters[0].id;
     const tab = ["learn", "practice", "quiz", "notes", "reference"].includes(raw?.tab) ? raw.tab : "learn";
-    return { view, chapter, tab };
+    return { view:view==="mini"&&!minis.get(raw?.mini)?"lesson":view, chapter, tab, mini:minis.get(raw?.mini)?.id||"", feature:view==="feature"?(tutorials.get(raw?.feature)?.id||"scheduled"):"" };
   }
   function normalizeRecords(raw = {}, ids = chapterIds) {
     return Object.fromEntries(ids.map(id => {
       const value = raw?.[id];
       return [id, { status: ["not-recorded", "practiced", "explained", "skipped", "deferred"].includes(value?.status) ? value.status : "not-recorded", note: typeof value?.note === "string" ? value.note.slice(0, 5000) : "" }];
     }));
+  }
+  function normalizeStepNotes(source,valid,checks,status) {
+    const availability=source.stepAvailability && typeof source.stepAvailability==='object' && !Array.isArray(source.stepAvailability)?source.stepAvailability:{};
+    const evidence=source.stepEvidence && typeof source.stepEvidence==='object' && !Array.isArray(source.stepEvidence)?source.stepEvidence:{};
+    const reasons=source.stepReasons && typeof source.stepReasons==='object' && !Array.isArray(source.stepReasons)?source.stepReasons:{};
+    return {
+      stepAvailability:Object.fromEntries(valid.filter(n=>['available','needs-setup','unavailable'].includes(availability[n])||(!checks.includes(n)&&reasons[n]==='unavailable'&&source.stepAvailability===undefined)).map(n=>[n,availability[n]||'unavailable'])),
+      stepReasons:Object.fromEntries(valid.filter(n=>!checks.includes(n)&&['deferred','skipped'].includes(status[n])&&['unavailable','preparation','help','later'].includes(reasons[n])).map(n=>[n,reasons[n]])),
+      stepEvidence:Object.fromEntries(valid.filter(n=>typeof evidence[n]==='string').map(n=>[n,evidence[n].slice(0,1000)]))
+    };
   }
   function normalizeChapter(raw, chapter) {
     const source = raw && typeof raw === "object" ? raw : {};
@@ -23,7 +37,7 @@
     for (const q of chapter.questions) quiz[q.id] = Array.isArray(source.quiz?.[q.id]) ? source.quiz[q.id].filter(a => Number.isInteger(a) && a >= 0 && a < q.choices.length).slice(-100) : [];
     let exercise = ["not-started", "practiced", "skipped", "deferred"].includes(source.exercise) ? source.exercise : "not-started";
     if (exercise === "practiced" && checks.length !== chapter.steps.length) exercise = "not-started";
-    return { notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise,
+    return { ...normalizeStepNotes(source,validChecks,checks,stepStatus), notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise,
       step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, chapter.steps.length - 1)) : 0,
       bookmarked: source.bookmarked === true, seen: source.seen === true };
   }
@@ -35,7 +49,7 @@
     for (const q of content.context.questions) quiz[q.id] = Array.isArray(source.quiz?.[q.id]) ? source.quiz[q.id].filter(a => Number.isInteger(a) && a >= 0 && a < 3).slice(-100) : [];
     let exercise = ["not-started", "practiced", "skipped", "deferred"].includes(source.exercise) ? source.exercise : "not-started";
     if (exercise === "practiced" && checks.length !== content.context.steps.length) exercise = "not-started";
-    return { bookmarked:source.bookmarked === true, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, content.context.steps.length - 1)) : 0 };
+    return { ...normalizeStepNotes(source,content.context.steps.map((_,i)=>i+1),checks,stepStatus), bookmarked:source.bookmarked === true, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", checks, stepStatus, quiz, exercise, step: Number.isInteger(source.step) ? Math.max(0, Math.min(source.step, content.context.steps.length - 1)) : 0 };
   }
   function normalize(raw = {}) {
     const source = raw && typeof raw === "object" ? raw : {};
@@ -51,9 +65,21 @@
     const chapters = {};
     for (const chapter of course.chapters) chapters[chapter.id] = normalizeChapter(source.chapters?.[chapter.id], chapter);
     const name=typeof source.profile?.name==="string"?source.profile.name.replace(/[\u0000-\u001f\u007f]/g,"").trim().slice(0,60):"";
-    const result = { version: 1, step:Number.isInteger(source.step)?Math.max(0,Math.min(2,source.step)):0,
+    const result = { ...normalizeStepNotes(source,[1,2,3],checks,Object.fromEntries([1,2,3].map(n=>[n,source.stepStatus?.[n]]))), version: 1, setup:learningMap.normalizeSetup(source.setup), step:Number.isInteger(source.step)?Math.max(0,Math.min(2,source.step)):0,
       stepStatus:Object.fromEntries([1,2,3].filter(n=>!checks.includes(n)&&['skipped','deferred'].includes(source.stepStatus?.[n])).map(n=>[n,source.stepStatus[n]])), profile:{name,setupComplete:source.profile?.setupComplete===true || !!name}, ui:{sidebarCollapsed:source.ui?.sidebarCollapsed===true}, notes: typeof source.notes === "string" ? source.notes.slice(0, 20000) : "", exercise, checks, quiz, bookmarked: source.bookmarked === true, lessonSeen: source.lessonSeen === true, context: normalizeContext(source.context), chapters,
       resume: normalizeResume(source.resume || {view:"chapter",chapter:"orientation",tab:"learn"}), records: normalizeRecords(source.records), followUps: normalizeRecords(source.followUps, course.followUps.map(item => item.id)) };
+    result.preparation=Object.fromEntries(chapterIds.filter(id=>source.preparation?.[id]===true).map(id=>[id,true]));
+    result.questionPanels=Object.fromEntries(chapterIds.map(id=>{
+      const entries=id==='foundation'?content.library:id==='context'?content.context.library:course.chapters.find(ch=>ch.id===id).library;
+      const valid=new Set(entries.map(item=>item.title));
+      return [id,[...new Set((Array.isArray(source.questionPanels?.[id])?source.questionPanels[id]:[]).filter(title=>valid.has(title)))]];
+    }));
+    result.miniLessons=minis.normalizeRecords(source.miniLessons);
+    result.miniFallbacks=[...new Set((Array.isArray(source.miniFallbacks)?source.miniFallbacks:[]).filter(id=>minis.get(id)&&!minis.get(id).optional))];
+    result.featureTutorials=tutorials.normalize(source.featureTutorials);
+    result.workflowSteps=workflows.normalizeSteps(source.workflowSteps);
+    result.workflowChoices=workflows.normalizeChoices(source.workflowChoices,[...minis.mapped.map(item=>`${item.chapter}:${item.index}`),...minis.items.map(item=>`mini:${item.id}`)]);
+    result.curriculum='chapters-v1+mini-v1';
     result.completionFlow = 1;
     result.completions = Object.fromEntries(["foundation", "context", ...course.chapters.map(ch => ch.id)].map(id => {
       const old = source.completions?.[id];

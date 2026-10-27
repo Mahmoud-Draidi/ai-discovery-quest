@@ -4,7 +4,7 @@
     {
       "id": "orientation",
       "title": "Start here: find your controls",
-      "subtitle": "Chat is a conversational starting point; Work can perform tasks with tools; Codex focuses on development workflows. Labels and capabilities vary by client. Inspect your actual app before following a product-specific exercise.",
+      "subtitle": "Start with two controls and one useful result. No coding or new account settings required.",
       "award": "Ready to Explore",
       "preparation": "An AI account and its web or desktop app. No coding, Git, API key, payment change, or broad permissions are needed. Use an empty folder you own if local file access is available.",
       "sections": [
@@ -27,22 +27,28 @@
       ],
       "steps": [
         {
-          "title": "Inspect your actual screen",
-          "text": "Open the AI app you want to learn, alongside this course. Find its mode selector and model label, usually near the chat controls. If you cannot find a label, write Not found. The Open the control map button returns to the legend on Understand. Example inventory: Product: ChatGPT desktop; Mode: Work; Model: copy the exact label shown. These are example labels, not a claim about your account.",
-          "prompt": "I am learning this AI app. Here is my screen inventory (replace the bracketed text before sending): Product: [app name]; Mode: [visible label or Not found]; Model: [visible label or Not found]. Explain the first label in plain language with one example. Ask one question if information is missing, then wait. Do not claim you can see my screen without an attachment or connected tool.",
-          "check": "I identified the current mode and model from my own screen."
+          "title": "Find your mode and model",
+          "text": "Follow the numbered Windows example. Record the labels you actually see, or use Not found. Copy the ready-filled message into your AI chat.",
+          "prompt": "Explain only the product, mode and model labels I supply. If one is missing, ask one short question instead of guessing. Do not change settings.",
+          "check": "I identified the current mode and model from my own screen.",
+          "expected": "A short explanation of the observed labels, with missing information left unknown.",
+          "recovery": "Maximize the AI app and start a new chat. If controls remain hidden, record Not found and continue with the supplied-text route in Chapter 1."
         },
         {
           "title": "Find a harmless workspace",
-          "text": "In Codex, select or create an empty local practice folder through the project selector. In web Chat, use an upload-capable chat instead. Do not grant access to unrelated files.",
+          "text": "Choose a new empty practice folder only if you already have a file-capable chat. Otherwise use the supplied text in Chapter 1 and save it in Notepad yourself. A folder is a place for your practice files; it is not required for ordinary chat.",
           "prompt": "Before creating anything, tell me whether this chat can read/write files, where work runs, and the active workspace if known. If no workspace is available, explain how I can use a text attachment instead. Do not change files or settings.",
-          "check": "I identified the execution location and a safe file or attachment path for practice."
+          "check": "I identified the execution location and a safe file or attachment path for practice.",
+          "expected": "You know whether you will ask the assistant to save a file or copy the response into Notepad. No access to unrelated folders is needed.",
+          "recovery": "If the assistant cannot write files, use the text-only route. Do not install a runtime or change permissions to finish the first note."
         },
         {
           "title": "Inspect menus and permissions",
-          "text": "Open + or @, then / if your client supports it. Inspect the approval and tool settings without changing them. Save an observation in your AI field guide.",
-          "prompt": "Using only the labels I provide, help me record which control attaches context, which selects a model, and which controls approvals. Identify unavailable controls honestly. Do not install anything or change permissions.",
-          "check": "I located the available controls and recorded an unavailable feature without treating it as a failure."
+          "text": "Open the + button beside the message box, if present, and look for Attach/Add files. Close it without changing permissions. In Chapter 1 you will ask for a short note, inspect it, and request one edit.",
+          "prompt": "Explain this observed control in one short paragraph: I found an Attach/Add files option, or I recorded Not found. How would supplying a note differ from typing its file path? Do not change settings.",
+          "check": "I located the available controls and recorded an unavailable feature without treating it as a failure.",
+          "expected": "An explanation that attaching a note supplies its contents, while a local path alone does not. An unavailable control can be recorded honestly.",
+          "recovery": "If + or Attach is missing, use a plain text message. The complete optional control map is in Questions & sources, not a prerequisite for your first task."
         }
       ],
       "questions": [
@@ -129,31 +135,7 @@
       "reviewedOn": "2026-10-26",
       "number": 0,
       "prerequisites": [],
-      "projectTask": "Create a control inventory and choose the private practice location for your AI field guide.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Compare this task with Claude Code’s codebase and tool workflow; use only capabilities available in your installed surface.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Compare the same outcome in Copilot Chat or its repository agent/review workflow. Access depends on the feature and plan.",
-          "sources": [
-            "copilotOverview"
-          ]
-        },
-        {
-          "title": "Different starting surfaces",
-          "text": "Claude chat and Claude Code have different workflows; Copilot offers chat and repository agent surfaces. Find tools and context before comparing labels.",
-          "sources": [
-            "claudeOverview",
-            "copilotRepo"
-          ]
-        }
-      ]
+      "projectTask": "Create a control inventory and choose the private practice location for your AI field guide."
     },
     {
       "id": "memory",
@@ -288,22 +270,6 @@
         "context"
       ],
       "projectTask": "Add a scope table to the field guide: chat context, project instructions, progress record, and optional automatic memory.",
-      "otherTools": [
-        {
-          "title": "Claude Code · CLAUDE.md and auto memory",
-          "text": "Compare written project instructions with automatic recall. They have different purposes and scopes.",
-          "sources": [
-            "claudeMemory"
-          ]
-        },
-        {
-          "title": "Copilot · repository instructions",
-          "text": "Repository instruction files provide project guidance; do not treat this as automatic cross-account memory.",
-          "sources": [
-            "copilotRepo"
-          ]
-        }
-      ],
       "scopeGuide": {
         "caption": "What carries forward? Check the source and its scope.",
         "columns": [
@@ -506,30 +472,7 @@
       "prerequisites": [
         "orientation"
       ],
-      "projectTask": "Add a checked public-destination map and a visual to your field guide; record interface and hosted-access limits separately.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Compare this task with Claude Code’s codebase and tool workflow; use only capabilities available in your installed surface.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Compare the same outcome in Copilot Chat or its repository agent/review workflow. Access depends on the feature and plan.",
-          "sources": [
-            "copilotOverview"
-          ]
-        },
-        {
-          "title": "Claude · Artifacts",
-          "text": "Artifacts provide editable outputs alongside the conversation. Compare an actual exported or interactive result; the name does not make every file or tool capability identical.",
-          "sources": [
-            "claudeArtifacts"
-          ]
-        }
-      ]
+      "projectTask": "Add a checked public-destination map and a visual to your field guide; record interface and hosted-access limits separately."
     },
     {
       "number": 5,
@@ -678,23 +621,7 @@
         "foundation"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Use your field-guide goal to practice an outcome, a success check, and one targeted correction before implementation.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Use the same outcome and success checks in a Claude Code task. Compare the proposed plan before authorizing edits.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Use Copilot Chat to clarify a repository task before delegating implementation. Compare requirements and observed results.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Use your field-guide goal to practice an outcome, a success check, and one targeted correction before implementation."
     },
     {
       "number": 6,
@@ -828,23 +755,7 @@
         "prompting"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Save RESEARCH-NOTES.md in the field guide, including the claim, supporting passage, source URL, and date.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Ask for a source-grounded answer using the web tools actually available in the selected Claude surface. Inspect the passage yourself.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Copilot can explain repository context; an answer about a live product still needs a current primary source. Do not infer web access from the product name.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Save RESEARCH-NOTES.md in the field guide, including the claim, supporting passage, source URL, and date."
     },
     {
       "number": 7,
@@ -1005,30 +916,7 @@
         "research"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Create a shareable learning recap from fictional practice notes, inspect the rendered files and links, and keep the checked result.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "For a generated file, inspect its rendered result regardless of which Claude surface created it. Check the available file tools before assigning the task.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "A coding assistant can generate file-producing code, but running that code and inspecting the artifact remain separate checks.",
-          "sources": [
-            "copilotOverview"
-          ]
-        },
-        {
-          "title": "Claude · Artifacts",
-          "text": "Artifacts provide editable outputs alongside the conversation. Compare an actual exported or interactive result; the name does not make every file or tool capability identical.",
-          "sources": [
-            "claudeArtifacts"
-          ]
-        }
-      ]
+      "projectTask": "Create a shareable learning recap from fictional practice notes, inspect the rendered files and links, and keep the checked result."
     },
     {
       "number": 8,
@@ -1178,23 +1066,7 @@
         "orientation"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Use a harmless field-guide sentence to compare snapshot, connected-browser reading, and a supported computer action.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Claude Code documents browser and computer integrations. Inspect the supported surface before assuming an image attachment grants live control.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Copilot context sources depend on its surface. A screenshot or supplied file is not proof of a connected desktop or browser.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Use a harmless field-guide sentence to compare snapshot, connected-browser reading, and a supported computer action."
     },
     {
       "number": 9,
@@ -1343,23 +1215,7 @@
         "context"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Turn the first note into a reusable recap method and test both supplied notes and missing input.",
-      "otherTools": [
-        {
-          "title": "Claude Code · skills, plugins and MCP",
-          "text": "These names also appear in Claude Code. Compare packaging, tool access and permissions for this recap task.",
-          "sources": [
-            "claude"
-          ]
-        },
-        {
-          "title": "Copilot · MCP",
-          "text": "Copilot documents MCP connections to external tools and data. Inspect the surface and authorization instead of assuming an installed server has account access.",
-          "sources": [
-            "copilotMcp"
-          ]
-        }
-      ]
+      "projectTask": "Turn the first note into a reusable recap method and test both supplied notes and missing input."
     },
     {
       "number": 10,
@@ -1534,23 +1390,7 @@
         "prompting"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Plan a small field-guide task, agree its boundary, and inspect implementation. Save the difference between planning and scheduling.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Claude Code documents planning and session controls. Compare a plan-only request and an implemented result, without assuming identical goal or schedule controls.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Copilot repository work can be planned, delegated, reviewed or automated. Inspect which mechanism actually runs later rather than inferring a schedule from a plan.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Plan a small field-guide task, agree its boundary, and inspect implementation. Save the difference between planning and scheduling."
     },
     {
       "number": 11,
@@ -1692,23 +1532,7 @@
         "foundation"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Create learning-tracker.cjs and README.md for a tiny learning tracker. Reuse them in every later repository exercise.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Claude Code can read/edit code and run commands. Apply the same source, execution, diff and Git checks to the tiny tracker.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Copilot chat or repository agents can help implement a tracker change. Verify actual execution and distinguish local edits from pushed commits.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Create learning-tracker.cjs and README.md for a tiny learning tracker. Reuse them in every later repository exercise."
     },
     {
       "number": 12,
@@ -1869,31 +1693,7 @@
         "coding"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Put a reviewed tracker improvement through a practice pull request, including feedback and an explicit maintainer decision.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Compare this task with Claude Code’s codebase and tool workflow; use only capabilities available in your installed surface.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Compare the same outcome in Copilot Chat or its repository agent/review workflow. Access depends on the feature and plan.",
-          "sources": [
-            "copilotOverview"
-          ]
-        },
-        {
-          "title": "Review and agent work",
-          "text": "Copilot on GitHub supports repository review and agent workflows. Compare the same requirements and diff; a new review context can inspect the surrounding project.",
-          "sources": [
-            "claudeOverview",
-            "copilotRepo"
-          ]
-        }
-      ]
+      "projectTask": "Put a reviewed tracker improvement through a practice pull request, including feedback and an explicit maintainer decision."
     },
     {
       "number": 13,
@@ -2037,23 +1837,7 @@
         "github"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Run the same tracker from isolated local and supported cloud source states; compare observed output and file locations.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Claude Code has terminal, IDE, desktop and web surfaces. Inspect the host, path and source state for the particular task.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Copilot repository agent work may run in a cloud environment. Compare source revisions and observed output rather than assuming uncommitted local state was uploaded.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Run the same tracker from isolated local and supported cloud source states; compare observed output and file locations."
     },
     {
       "number": 14,
@@ -2203,23 +1987,7 @@
         "environments"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Ask bounded agents to explain the tracker and check its README; inspect and combine their findings before edits.",
-      "otherTools": [
-        {
-          "title": "Claude Code · subagents",
-          "text": "Compare a focused delegated task and the coordinating session. Inspect model, tools, permissions and result handling.",
-          "sources": [
-            "claudeSubagents"
-          ]
-        },
-        {
-          "title": "Copilot · repository agents",
-          "text": "A repository agent workflow is another way to delegate work. It does not automatically match a local parent/subagent lifecycle.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Ask bounded agents to explain the tracker and check its README; inspect and combine their findings before edits."
     },
     {
       "number": 15,
@@ -2260,10 +2028,10 @@
           "check": "I distinguished the manual test from evidence of the actual lifecycle event."
         },
         {
-          "title": "Disable the demo and compare a portable task",
-          "text": "Do not leave an unwanted hook active. No competitor purchase or install is required for the conceptual comparison.",
-          "prompt": "Help me disable only this demo hook through supported controls and verify its saved state. Then compare how a read-only tracker/README review could be requested in Codex, Claude Code, and Copilot. Identify required context, tools, and related instruction-file names. Use official sources; distinguish explanation from an actual run. Do not install competitors or send files elsewhere.",
-          "check": "I confirmed the demo was disabled and recorded which comparison was conceptual rather than executed."
+          "title": "Disable the demo hook",
+          "text": "Do not leave an unwanted demonstration running. Identify the exact demo entry and preserve unrelated hooks.",
+          "prompt": "Help me disable only this demo hook through supported controls and verify its saved state. Preserve unrelated hooks. Do not install anything or send files to another service.",
+          "check": "I confirmed the demo hook was disabled and unrelated hooks remained intact."
         }
       ],
       "questions": [
@@ -2364,24 +2132,7 @@
         "coding"
       ],
       "reviewedOn": "2026-10-26",
-      "projectTask": "Add a bounded syntax-check hook for the practice tracker, verify an automatic event, then disable the demonstration.",
-      "otherTools": [
-        {
-          "title": "Claude Code · hooks and rewind",
-          "text": "Hooks react to lifecycle events; checkpointing/rewind manages session recovery. Neither replaces a Git history or review.",
-          "sources": [
-            "claudeHooks",
-            "rewind"
-          ]
-        },
-        {
-          "title": "Copilot · issue and PR workflows",
-          "text": "Copilot supports repository agent and review workflows. Inspect the current issue/task entry point and plan access before trying it.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Add a bounded syntax-check hook for the practice tracker, verify an automatic event, then disable the demonstration."
     },
     {
       "id": "capstone",
@@ -2521,23 +2272,7 @@
         "delegation",
         "automation"
       ],
-      "projectTask": "Extend the existing tracker through plan, isolated implementation, delegated review, a PR, and an inspected recurring check.",
-      "otherTools": [
-        {
-          "title": "Claude Code",
-          "text": "Use the same acceptance checks for a Claude Code implementation and delegated review where available. A comparison is not completed practice until you inspect its result.",
-          "sources": [
-            "claudeOverview"
-          ]
-        },
-        {
-          "title": "GitHub Copilot",
-          "text": "Use a practice repository to compare Copilot agent and review workflows. Keep the maintainer decision and scheduled-run evidence explicit.",
-          "sources": [
-            "copilotOverview"
-          ]
-        }
-      ]
+      "projectTask": "Extend the existing tracker through plan, isolated implementation, delegated review, a PR, and an inspected recurring check."
     }
   ],
   "sources": {
@@ -2773,6 +2508,39 @@
     "capstone"
   ]
 };
+  Object.assign(course.sources, {
+    quickstart:['OpenAI · App quickstart','https://learn.chatgpt.com/docs/quickstart'],
+    models:['OpenAI · Models and reasoning','https://learn.chatgpt.com/docs/models'],
+    imageGeneration:['OpenAI · Image generation and editing','https://learn.chatgpt.com/docs/image-generation'],
+    webSearch:['OpenAI · Web search','https://learn.chatgpt.com/docs/web-search'],
+    imageInputs:['OpenAI · Image inputs','https://learn.chatgpt.com/docs/image-inputs'],
+    approvals:['OpenAI · Agent approvals and security','https://learn.chatgpt.com/docs/agent-approvals-security'],
+    notifications:['OpenAI · Notifications','https://learn.chatgpt.com/docs/notifications'],
+    fileViewer:['OpenAI · File previews, revisions and exports','https://learn.chatgpt.com/docs/artifacts-viewer'],
+    visualizations:['OpenAI · Interactive visualizations','https://learn.chatgpt.com/docs/visualizations'],
+    siteCreation:['OpenAI · Create and preview a Site','https://learn.chatgpt.com/docs/sites/creating-a-site'],
+    pluginDirectory:['OpenAI · Install and manage plugins','https://learn.chatgpt.com/docs/plugins'],
+    skillAuthoring:['OpenAI · Build skills','https://learn.chatgpt.com/docs/build-skills'],
+    mcpSetup:['OpenAI · Configure MCP servers','https://learn.chatgpt.com/docs/extend/mcp'],
+    docsMcp:['OpenAI · Public documentation MCP','https://developers.openai.com/learn/docs-mcp'],
+    gptMigration:['OpenAI · GPT workflows and migration','https://learn.chatgpt.com/docs/migrate-custom-gpts'],
+    sitePublishing:['OpenAI · Publish and share a Site','https://learn.chatgpt.com/docs/sites/publishing-and-sharing'],
+    siteManagement:['OpenAI · Manage a Site','https://learn.chatgpt.com/docs/sites/managing-a-site'],
+    browserExtension:['OpenAI · Connected browser extension','https://learn.chatgpt.com/docs/chrome-extension'],
+    computerUse:['OpenAI · Computer Use','https://learn.chatgpt.com/docs/computer-use'],
+    dotComputer:['OpenAI · Cloud computer and private sign-in','https://learn.chatgpt.com/docs/dots/computers-and-apps'],
+    remoteConnections:['OpenAI · Remote connections','https://learn.chatgpt.com/docs/remote-connections'],
+    microHardware:['OpenAI · Codex Micro hardware','https://learn.chatgpt.com/docs/features/codex-micro'],
+    githubCreatePr:['GitHub · Create a pull request','https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request'],
+    appWorktrees:['OpenAI · Worktrees in the app','https://learn.chatgpt.com/docs/environments/git-worktrees'],
+    cloudEnvironments:['OpenAI · Cloud environments','https://learn.chatgpt.com/docs/environments/cloud-environments'],
+    mcpEvents:['OpenAI · MCP event subscriptions','https://developers.openai.com/plugins/build/mcp-events'],
+    dotsGuide:['OpenAI · Meet dots','https://learn.chatgpt.com/docs/dots'],
+    dotSetup:['OpenAI · Set up your dot','https://learn.chatgpt.com/docs/dots/getting-started'],
+    dotControls:['OpenAI · Control your dot','https://learn.chatgpt.com/docs/dots/controls'],
+    spacePages:['OpenAI · Work with Space pages','https://learn.chatgpt.com/docs/space/pages'],
+    spaceGuide:['OpenAI · ChatGPT Space','https://learn.chatgpt.com/docs/space']
+  });
   if (typeof module !== "undefined") module.exports = course;
   else root.QuestCourse = course;
 })(typeof window !== "undefined" ? window : globalThis);

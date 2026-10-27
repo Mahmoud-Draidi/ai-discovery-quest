@@ -2,12 +2,14 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
+const { sourceSnapshot } = require("./release-preflight.cjs");
 
 async function build() {
   if (process.platform !== "win32" || process.arch !== "x64") throw new Error("This build targets Windows x64. Run it on Windows x64.");
   const root = path.resolve(__dirname, "..");
   const pkg = JSON.parse(await fs.readFile(path.join(root, "package.json"), "utf8"));
   if (!/^\d+\.\d+\.\d+$/.test(pkg.version)) throw new Error("Expected a simple numeric app version.");
+  const source = sourceSnapshot(root);
   const base = `AI-Discovery-Quest-${pkg.version}-windows-x64`;
   const dist = path.join(root, "dist");
   const output = path.join(dist, base);
@@ -24,17 +26,19 @@ async function build() {
   const app = path.join(output, "resources", "app");
   await fs.mkdir(app, { recursive: true });
   // Only the runtime source and public app license enter this payload.
-  await fs.cp(path.join(root, "src"), path.join(app, "src"), { recursive: true });
+  for (const relative of source.sourceFiles) {
+    const input=path.join(root,relative),target=path.join(app,relative);
+    if (!(await fs.lstat(input)).isFile()) throw new Error("Runtime payload must contain ordinary tracked files: "+relative);
+    await fs.mkdir(path.dirname(target),{recursive:true});
+    await fs.copyFile(input,target);
+  }
   await fs.copyFile(path.join(root, "LICENSE"), path.join(app, "LICENSE"));
   await fs.copyFile(path.join(root, "LICENSE"), path.join(output, "APP-LICENSE.txt"));
   const runtimePackage = { name: pkg.name, version: pkg.version, main: pkg.main, description: pkg.description, license: pkg.license };
   await fs.writeFile(path.join(app, "package.json"), JSON.stringify(runtimePackage, null, 2));
-  const commit = spawnSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" });
-  const dirty = spawnSync("git", ["status", "--porcelain"], { cwd: root, encoding: "utf8" });
-  if (commit.status !== 0 || dirty.status !== 0) throw new Error("Cannot read the source revision.");
   await fs.writeFile(path.join(output, "BUILD-INFO.json"), JSON.stringify({
     name: pkg.name, version: pkg.version, platform: "win32", arch: "x64",
-    sourceCommit: commit.stdout.trim(), sourceDirty: !!dirty.stdout.trim(),
+    sourceCommit: source.sourceCommit, sourceDirty: source.sourceDirty,
     electron: JSON.parse(await fs.readFile(path.join(root, "node_modules", "electron", "package.json"), "utf8")).version,
     builtAt: new Date().toISOString()
   }, null, 2));
@@ -56,6 +60,8 @@ async function build() {
     "APP-LICENSE.txt covers this app. LICENSE and LICENSES.chromium.html retain runtime notices.",
     "This is not an installer and does not update automatically.", ""
   ].join("\r\n"));
+  const finalSource=sourceSnapshot(root);
+  if(finalSource.sourceCommit!==source.sourceCommit||JSON.stringify(finalSource.sourceFiles)!==JSON.stringify(source.sourceFiles))throw new Error("Source changed while packaging. No ZIP was created.");
   console.log("Creating the downloadable ZIP…");
   const psQuote = text => "'" + text.replace(/'/g, "''") + "'";
   const zipPath = path.join(dist, base + ".zip");

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="370" viewBox="0 0 920 370" role="img" aria-labelledby="title desc">
+<title id="title">Find three controls in an illustrated ChatGPT Windows layout</title>
+<desc id="desc">This is an example, not a screenshot. One: the ChatGPT product selector near the top. Two: Chat and Work near the message composer. Three: the current model label beside them. Your app may place them differently.</desc>
+<rect width="920" height="370" rx="18" fill="#171717"/>
+<rect x="20" y="20" width="560" height="330" rx="12" fill="#212121" stroke="#555"/>
+<g font-family="Segoe UI, sans-serif" fill="#ececec">
+<text x="42" y="49" font-size="13" fill="#b4b4b4">ILLUSTRATED EXAMPLE · NOT A SCREENSHOT</text>
+<rect x="43" y="67" width="150" height="36" rx="8" fill="#303030" stroke="#99c6df"/><text x="57" y="90" font-size="17">ChatGPT ⌄</text>
+<text x="164" y="167" font-size="22">What would you like to try?</text>
+<rect x="42" y="208" width="516" height="114" rx="14" fill="#303030"/>
+<rect x="58" y="222" width="132" height="33" rx="7" fill="#212121" stroke="#99c6df"/><text x="72" y="245" font-size="16">Chat   Work</text>
+<rect x="218" y="222" width="225" height="33" rx="7" fill="#212121" stroke="#99c6df"/><text x="230" y="245" font-size="15">Current model label ⌄</text>
+<text x="63" y="291" font-size="15" fill="#b4b4b4">Type your message here…</text>
+<g fill="none" stroke="#99c6df" stroke-width="2"><path d="M193 85H604V80H630"/><path d="M124 222V201H590V175H630"/><path d="M443 238H604V270H630"/></g>
+<g fill="#99c6df"><circle cx="647" cy="80" r="17"/><circle cx="647" cy="175" r="17"/><circle cx="647" cy="270" r="17"/></g>
+<g fill="#171717" font-size="16" text-anchor="middle"><text x="647" y="86">1</text><text x="647" y="181">2</text><text x="647" y="276">3</text></g>
+<text x="677" y="78" font-size="18">Product selector</text><text x="677" y="101" font-size="13" fill="#b4b4b4">ChatGPT or Codex</text>
+<text x="677" y="173" font-size="18">Workflow</text><text x="677" y="196" font-size="13" fill="#b4b4b4">Chat / Work, if shown</text>
+<text x="677" y="268" font-size="18">Model</text><text x="677" y="291" font-size="13" fill="#b4b4b4">Copy your actual label</text>
+</g></svg>

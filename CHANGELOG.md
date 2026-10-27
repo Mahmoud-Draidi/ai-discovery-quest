@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+- Adds six direct practice tutorials: the + menu, fresh-chat handoffs, screenshots, ChatGPT memory, Plan mode and context/account usage. References and the coverage inventory follow the new batch.
+- Adds Goal controls, permissions, notification delivery, Appshots, local folders and separate context/skill picker tutorials. Each includes observed outcomes and feature-specific recovery guidance.
+- Adds editable-document, PDF, spreadsheet, presentation, interactive-visual and saved Site-preview tutorials, with format-specific checks and explicit export or preview verification.
+- Adds tutorials for plugin installation, storage-account connections with source verification, skill creation/revision and a public documentation MCP trial. Separates service-account connections from remote-computer connections in the coverage queue.
+- Drafts the remaining 24 inventoried topics, adds direct preparation links, and corrects Codex Micro as hardware distinct from Mini. Preserves independent records without inferring advanced practice from older progress. No live account trials or release are claimed.
+- Makes the feature-first journey the default, with 64 distinct tutorials and a searchable 64-topic inventory that covers every current entry as a tutorial draft, while keeping live-client validation separate. Adds independent tutorial positions, practice/availability records and notes with cold resume and backup support. Earlier chapters, XP records and notes remain in an explicit archive.
+
+- Begins a feature-first curriculum rewrite after learner feedback rejected the prompt-led approach. Adds a Windows Scheduled walkthrough covering discovery, creation, inspecting a run, editing and pausing without a coding project. Earlier course material is explicitly labeled as awaiting rewrite; prior progress remains separate.
+
+- Simplifies practices around one message to send and a result to check. Removes repeated role instructions, folds preparation/examples away, and uses plain Copy message labels. The first foundations activity has one self-contained request and an optional example answer after the task.
+
+- Keeps missing-control help open while recording absent labels and adds a direct supplied-text practice route. Backup previews now show saved note counts instead of the removed prior-practice form.
+- Separates download instructions from unreleased source in the README and requires clean, committed source for Windows packaging; ignored runtime-folder data is excluded from the payload. Adds a cold-restart, offline-reading and backup round-trip learner-path check.
+
+- Adds eight step-by-step workflow guides with supplied tracker/checker files, handoff contracts, intermediate example results, recovery and cleanup. Guide positions persist without granting completion; a disclosed review defect and non-blocking manual hook helper are locally tested. No external workflow is activated by browsing the guides.
+
+- Adds a lesson-side glossary, an interactive seven-stage Git/GitHub tracker example with beginner recovery requests, and a context-source comparison in the memory chapter. Definitions return to the same reading position; worked examples do not claim external execution or award progress.
+
+- Adds a searchable mini-lesson catalog with independent availability, practical results, fallback-only review and observations. Separates 12 optional capabilities, preserves original chapter checks under stable IDs, and keeps chapter XP and titles unchanged.
+
+- Separates Resume from preparation/availability-aware recommendations, adds an exact-step revisit list with saved reasons, and remembers Common question expansions while retaining the all-open continuation rule. Tool availability and equivalent preparation do not award or erase completion credit.
+
+- Adds task-specific preparation, expected results, common failures and recovery across all 60 chapter exercises, with matching companion guidance, help/unavailable actions and optional locally saved observations.
+
+- Removes the generic In other tools section.
+- Adds a local starting-point setup, an illustrated Windows control walkthrough with saved observations and missing-control help, and concrete first-note result/edit/recovery examples.
+- Moves the complete control map to optional reference, makes lesson headers compact, and adds app/revision information and an honest feature coverage page with reachable optional practice prompts.
+
 ## 0.3.0 — 26 October 2026
 
 - Simplifies practice to one Done action per exercise, with Undo, saved counters, and automatic practice completion after all exercises are done.

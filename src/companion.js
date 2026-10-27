@@ -1,7 +1,7 @@
 let current;
 function show(data){
   current=data;
-  for(const key of ["title","text","prompt"])document.getElementById(key).textContent=data[key]||"";
+  for(const key of ["title","text","prompt","materials","sample","expected","failure","recovery"])document.getElementById(key).textContent=data[key]||"";
   document.getElementById("check-label").textContent=data.check||"Use the main window to continue.";
   document.getElementById("check").checked=data.checked===true;
   document.getElementById("check").disabled=data.readOnly===true;

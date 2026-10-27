@@ -5,11 +5,11 @@
 
 /* Readable labels, predictable keyboard tabs, and compact practice support. */
 .tabs{flex-wrap:wrap;gap:16px}.tabs button{min-height:44px}.hero-actions,.chapter-links{flex-wrap:wrap}
-.roadmap-card{align-items:flex-start}.roadmap-card h3{font-size:17px;margin:12px 0}.roadmap-card p{font-size:14px}.prerequisite{font-size:14px;color:var(--muted);margin:14px 0}.other-tools,.next-chapter{margin-top:24px}.other-tools h3{margin-top:22px}
+.roadmap-card{align-items:flex-start}.roadmap-card h3{font-size:17px;margin:12px 0}.roadmap-card p{font-size:14px}.prerequisite{font-size:14px;color:var(--muted);margin:14px 0}.next-chapter{margin-top:24px}
 .control-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.control-map article{border:1px solid var(--border);border-radius:10px;padding:18px}.control-map h3{margin-top:14px}
 .notice{position:fixed;bottom:22px;right:22px;max-width:min(480px,90vw);background:var(--notice-bg);color:var(--text);border:1px solid var(--accent);padding:14px 20px;border-radius:10px;z-index:10}.notice:empty{display:none}
 .milestone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}.milestone-grid>.page-intro{grid-column:1/-1}.milestone-grid .award{margin:0;max-width:none;padding:24px}.milestone-grid .award h2{font-size:26px}.milestone-grid .award-symbol{font-size:60px}
-select{font:inherit;max-width:100%;padding:12px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px}.prior-experience{margin-top:24px}.prior-experience>summary{cursor:pointer;font-size:18px}.other-tools .text-button{display:inline-block}
+select{font:inherit;max-width:100%;padding:12px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px}.prior-experience{margin-top:24px}.prior-experience>summary{cursor:pointer;font-size:18px}
 .companion main{padding:22px;max-width:none}.companion h1{font-size:27px;margin:20px 0}.companion #text{margin-top:20px}.companion .prompt{font-size:14px}.companion label{display:flex;align-items:flex-start;gap:10px}.companion input{flex-shrink:0}.companion .companion-check{margin:24px 0}
 
 .practice-route { margin: 1rem 0; display: flex; flex-wrap: wrap; gap: .5rem; }
@@ -189,3 +189,139 @@ progress::-moz-progress-bar { background: var(--progress); }
 #notes-chapter-picker::picker(select) { background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; max-height:360px; }
 #notes-chapter-picker option { padding:10px 12px; }
 #notes-chapter-picker option:checked { background:#303030; }
+/* First steps and honest coverage. */
+.setup-form label { display:block; margin:18px 0 7px; }
+.setup-form select,.setup-form input { display:block; width:100%; max-width:640px; padding:12px; border:1px solid var(--border); border-radius:8px; color:var(--text); background:var(--bg); font:inherit; }
+.setup-form .hero-actions { flex-wrap:wrap; }
+.start-banner { margin-bottom:28px; }
+.start-banner h2 { font-size:21px; }
+.control-figure { margin:24px 0; }
+.control-figure img { width:100%; height:auto; border-radius:12px; }
+.control-figure figcaption { color:var(--muted); font-size:12px; margin-top:9px; }
+.walkthrough-actions li,.first-task li { margin:12px 0; }
+.first-task { margin-bottom:24px; }
+.optional-control-map { margin-bottom:24px; }
+.optional-control-map > summary { cursor:pointer; font-weight:600; }
+.optional-control-map .panel { border:0; padding:20px 0 0; }
+.about-course,.coverage-list,.optional-practice { margin-bottom:24px; }
+.coverage-item { padding:22px 0; border-bottom:1px solid var(--border); }
+.coverage-item:last-child { border-bottom:0; }
+.coverage-item h3 { margin-bottom:10px; }
+.coverage-item p { margin:12px 0; }
+.in-lesson .learner-header { padding:12px 20px; }
+.in-lesson .learner-header h2 { font-size:18px; }
+.in-lesson .learner-header .greeting { font-size:13px; margin-bottom:3px; }
+.in-lesson .learner-header progress { margin:9px 0 5px; height:5px; }
+.in-lesson .learner-totals strong { font-size:17px; }
+.in-lesson .content-column > main { padding-top:24px; }
+.exercise-brief { background:#242a2d; border:1px solid #41494d; padding:18px; margin:20px 0; border-radius:12px; }
+.exercise-brief h3 { font-size:16px; margin-bottom:8px; }
+.exercise-brief p,.exercise-brief details { font-size:13px; }
+.exercise-roles { margin-top:14px; border-top:1px solid #41494d; padding-top:12px; }
+.exercise-roles p:last-child { margin-bottom:0; }
+.exercise-observation { margin-top:18px; }
+.exercise-observation summary,.exercise-brief summary { cursor:pointer; }
+.exercise-observation label { display:block; margin:12px 0 8px; color:var(--muted); font-size:12px; }
+.exercise-observation textarea { min-height:90px; padding:12px; }
+.exercise-help h3 { margin:14px 0 6px; font-size:15px; }
+.companion-success { border-left:2px solid var(--progress); margin:18px 0; padding-left:14px; }
+.companion-success h2 { font-size:17px; }
+.next-activity,.revisit-panel { margin-top:24px; }
+.next-activity h2 { margin:16px 0 10px; }
+.revisit-item { padding:16px 0; border-top:1px solid var(--border); }
+.revisit-item summary { cursor:pointer; font-size:14px; }
+.revisit-item p { margin:14px 0; }
+.availability-label { display:block; font-size:13px; margin:12px 0 7px; }
+.exercise-controls select { max-width:100%; }
+.postponed-notice { color:#e3c798; }
+.remaining-work { color:var(--muted); font-size:13px; margin:0 0 20px; }
+.current-task-label { font-size:15px !important; }
+
+/* Independent practice retains the chapter progress and XP hierarchy. */
+.mini-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:24px 0;}
+.mini-card {margin:0;display:flex;flex-direction:column;align-items:flex-start;min-width:0;}
+.mini-card h3 {overflow-wrap:anywhere;}
+.mini-card button {margin-top:auto;}
+.mini-card.chapter-completed,.mini-result.chapter-completed {background:var(--completed-bg,#1c382c);border-color:var(--progress-color,#36c68b);}
+.mini-outcome {color:var(--text);}
+.chapter-completed .mini-outcome {color:#65dca6;}
+.mini-entry,.legacy-minis {margin-top:24px;}
+.mini-fallback {margin:24px 0;}
+#mini-search,#mini-filter,#mini-availability {width:100%;margin:8px 0 20px;}
+#mini-evidence {width:100%;min-height:120px;}
+@media(max-width:720px){.mini-grid{grid-template-columns:1fr;}}
+
+.lesson-tools {display:flex;justify-content:flex-end;margin:0 0 16px;}
+.term-link {display:inline;padding:0;background:none;border:0;border-bottom:1px dotted #87bdd3;border-radius:0;color:inherit;font:inherit;line-height:inherit;cursor:help;}
+.term-link:hover,.term-link:focus-visible {color:#a8d9ee;}
+.glossary-dialog {position:fixed;inset:24px 20px 24px auto;margin:0;width:min(420px,calc(100vw - 40px));max-width:none;max-height:calc(100vh - 48px);height:fit-content;overflow:auto;padding:24px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 60px #0008;}
+.glossary-dialog::backdrop {background:#0005;}
+.glossary-dialog h2 {font-size:22px;}
+#glossary-results {display:flex;flex-wrap:wrap;gap:4px;margin:16px 0;max-height:140px;overflow:auto;}
+#glossary-definition {border-top:1px solid var(--border);padding-top:12px;}
+#glossary-definition p {line-height:1.7;}
+.git-walkthrough,.memory-comparison {margin:20px 0;}
+.git-walkthrough>summary,.memory-comparison>summary {cursor:pointer;font-size:17px;}
+.git-flow {padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:20px 0;}
+.git-flow [aria-current="step"] {border-color:#87bdd3;color:#a8d9ee;}
+.git-flow button {text-align:left;white-space:normal;}
+.git-walkthrough table {width:100%;border-collapse:collapse;text-align:left;}
+.git-walkthrough td,.git-walkthrough th {padding:12px;border-bottom:1px solid var(--border);vertical-align:top;}
+.git-walkthrough caption {text-align:left;margin:16px 0;font-weight:bold;}
+.memory-comparison article {padding:12px 0;border-bottom:1px solid var(--border);}
+@media(max-width:720px){.glossary-dialog{inset:12px 12px auto;width:calc(100vw - 24px);max-height:calc(100vh - 24px);}.git-walkthrough td,.git-walkthrough th{padding:8px;}}
+
+.workflow-lab {margin:20px 0;}
+.workflow-lab>summary {cursor:pointer;font-size:17px;}
+.workflow-lab label {display:block;margin:20px 0 8px;}
+.workflow-lab select {width:100%;}
+.workflow-lab details {margin:20px 0;}
+.workflow-steps {display:flex;flex-wrap:wrap;gap:8px;margin:24px 0;}
+.workflow-steps button {white-space:normal;text-align:left;}
+.workflow-steps [aria-current="step"] {border-color:#87bdd3;color:#a8d9ee;}
+.workflow-stage {border-top:1px solid var(--border);padding:24px 0;}
+.workflow-example {padding:16px;border-left:3px solid #87bdd3;background:var(--bg);margin:20px 0;}
+.workflow-recovery,.workflow-cleanup {border-top:1px solid var(--border);padding:16px 0;}
+.workflow-lab .prompt {overflow-wrap:anywhere;}
+
+/* Keep the action visible; preparation and examples are secondary. */
+.exercise-brief {background:transparent;border:0;padding:0;margin:16px 0;}
+.practice-preparation {border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:12px 0;}
+.practice-preparation>summary,.practice-example>summary {cursor:pointer;}
+.practice-example {margin:18px 0;}
+.practice-example p {font-size:14px;}
+
+#learner-header[hidden] {display:none;}
+.feature-reset {margin-bottom:24px;border-color:#87bdd3;}
+.feature-actions {padding-left:24px;}
+.feature-actions li {line-height:1.8;margin:0 0 18px;padding-left:8px;}
+.tutorial-location {display:flex;justify-content:space-between;gap:16px;margin:24px 0;color:var(--muted);font-size:13px;}
+.tutorial-observe {border-left:3px solid #87bdd3;padding-left:18px;margin:28px 0;}
+.tutorial-example {border:1px solid var(--border);border-radius:12px;padding:20px;margin:24px 0;}
+.tutorial-example label {display:block;margin:16px 0 8px;}
+.tutorial-example input {max-width:100%;padding:10px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;font:inherit;}
+.tutorial-footer {margin-top:20px;}
+.feature-tutorial h2 {margin-top:0;}
+.feature-tutorial details {margin:24px 0;}
+.feature-tutorial details summary {cursor:pointer;}
+
+.feature-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0;}
+.feature-card {margin:0;display:flex;flex-direction:column;align-items:flex-start;min-width:0;}
+.feature-card h3 {margin:18px 0 12px;}
+.feature-card button {margin-top:auto;}
+.feature-area,.earlier-course,.full-feature-map {margin-top:28px;}
+.feature-journey-summary label,.about-course label {display:block;margin:20px 0 8px;}
+#feature-filter {width:100%;}
+.feature-coverage table {width:100%;min-width:700px;border-collapse:collapse;text-align:left;}
+.feature-coverage th,.feature-coverage td {padding:14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.feature-coverage small {display:block;font-size:12px;font-weight:normal;color:var(--muted);margin-top:8px;}
+.feature-coverage caption {text-align:left;padding:18px 0;color:var(--muted);}
+.feature-note {margin:20px 0;}
+.feature-note label {display:block;margin:18px 0 8px;}
+.feature-note textarea {width:100%;min-height:130px;}
+.feature-transfer {margin:24px 0;border-top:1px solid var(--border);padding-top:12px;}
+@media(max-width:720px){.feature-grid{grid-template-columns:1fr;}}
+
+.feature-identity {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px;color:var(--muted);font-size:14px;flex-wrap:wrap;}
+.feature-identity p {margin:0;}
+.feature-identity .feature-name {padding:0;font-size:inherit;color:var(--text);text-decoration:underline;text-underline-offset:4px;}

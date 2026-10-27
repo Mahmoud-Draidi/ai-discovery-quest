@@ -14,7 +14,7 @@ function quizRecap() {
 }
 function chapterFinishPanel(id, activeTab) {
   const info = S.getSummary(state,id), flow = state.completions[id];
-  if (activeTab === "reference") return `<section class="panel finish-panel"><h2>Ready for a quick reflection?</h2><p>Expand every Common question before continuing to My note. Writing a note is optional.</p><p class="muted" id="question-review-status" role="status"></p><button class="primary" data-action="review-references" aria-describedby="question-review-status" disabled>I’ve reviewed this — continue to My note →</button></section>`;
+  if (activeTab === "reference") return `<section class="panel finish-panel"><h2>Ready for a quick reflection?</h2><p>Expand every Common question before continuing to My note. Writing a note is optional. Expanded questions are remembered; all must still be open to continue.</p><p class="muted" id="question-review-status" role="status"></p><button class="primary" data-action="review-references" aria-describedby="question-review-status" disabled>I’ve reviewed this — continue to My note →</button></section>`;
   if (activeTab !== "notes") return "";
   if (info.complete) return `<section class="panel finish-panel"><h2>Chapter completed ✓</h2><p>Your progress and XP are saved. You can revisit or add a note anytime.</p>${button("Back to overview", "home")}</section>`;
   return `<section class="panel finish-panel"><h2>Finish this chapter</h2><p>Your note is optional. ${!info.ready ? "Complete the practical exercise and knowledge check first." : !flow.referencesReviewed || !flow.notesVisited ? "Review Questions & sources, then use its continue button to return here." : "You’re ready. Mark the chapter completed to earn 100 XP."}</p>${!flow.referencesReviewed || !flow.notesVisited ? button("Review Questions & sources →", "review-questions", "secondary") : ""}<button class="primary" data-action="finish-chapter" ${info.ready && flow.referencesReviewed && flow.notesVisited ? "" : "disabled"}>Mark chapter completed ✓</button></section>`;
@@ -83,31 +83,26 @@ function nextChapterLink(id) {
 }
 function prerequisitePanel(id) {
   const ids = recommendedChapters(id);
-  return `<div class="prerequisite"><p>${esc(recommendationText(id))}</p>${ids.length ? `<p class="muted">Suggested preparation. You can explore chapters in any order.</p><div class="chapter-links">${ids.map(id=>chapterButton(id,chapterLabel(id))).join("")}</div>` : ""}</div>`;
-}
-function otherTools(id) {
-  const ch = Course.chapters.find(ch => ch.id === id);
-  const items = ch?.otherTools || (id === "context" ? [
-    {title:"Claude · Projects",text:"Projects organize supplied knowledge and instructions for focused chats. Compare the files you explicitly supplied; do not assume the full transcript of another chat was inherited.",sources:["claudeProjects"]},
-    {title:"Claude Code and Copilot · repository guidance",text:"Compare CLAUDE.md with Copilot repository instructions and AGENTS.md. Inspect the scope the chosen client reads.",sources:["claudeMemory","copilotRepo"]}
-  ] : [
-    {title:"Claude Code · model, tools and skills",text:"Distinguish the reasoning model, action-performing tools, and reusable task guidance in the same way; inspect the installed capabilities.",sources:["claude"]},
-    {title:"Copilot · chat and repository agents",text:"A chat answer, a file edit and a tested repository change provide different evidence even when the product groups them in one workflow.",sources:["copilotOverview"]}
-  ]);
-  return `<aside class="panel other-tools"><h2>In other tools</h2>${items.map(item => `<h3>${esc(item.title)}</h3><p>${esc(item.text)}</p>${courseSources(item.sources)}`).join("")}<p>Comparisons are reference, not a claim that you practiced another product. Extra subscriptions are optional.</p></aside>`;
+  return `<div class="prerequisite"><p>${esc(recommendationText(id))}</p>${ids.length?`<p class="muted">${state.preparation[id]?"You reported equivalent preparation. This does not complete any chapter.":"Recommendations use recorded preparation. You may still explore any chapter."}</p><button class="text-button" data-equivalent-preparation="${esc(id)}">${state.preparation[id]?"Clear equivalent preparation":"I already have equivalent preparation"}</button>`:""}${ids.length ? `<p class="muted">Suggested preparation. You can explore chapters in any order.</p><div class="chapter-links">${ids.map(id=>chapterButton(id,chapterLabel(id))).join("")}</div>` : ""}</div>`;
 }
 function earlyReference(id) {
   const entries = id === "context" ? C.context.library : C.library;
   const ids = id === "context" ? ["projects","memories","files"] : ["plugins","prompting"];
-  return `<section class="chapter-questions"><h2>Common questions</h2>${entries.map(item => `<details class="panel"><summary>${esc(item.title)}</summary><p>${esc(item.text)}</p></details>`).join("")}</section><section class="panel sources"><h2>Official references</h2><p>Content review: ${esc(Course.checkedOn)}. Check the source and your app before relying on a product-specific control.</p>${courseSources(ids)}</section>`;
+  return `<section class="chapter-questions"><h2>Common questions</h2>${entries.map(item => `<details class="panel" data-question-chapter="${id}" data-question-title="${esc(item.title)}" ${state.questionPanels[id].includes(item.title)?"open":""}><summary>${esc(item.title)}</summary><p>${esc(item.text)}</p></details>`).join("")}</section><section class="panel sources"><h2>Official references</h2><p>Content review: ${esc(Course.checkedOn)}. Check the source and your app before relying on a product-specific control.</p>${courseSources(ids)}</section>`;
 }
 function scopeGuide(ch) {
   const guide=ch.scopeGuide;
   if(!guide)return "";
   return `<section class="panel scope-guide"><h2 id="scope-guide-title" tabindex="-1">Context and memory scope</h2><p>Use this comparison to decide what to supply and what to inspect. It does not certify your account settings or promise full conversation transfer.</p><div class="table-scroll" role="region" aria-label="Context and memory scope table" tabindex="0"><table><caption>${esc(guide.caption)}</caption><thead><tr>${guide.columns.map(label=>`<th scope="col">${esc(label)}</th>`).join("")}</tr></thead><tbody>${guide.rows.map(row=>`<tr>${row.map((cell,i)=>i?`<td>${esc(cell)}</td>`:`<th scope="row">${esc(cell)}</th>`).join("")}</tr>`).join("")}</tbody></table></div><p>Product details checked ${esc(ch.reviewedOn || Course.checkedOn)}. Inspect your actual account and host before relying on a setting.</p>${courseSources(["projects","memories"])}</section>`;
 }
+function practiceGuide(id,index){return window.QuestPracticeGuides.get(id,index,state.setup);}
+function exerciseBrief(guide,copyAction='copy-exercise-input'){
+ const preparation=guide.chapter==='foundation'&&guide.index===0?'':`<details class="practice-preparation"><summary>Before you start</summary><p>${esc(guide.materials)}</p>${guide.inputChapter?chapterButton(guide.inputChapter,'Open the earlier lesson →','text-button'):''}${guide.sample&&guide.chapter!=='foundation'?`<details><summary>Need an example to work with?</summary><p>Use this if you do not have your own material for the exercise.</p><pre class="prompt">${esc(guide.sample)}</pre>${button('Copy example',copyAction,'secondary')}</details>`:''}</details>`;
+ return `<section class="exercise-brief"><p class="muted">${esc(guide.minutes)} · setup may take longer</p>${preparation}</section>`;
+}
 function practiceSupport(step, copyKey) {
-  return `${step.expected ? `<aside class="practice-help"><h3>What success looks like</h3><p>${esc(step.expected)}</p></aside>` : ""}${step.recovery ? `<details class="practice-help"><summary>If your result differs</summary><p>${esc(step.recovery)}</p></details>` : ""}${step.starter ? `<details class="practice-help"><summary>${esc(step.starter.title)}</summary><p>${esc(step.starter.text)}</p><pre class="prompt">${esc(step.starter.prompt)}</pre><button class="secondary" data-copy-starter="${esc(copyKey)}">Copy fictional handoff</button></details>` : ""}`;
+ const example=step.chapter==='foundation'&&step.index===0?`<details class="practice-example"><summary>See an example answer</summary><p>Your answer can use different examples. Look for a clear explanation of each role.</p><pre class="prompt">${esc(step.sample)}</pre></details>`:'';
+ return `<aside class="practice-help"><h3>Check the result</h3><p>${esc(step.expected)}</p>${example}</aside><details class="practice-help exercise-help"><summary>Need help?</summary><h3>What might go wrong</h3><p>${esc(step.failure)}</p><h3>Try this</h3><p>${esc(step.recovery)}</p><p>If the feature is missing, choose Unavailable on my account below and try another activity.</p></details>${step.starter ? `<details class="practice-help"><summary>${esc(step.starter.title)}</summary><p>${esc(step.starter.text)}</p><pre class="prompt">${esc(step.starter.prompt)}</pre><button class="secondary" data-copy-starter="${esc(copyKey)}">Copy example handoff</button></details>` : ""}`;
 }
 function controlMap() {
   const controls = [
@@ -134,22 +129,23 @@ function exerciseValue() { return view === 'lesson' ? state : view === 'context'
 function exerciseTotal() { return view === 'lesson' ? 3 : view === 'context' ? C.context.steps.length : currentChapter().steps.length; }
 function exerciseControls(value, total) {
   const done=value.checks.includes(value.step+1), all=value.checks.length===total;
-  return `<div class="exercise-controls"><div class="hero-actions">${done ? `<span class="exercise-done">Done ✓</span>${button('Undo','exercise-undo','text-button')}` : button('Mark exercise done ✓','exercise-done')}</div><p class="exercise-counter" role="status">${value.checks.length} of ${total} exercises done</p><div class="hero-actions">${value.step>0?button('← Previous exercise','exercise-back','secondary'):''}${value.step<total-1?button('Next exercise →','exercise-next',done?'primary':'secondary'):''}${all?button('Continue to knowledge check →',view==='lesson'?'quiz':view==='context'?'context-quiz':'course-quiz'):''}</div><div class="exercise-options">${button('Skip','exercise-skip','text-button')}${button('Revisit later','exercise-defer','text-button')}</div></div>`;
+  return `<div class="exercise-controls"><label class="availability-label" for="exercise-availability">Tool availability for this exercise</label><select id="exercise-availability" data-step-availability="${value.step+1}">${[['unknown','Unknown / not tested'],['available','Available — I checked'],['needs-setup','Needs setup'],['unavailable','Unavailable on my account']].map(([id,label])=>`<option value="${id}" ${(value.stepAvailability[value.step+1]||'unknown')===id?'selected':''}>${label}</option>`).join('')}</select><p class="muted">Availability is your observation, separate from completion. Updating it preserves work already done.</p><div class="hero-actions">${done ? `<span class="exercise-done">Done ✓</span>${button('Undo','exercise-undo','text-button')}` : button('Mark exercise done ✓','exercise-done')}</div><p class="exercise-counter" role="status">${value.checks.length} of ${total} exercises done</p><div class="hero-actions">${value.step>0?button('← Previous exercise','exercise-back','secondary'):''}${value.step<total-1?button('Next exercise →','exercise-next',done?'primary':'secondary'):''}${all?button('Continue to knowledge check →',view==='lesson'?'quiz':view==='context'?'context-quiz':'course-quiz'):''}</div><div class="exercise-options">${button('Need help','exercise-help','text-button')}${button('Unavailable on my account','exercise-unavailable','text-button')}${button('Skip','exercise-skip','text-button')}${button('Revisit later','exercise-defer','text-button')}</div>${value.stepReasons?.[value.step+1]==='unavailable'?'<p class="muted">Unavailable on your account — saved to revisit. Other completed exercises are preserved.</p>':''}${!done&&(value.stepStatus[value.step+1]||['unavailable','needs-setup'].includes(value.stepAvailability[value.step+1]))?`<label class="availability-label" for="exercise-reason">Why revisit?</label><select id="exercise-reason" data-step-reason="${value.step+1}">${[['later','I chose to return later'],['preparation','Preparation missing'],['help','I need help'],['unavailable','Tool unavailable']].map(([id,label])=>`<option value="${id}" ${value.stepReasons[value.step+1]===id?'selected':''}>${label}</option>`).join('')}</select>`:''}<details class="exercise-observation"><summary>My observation or saved file location (optional)</summary><label for="exercise-evidence">What did you actually see? Keep passwords and other secrets out.</label><textarea id="exercise-evidence" data-step-evidence="${value.step+1}" maxlength="1000">${esc(value.stepEvidence[value.step+1]||'')}</textarea><p class="muted">Saved automatically on this device. A path here does not attach or upload a file.</p></details></div>`;
 }
 function setExerciseDone(done) {
   const value=exerciseValue(), number=value.step+1;
   value.checks=done?[...new Set([...value.checks,number])]:value.checks.filter(n=>n!==number);
   delete value.stepStatus[number];
+  delete value.stepReasons[number];
   value.exercise=value.checks.length===exerciseTotal()?'practiced':'not-started';
   save();render();
 }
 function companionStep() {
-  if (view === "chapter" && chapterTab === "practice") {
-    const ch=currentChapter(), value=state.chapters[ch.id];return {key:`${ch.id}:${value.step}`,title:ch.title,...ch.steps[value.step],checked:value.checks.includes(value.step+1),canNext:value.step < ch.steps.length-1,canNotes:true};
+  if(view==='mini'){const item=window.QuestMiniLessons.get(selectedMini),guide=window.QuestMiniLessons.guide(state,item);return {...guide,key:`mini:${item.id}`,title:item.title,readOnly:true,canNext:false,canNotes:false};}
+  if(['lesson','context','chapter'].includes(view) && (view==='lesson'?tab:view==='context'?contextTab:chapterTab)==='practice'){
+    const id=activeChapterId(),value=exerciseValue(),guide=practiceGuide(id,value.step);
+    return {key:`${id}:${value.step}`,title:guide.title,...guide,prompt:id==='orientation'&&value.step===0?window.QuestLearningMap.inventoryPrompt(state.setup):guide.prompt,checked:value.checks.includes(value.step+1),canNext:value.step<exerciseTotal()-1,canNotes:true};
   }
-  if (view === "context" && contextTab === "practice") return {key:`context:${state.context.step}`,title:chapterTitle("context"),...C.context.steps[state.context.step],checked:state.context.checks.includes(state.context.step+1),canNext:state.context.step<C.context.steps.length-1,canNotes:true};
-  if (view === "lesson" && tab === "practice") return {key:"foundation:0",title:chapterTitle("foundation"),text:"Create, inspect, then edit your note. Keep the main window checklist accurate.",prompt:exercisePrompt,check:"I inspected the note; return to the main window to record the separate checks.",readOnly:true};
-  return {key:"none",title:"Practice companion",text:"Open a chapter's Try it tab to show its current step here.",prompt:"",readOnly:true};
+  return {key:'none',title:'Practice companion',text:'Open a chapter’s Try it tab to show its current exercise here.',prompt:'',readOnly:true};
 }
 let filterQuery="", filterTag="";
 const reviewedAttempts=new Set();

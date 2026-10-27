@@ -1,3 +1,4 @@
+const {earlierHome,earlierCourse,earlierGuide}=require('./qa-earlier-navigation.cjs');
 // Optional desktop QA. Point QUEST_PLAYWRIGHT at an existing Playwright installation.
 const path=require('node:path');
 const assert=require('node:assert/strict');
@@ -14,13 +15,13 @@ async function verify(){
     await page.screenshot({path:path.join(data,'welcome.png')});
     await page.locator('#learner-name').fill('Avery');
     await page.locator('#profile-form button[type="submit"]').click();
-    await page.locator('#profile-dialog').waitFor({state:'hidden'});
+    await page.locator('#profile-dialog').waitFor({state:'hidden'});await earlierHome(page);
     assert.match(await page.locator('#learner-header').innerText(),/Avery/);
     assert.match(await page.locator('#learner-header').innerText(),/0 XP/);
     assert.equal(await page.locator('.brand-logo').evaluate(img=>img.complete && img.naturalWidth>0),true);
     await page.locator('#sidebar-toggle').click();
     assert.equal(await page.locator('#sidebar nav').isHidden(),true);
-    await page.reload();
+    await page.reload();await earlierHome(page);
     await page.locator('#learner-header').waitFor();
     await page.waitForFunction(()=>document.querySelector('#learner-header').textContent.includes('Avery'));
     assert.equal(await page.locator('#profile-dialog').isVisible(),false);
@@ -29,6 +30,7 @@ async function verify(){
     await page.getByRole('button',{name:'Edit learner name'}).click();
     await page.locator('#learner-name').fill('Avery <Learner>');
     await page.locator('#profile-form button[type="submit"]').click();
+    await page.locator('#profile-dialog').waitFor({state:'hidden'});
     assert.equal(await page.locator('.learner-name').innerText(),'Avery <Learner>');
     assert.equal(await page.locator('.learner-name learner').count(),0,'learner name is text, not HTML');
     await page.getByRole('button',{name:'Edit learner name'}).click();
@@ -52,28 +54,28 @@ async function verify(){
     await page.setViewportSize({width:1240,height:860});
     if(await page.locator('#sidebar nav').isHidden())await page.locator('#sidebar-toggle').click();
     assert.equal(await page.locator('.roadmap').count(),0,'overview has no chapter catalog');
-    await page.locator('[data-view="lesson"]').click();
+    await earlierCourse(page);
     assert.equal(await page.locator('.roadmap .study-time').count(),course.chapters.length+2);
     assert.equal(await page.locator('.roadmap .prerequisite').count(),course.chapters.length+2);
     assert.match(await page.locator('.roadmap-card').first().innerText(),/Recommended first: None — start here/);
     assert.doesNotMatch(await page.locator('.roadmap').innerText(),/Bring:/);
     assert.doesNotMatch(await page.locator('main').innerText(),/Start here or bring equivalent experience/);
-    await page.locator('[data-view="home"]').click();
+    await earlierHome(page);
     assert.equal(await page.locator('.overview-journey').count(),1);
     assert.equal(await page.locator('.hero .orbit').count(),1);
     assert.equal(await page.locator('[data-action="resume"]').count(),1);
     assert.equal(await page.locator('.course-progress').count(),0,'overview uses one merged card');
     await page.screenshot({path:path.join(data,'learner-home.png')});
     await page.getByRole('button',{name:'Start with the app tour →',exact:true}).click();
-    await page.getByRole('heading',{name:'Your app, at a glance'}).waitFor();
-    assert.equal(await page.locator('.control-map article').count()>=12,true);
+    await page.getByRole('heading',{name:'Find two labels. Make one useful note.'}).waitFor();
+    assert.equal(await page.locator('.control-map').count(),0,'full map is not shown upfront');
     await page.screenshot({path:path.join(data,'orientation.png'),fullPage:true});
     await page.screenshot({path:path.join(data,'orientation-preview.png')});
     await page.locator('[data-chapter-tab="learn"]').focus();
     await page.keyboard.press('ArrowRight');
     assert.equal(await page.locator('[data-chapter-tab="practice"]').getAttribute('aria-selected'),'true');
     assert.equal(await page.locator('[data-chapter-tab="practice"]').evaluate(e=>e===document.activeElement),true);
-    await page.locator('[data-copy-course]').click();
+    await page.locator('[data-action="copy-inventory"]').click();
     await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Copied'));
     assert.match(await page.locator('#notice').innerText(),/Copied/);
     await page.locator('[data-action="exercise-done"]').click();
@@ -82,7 +84,7 @@ async function verify(){
     await page.getByRole('button',{name:'Open compact companion',exact:true}).click();
     const companion=await newWindow;
     assert.ok(companion);await companion.locator('#title').waitFor();
-    assert.match(await companion.locator('#title').innerText(),/Inspect your actual screen/);
+    assert.match(await companion.locator('#title').innerText(),/Find your mode and model/);
     await companion.locator('#check').uncheck();
     await page.waitForFunction(()=>!!document.querySelector('[data-action="exercise-done"]'));
     await page.locator('[data-action="exercise-done"]').click();
@@ -105,12 +107,15 @@ async function verify(){
     await page.locator('[data-action="exercise-defer"]').click();
     assert.match(await page.locator('[data-course-step="0"]').innerText(),/Deferred/);
     assert.equal(await page.locator('.exercise-done').count(),0);
-    await page.reload();
+    await page.reload();await earlierHome(page);
     await page.locator('[data-action="resume"]').click();
     assert.match(await page.locator('[data-course-step="0"]').innerText(),/Deferred/,'deferral survives restart');
     await page.locator('[data-action="exercise-next"]').click();
     assert.equal(await page.locator('[data-course-step="1"]').getAttribute('aria-current'),'step');
     await page.locator('[data-action="course-control-map"]').click();
+    assert.equal(await page.locator('.control-map').count(),0);
+    await page.locator('[data-chapter-tab="reference"]').click();
+    await page.locator('.optional-control-map > summary').click();
     assert.equal(await page.locator('.control-map').count(),1);
     await page.locator('[data-chapter-tab="practice"]').click();
     await companion.screenshot({path:path.join(data,'companion.png')});
@@ -132,7 +137,7 @@ async function verify(){
     for(const ch of course.chapters){
       await page.locator(`[data-chapter="${ch.id}"]`).first().click();
       assert.ok(await page.locator('.next-chapter').count());
-      assert.ok(await page.locator('.other-tools').count());
+      assert.equal(await page.locator('.other-tools').count(),0);
       for(const tab of ['practice','quiz','reference','notes']){
         await page.locator(`[data-chapter-tab="${tab}"]`).click();
         assert.doesNotMatch(await page.locator('main').innerText(),/not-started|not-recorded|original journey|actual journey request/);
@@ -140,7 +145,7 @@ async function verify(){
       if(ch.id==='memory'){
         await page.locator('#course-note').fill('Private test observation: explicit records are distinct from recall.');
         await page.waitForFunction(()=>document.querySelector('#save-status').textContent==='All changes saved');
-        await page.reload();
+        await page.reload();await earlierHome(page);
         await page.locator('[data-action="resume"]').click();
         assert.equal(await page.locator('#course-note').inputValue(),'Private test observation: explicit records are distinct from recall.');
         await page.locator('[data-chapter-tab="learn"]').click();
@@ -152,12 +157,12 @@ async function verify(){
         await page.locator('.scope-guide').screenshot({path:path.join(data,'memory-scope.png')});
         await page.setViewportSize({width:1240,height:860});
         await page.locator('[data-chapter-tab="practice"]').click();
-        assert.match(await page.locator('.practice-help').first().innerText(),/What success looks like/);
+        assert.match(await page.locator('.practice-help').first().innerText(),/Check the result/);
         await page.locator('[data-action="course-scope-guide"]').click();
         assert.equal(await page.locator('#scope-guide-title').evaluate(e=>e===document.activeElement),true);
         await page.locator('[data-chapter-tab="practice"]').click();
         await page.locator('[data-course-step="2"]').click();
-        assert.match(await page.locator('.context-step pre.prompt').innerText(),/A training team uses AI/,'fresh chat prompt supplies its own note');
+        assert.match(await page.locator('.context-step > pre.prompt').innerText(),/A training team uses AI/,'fresh chat prompt supplies its own note');
       }
       await page.locator('[data-action="course"]').first().click();
     }
@@ -194,7 +199,7 @@ async function verify(){
     assert.doesNotMatch(await page.locator('main').innerText(),/Unfinished or optional explorations/);
     assert.equal(await page.locator('.prior-experience').count(),0);
     assert.doesNotMatch(await page.locator('main').innerText(),/not-recorded/);
-    await page.locator('[data-view="lesson"]').click();
+    await earlierCourse(page);
     await page.locator('[data-chapter="memory"]').first().click();
     assert.equal(await page.locator('[data-action="prior-experience"]').count(),0);
     assert.equal(await page.locator('[data-view="milestones"]').count(),0);
@@ -221,7 +226,7 @@ async function verify(){
       assert.equal(await page.evaluate(()=>exerciseValue().exercise),'not-started');
       assert.equal(await page.locator('.exercise-counter').innerText(),`${total-1} of ${total} exercises done`);
       await page.locator('[data-action="exercise-done"]').click();
-      await page.reload();
+      await page.reload();await earlierHome(page);
       await page.locator('[data-action="resume"]').click();
       assert.equal(await page.locator('.exercise-counter').innerText(),`${total} of ${total} exercises done`);
       if(id==='orientation')await page.screenshot({path:path.join(data,'simplified-exercises.png')});
@@ -275,7 +280,7 @@ async function verify(){
         return resumed!==id && !S.getSummary(state,resumed).complete;
       },id),true,'resume moves to an unfinished chapter after completion');
       if(id==='orientation')assert.equal(await page.getByRole('button',{name:'Start with the app tour →',exact:true}).count(),0);
-      await page.locator('[data-view="lesson"]').click();
+      await earlierCourse(page);
       assert.equal(await page.locator('.chapter-completed').count(),1);
       assert.equal(await page.locator('.chapter-completed button').innerText(),'Review chapter →');
       await page.locator('.chapter-completed button').click();
@@ -285,7 +290,7 @@ async function verify(){
       assert.equal(await page.locator('.completed-badge').evaluate(el=>getComputedStyle(el).color),'rgb(164, 239, 198)');
       await page.locator('[data-action="toggle-chapter-bookmark"]').click();
       assert.match(await page.locator('.chapter-navigation').innerText(),/Chapter saved/);
-      await page.reload();
+      await page.reload();await earlierHome(page);
       await page.locator('#learner-header').waitFor();
       await page.waitForFunction(()=>document.querySelector('#learner-header').textContent.includes('100 XP'));
 
@@ -293,7 +298,7 @@ async function verify(){
     await page.evaluate(async()=>{state.notes='Foundation note';state.context.notes='';await save();});
     await page.locator('[data-view="notes"]').click();
     assert.equal(await page.locator('.note-panel').count(),1);
-    assert.equal(await page.locator('#notes-chapter-picker option').count(),course.chapters.length+2);
+    assert.equal(await page.locator('#notes-chapter-picker optgroup[label="Earlier chapters"] option').count(),course.chapters.length+2);
     assert.match(await page.locator('#notes-chapter-picker option[value="foundation"]').innerText(),/Added note/);
     await page.locator('#notes-chapter-picker').selectOption('foundation');
     assert.equal(await page.locator('#lesson-note').inputValue(),'Foundation note');
@@ -312,7 +317,7 @@ async function verify(){
     await page.locator('#notes-chapter-picker').selectOption('foundation');
     assert.equal(await page.locator('#lesson-note').inputValue(),'Foundation note');
     await page.screenshot({path:path.join(data,'unified-notes.png')});
-    await page.reload();
+    await page.reload();await earlierHome(page);
     await page.locator('[data-view="notes"]').click();
     await page.locator('#notes-chapter-picker').selectOption('memory');
     assert.equal(await page.locator('#course-note').inputValue(),'Unified memory note');
@@ -334,7 +339,7 @@ async function verify(){
     assert.match(await page.locator('#level-celebration').innerText(),/Level 2/);
     await page.screenshot({path:path.join(data,'level-celebration.png')});
     await page.locator('#dismiss-celebration').click();
-    await page.reload();
+    await page.reload();await earlierHome(page);
     await page.waitForFunction(()=>document.querySelector('#learner-header').textContent.includes('400 XP'));
     assert.equal(await page.locator('.chapter-celebration').count(),0,'existing titles do not replay on reload');
     await page.screenshot({path:path.join(data,'merged-overview.png')});
@@ -352,7 +357,7 @@ async function verify(){
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.evaluate(async()=>{
       for(const ch of Course.chapters.slice(0,4)){state.completions[ch.id]={referencesReviewed:true,notesVisited:true,completed:true};state.chapters[ch.id]={...state.chapters[ch.id],exercise:'practiced',checks:ch.steps.map((_,i)=>i+1),quiz:Object.fromEntries(ch.questions.map(q=>[q.id,[q.correct]]))};}
-      await save();navigate('home');
+      await save();navigate('legacy-home');
     });
     assert.match(await page.locator('#learner-header').innerText(),/AI Explorer/);
     assert.match(await page.locator('#learner-header').innerText(),/400 XP/);

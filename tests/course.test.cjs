@@ -8,7 +8,7 @@ const { normalize, chapterSummary, courseSummary } = require("../src/state.js");
 const { createStore } = require("../src/store.cjs");
 
 function completed(chapter) {
-  return { notes: `My ${chapter.id} observation`, seen: true, bookmarked: true, stepStatus: {},
+  return { stepAvailability:{},stepReasons:{},stepEvidence:{}, notes: `My ${chapter.id} observation`, seen: true, bookmarked: true, stepStatus: {},
     exercise: "practiced", checks: chapter.steps.map((_, i) => i + 1), step: chapter.steps.length - 1,
     quiz: Object.fromEntries(chapter.questions.map(q => [q.id, [q.correct]])) };
 }
@@ -178,8 +178,7 @@ test("course route, prerequisites, feedback and new lessons remain consistent", 
   for(const id of ["orientation","memory","feature-lab","capstone"]) assert.ok(ids.has(id));
   for(const ch of course.chapters){
     for(const dep of ch.prerequisites){assert.ok(ids.has(dep));assert.ok(course.order.indexOf(dep)<course.order.indexOf(ch.id));}
-    assert.ok(ch.reviewedOn && ch.otherTools.length && ch.projectTask);
-    for(const item of ch.otherTools)for(const id of item.sources)assert.ok(course.sources[id],`Missing comparison source ${id}`);
+    assert.ok(ch.reviewedOn && ch.projectTask);
     for(const q of ch.questions){assert.equal(q.feedback.length,q.choices.length);assert.equal(new Set(q.feedback).size,q.feedback.length);}
   }
   for(const id of ["github","environments","delegation"]) assert.ok(course.chapters.find(ch=>ch.id===id).prerequisites.includes("coding"));

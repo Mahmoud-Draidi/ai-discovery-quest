@@ -23,7 +23,11 @@ These settings are edited on GitHub; changing this document does not apply them.
    `pnpm install --frozen-lockfile`, run `pnpm test`, and perform desktop QA
    as described in [CONTRIBUTING.md](../CONTRIBUTING.md).
 3. Commit the reviewed source, then run `pnpm build:win` from a clean working
-   tree. The build refuses to overwrite an existing generated build folder;
+   tree at the app repository root. A source ZIP without Git history cannot produce
+   a release. Preflight checks run before copying the Electron runtime. The payload
+   includes only Git-tracked runtime files, excluding ignored notes or scratch data.
+   The source is checked again before ZIP creation. The build refuses to overwrite
+   an existing generated build folder;
    preserve earlier artifacts before deliberately removing that folder.
 4. Inspect `dist/AI-Discovery-Quest-<version>-windows-x64/BUILD-INFO.json`.
    Confirm the version matches `package.json`, `sourceCommit` is the intended

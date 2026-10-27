@@ -1,0 +1,36 @@
+const {earlierHome,earlierCourse,earlierGuide}=require('./qa-earlier-navigation.cjs');
+const path=require('node:path'),assert=require('node:assert/strict');
+const {_electron}=require(process.env.QUEST_PLAYWRIGHT||'playwright');
+const root=path.resolve(__dirname,'..'),data=path.join(root,'test-results','dashboard-'+Date.now());
+async function run(){let app;try{
+ app=await _electron.launch({executablePath:require('electron'),args:[root],cwd:root,env:{...process.env,QUEST_TEST_MODE:'1',QUEST_TEST_SHOW:'1',QUEST_TEST_DATA:data}});
+ const page=await app.firstWindow(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.emulateMedia({reducedMotion:'reduce'});await page.setViewportSize({width:1240,height:950});
+ await page.locator('#profile-skip').click();await earlierHome(page);await page.locator('[data-action="resume"]').click();await page.locator('[data-chapter-tab="practice"]').click();
+ await page.locator('[data-action="exercise-defer"]').click();await earlierHome(page);
+ assert.match(await page.locator('.current-task-label').innerText(),/Find your mode and model/);
+ assert.equal(await page.locator('.next-activity [data-open-learning-task="orientation:1:practice"]').count(),1);
+ assert.equal(await page.locator('.revisit-item').count(),1);assert.match(await page.locator('.revisit-item').innerText(),/Find your mode/);
+ await page.locator('.next-activity button').click();assert.equal(await page.evaluate(()=>state.chapters.orientation.step),1);
+ await page.locator('[data-action="exercise-done"]').click();
+ const before=await page.evaluate(()=>S.courseSummary(state));await page.locator('#exercise-availability').selectOption('unavailable');
+ assert.deepEqual(await page.evaluate(()=>state.chapters.orientation.checks),[2]);assert.deepEqual(await page.evaluate(()=>S.courseSummary(state)),before);
+ await page.locator('[data-course-step="0"]').click();await page.locator('#exercise-availability').selectOption('unavailable');await page.locator('#exercise-availability').selectOption('available');
+ assert.equal(await page.evaluate(()=>state.chapters.orientation.stepStatus[1]),undefined);assert.deepEqual(await page.evaluate(()=>state.chapters.orientation.checks),[2]);
+ await page.locator('[data-course-step="2"]').click();await page.locator('[data-action="exercise-defer"]').click();await page.locator('#exercise-reason').selectOption('help');
+ await page.locator('.exercise-observation > summary').click();await page.locator('#exercise-evidence').fill('I need help finding Attach.');
+ await page.reload();await earlierHome(page);await page.locator('.revisit-item > summary').click();assert.match(await page.locator('.revisit-item').innerText(),/Saved reason: need help/);
+ await page.screenshot({path:path.join(data,'overview-revisit.png'),fullPage:true});
+ await page.locator('.revisit-item [data-open-learning-task]').click();assert.equal(await page.evaluate(()=>state.chapters.orientation.step),2);
+ assert.equal(await page.locator('#exercise-evidence').inputValue(),'I need help finding Attach.');assert.equal(await page.locator('#exercise-reason').inputValue(),'help');
+ await page.locator('[data-chapter-tab="reference"]').click();const questions=page.locator('.chapter-questions > details');await questions.nth(0).locator('summary').click();await questions.nth(1).locator('summary').click();
+ await page.locator('[data-chapter-tab="notes"]').click();await page.locator('[data-chapter-tab="reference"]').click();assert.equal(await page.locator('.chapter-questions > details[open]').count(),2);
+ assert.equal(await page.locator('[data-action="review-references"]').isDisabled(),true);
+ const total=await questions.count();for(let i=2;i<total;i++)await questions.nth(i).locator('summary').click();await page.waitForFunction(()=>!document.querySelector('[data-action="review-references"]').disabled);
+ await questions.nth(0).locator('summary').click();await page.waitForFunction(()=>document.querySelector('[data-action="review-references"]').disabled);
+ await page.reload();await earlierHome(page);await page.locator('[data-action="resume"]').click();assert.equal(await page.locator('.chapter-questions > details[open]').count(),total-1);assert.equal(await page.locator('[data-action="review-references"]').isDisabled(),true);
+ await earlierCourse(page);await page.locator('[data-chapter="coding"]').first().click();await page.locator('[data-equivalent-preparation="coding"]').click();
+ assert.equal(await page.evaluate(()=>state.preparation.coding),true);assert.equal(await page.evaluate(()=>S.courseSummary(state).complete),0);
+ await earlierHome(page);await page.setViewportSize({width:620,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);assert.deepEqual(errors,[]);
+ console.log('PASS: separate Resume/recommendation, exact revisit destinations, reasons/evidence persistence, availability independent of completion, restoring available tasks, equivalent preparation without credit, persistent question expansion with unchanged all-open gate, and narrow dashboard.\nScreenshots: '+data);
+}finally{await app?.close();}}
+run().catch(e=>{console.error(e);process.exitCode=1;});

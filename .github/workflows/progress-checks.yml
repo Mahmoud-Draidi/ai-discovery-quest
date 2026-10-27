@@ -39,5 +39,29 @@ jobs:
           node --check src/state.js
           node --check src/journey.js
           node --check src/learning-ui.js
+          node --check src/learning-map.js
+          node --check src/first-steps.js
+          node --check src/practice-guides.js
+          node --check src/recommendations.js
+          node --check src/dashboard.js
+          node --check src/mini-lessons.js
+          node --check src/mini-ui.js
+          node --check src/lesson-support.js
+          node --check src/support-ui.js
+          node --check src/workflow-labs.js
+          node --check src/workflow-ui.js
+          node --check src/feature-lessons.js
+          node --check src/feature-lessons-remaining.js
+          node --check src/feature-coverage.js
+          node --check src/feature-tutorials.js
+          node --check src/feature-tutorial-ui.js
+          node --check scripts/release-preflight.cjs
+          node --check scripts/package-windows.cjs
+          node --check scripts/verify-learner-journey.cjs
       - name: Verify progress and note storage
         run: node --test tests/*.test.cjs
+      - name: Verify generated guides
+        run: |
+          node scripts/generate-course-guide.cjs --check
+          node scripts/generate-feature-coverage.cjs --check
+          node scripts/generate-feature-tutorial-coverage.cjs --check

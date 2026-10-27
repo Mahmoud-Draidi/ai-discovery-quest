@@ -28,7 +28,8 @@ an optional Windows development launcher.
 
 ## Content and desktop checks
 
-Run `node scripts/generate-course-guide.cjs` after editing lesson metadata.
+Run `node scripts/generate-course-guide.cjs` and
+`node scripts/generate-feature-tutorial-coverage.cjs` after editing feature tutorials or the coverage inventory. Earlier material is retained separately.
 `node scripts/generate-course-guide.cjs --check` verifies that the guide matches
 the course. Keep chapter lists in the generated guide rather than duplicating
 them in the README.
@@ -38,6 +39,15 @@ Optional desktop QA uses an existing Playwright installation: set
 then run `node scripts/verify-desktop.cjs`. It launches a separate test profile
 under ignored `test-results/`, tests interaction and companion-window behavior,
 and closes its windows. It does not modify the real learner profile.
+
+For the complete cross-feature learner path, also run
+`node scripts/verify-learner-journey.cjs`. It checks missing-feature recovery, a
+manual-save artifact fixture, glossary use, a cold restart, renderer-offline
+reading, keyboard tabs, contrast spot checks and actual backup export/import.
+Its fixture is not a live external AI-chat result or completed learning. Additional
+focused checks are `verify-first-steps.cjs`, `verify-practice-guides.cjs`,
+`verify-dashboard.cjs`, `verify-mini-lessons.cjs`, `verify-lesson-support.cjs` and
+`verify-workflow-labs.cjs` under `scripts/`.
 
 See [chapter sources](CHAPTER-SOURCES.md) for editorial provenance and dated
 reference checks, [review response](REVIEW-RESPONSE.md) for review findings,
@@ -54,3 +64,8 @@ when a new app ZIP is published.
 By submitting a contribution, you agree to license that contribution under this project's MIT License, unless you clearly identify different terms and the maintainers explicitly agree before accepting it. Only contribute material you have permission to share.
 
 Contributions to this repository are encouraged, not required as a condition of using or modifying the project.
+
+The primary journey is checked by `node scripts/verify-feature-journey.cjs`;
+`verify-feature-tutorial.cjs` checks the Scheduled lifecycle. Earlier-course
+regression scripts use the visible archive links through `qa-earlier-navigation.cjs`.
+App QA does not prove a learner completed a live external feature.

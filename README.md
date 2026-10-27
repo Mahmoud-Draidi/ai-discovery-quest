@@ -13,7 +13,11 @@ personal notes and progress saved on your computer.
 
 1. Download the Windows x64 app ZIP from the release linked above (not "Source code").
 2. Extract the whole ZIP and open **AI Discovery Quest.exe**.
-3. Choose **Learning journey** and follow **Understand → Try it → Check**.
+3. Open **Learning journey**, choose a chapter, then follow **Understand → Try it → Check → Questions & sources → My note → Mark chapter completed**. Writing a note is optional.
+
+**In the download:** use the matching release notes for the features included in that version.
+
+**In local source:** the material is being rebuilt as feature-by-feature tutorials after learner feedback. All 64 currently inventoried topics now have feature-specific tutorial drafts, covering everyday app controls, useful work, integrations and developer workflows. Live account/client trials are still required; a written tutorial is not a claim that a feature is available or mastered. Earlier prompt-led lessons remain in a separate archive. This work is unreleased. See the [course reset plan](docs/FEATURE-FIRST-COURSE-RESET.md). Development builds identify their version and lesson revision under **Course guide**.
 
 No Node.js, developer tools, or API key needed. The app is unsigned and has
 no installer or automatic updates, so Windows may show an unrecognized-publisher

@@ -8,7 +8,7 @@ let chapterQuestion = 0;
 let notesChapter = "foundation";
 const main = document.getElementById("main");
 const status = document.getElementById("save-status");
-const names = { home: "Overview", lesson: "Learning journey", context: "Learning journey", course: "Learning journey", chapter: "Learning journey", journal: "Progress & backups", library: "Reference library", notes: "My notes" };
+const names = { "legacy-home":"Earlier overview", "legacy-course":"Earlier chapters", "legacy-guide":"Earlier coverage", feature:"Feature tutorial", mini:"Mini-lesson", "mini-catalog":"Mini-lessons", guide:"Course guide", setup:"Your starting point", home: "Overview", lesson: "Learning journey", context: "Learning journey", course: "Learning journey", chapter: "Learning journey", journal: "Progress & backups", library: "Reference library", notes: "My notes" };
 let state;
 let view = "home";
 let tab = "learn";
@@ -28,6 +28,8 @@ function announce(text) {
   clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{notice.textContent="";},6500);
 }
 function save() {
+  if(view==="feature")state.resume={view:"feature",feature:selectedFeature,chapter:"orientation",tab:"learn"};
+  if(view==="mini")state.resume={view:"mini",chapter:window.QuestMiniLessons.get(selectedMini).chapter,tab:"practice",mini:selectedMini};
   if (["lesson", "context", "chapter"].includes(view)) state.resume = { view, chapter: selectedChapter, tab: view === "lesson" ? tab : view === "context" ? contextTab : chapterTab };
   state = S.normalize(state);
   const revision = ++saveRevision;
@@ -54,19 +56,23 @@ function intro(eyebrow, title, description) { return `<div class="page-intro"><d
 function noteEditor() {
   return `<section class="panel note-panel"><div class="section-heading"><div><h2>A thought worth keeping</h2><p>Your questions, examples, and discoveries from this chapter.</p></div><span class="pill">PERSONAL</span></div><label for="lesson-note">Models, tools, and skills · My notes</label><textarea id="lesson-note" maxlength="20000" placeholder="Today I discovered…">${esc(state.notes)}</textarea><div class="note-bottom"><span>Saved automatically on this device.</span></div></section>`;
 }
-function overview() {
+function overview(){return featureHome();}
+function legacyOverview() {
+  if(state.resume.view==='feature')return featureHome();
+
   const resumed = state.resume.view === "lesson" ? "foundation" : state.resume.view === "context" ? "context" : state.resume.chapter;
-  const next = !S.getSummary(state,resumed).complete ? resumed : learningOrder().find(id => !S.getSummary(state,id).complete);
+  const next = state.resume.view==='feature' ? 'feature' : state.resume.view==='mini' ? 'mini' : !S.getSummary(state,resumed).complete ? resumed : learningOrder().find(id => !S.getSummary(state,id).complete);
   const info = S.courseSummary(state);
-  return `${intro("SMALL STEPS. REAL DISCOVERIES.", "Make AI something<br>you know how to <em>use.</em>", "Learn by trying. Check what happens. Build confidence, one useful skill at a time.")}
-  <section class="hero panel overview-journey"><div class="hero-copy"><span class="pill accent">YOUR JOURNEY · ${info.complete} OF ${info.total} CHAPTERS COMPLETED</span><h2>${next ? esc(chapterTitle(next)) : "Look how far you’ve come."}</h2><p>${next ? "Your next unfinished chapter. Pick up a useful skill, then finish with a quick reflection." : "You’ve completed the journey. Revisit a chapter and put your skills to work."}</p><div class="hero-actions">${next ? button(next === "orientation" ? "Start with the app tour →" : "Continue learning →", "resume") : button("Revisit the learning journey", "course")}${next ? button("Explore all chapters →", "course", "secondary") : ""}</div></div><div class="orbit" aria-hidden="true"><div class="orbit-ring"></div><div class="orbit-core">✦</div><span class="orbit-label orbit-model">MODEL <b>Think</b></span><span class="orbit-label orbit-tool">TOOL <b>Act</b></span><span class="orbit-label orbit-skill">SKILL <b>Guide</b></span></div><div class="overview-progress"><div class="section-heading"><span>Whole journey progress</span><strong>${info.percent}%</strong></div><progress max="100" value="${info.percent}" aria-label="Whole course progress">${info.percent}%</progress></div></section>`;
+  const current=state.resume.view==='feature'?{postponed:false}:state.resume.view==='mini'?(()=>{const r=window.QuestMiniLessons.record(state,window.QuestMiniLessons.get(state.resume.mini));return {postponed:r.outcome!=='practiced'&&(['deferred','skipped'].includes(r.outcome)||['unavailable','needs-setup'].includes(r.availability))};})():window.QuestRecommendations.tasks(state).find(task=>task.id===resumed&&task.index===window.QuestRecommendations.value(state,resumed).step);
+  return `${!state.setup.complete ? `<section class="panel start-banner"><h2>New here? Choose your starting point.</h2><p>A few optional choices help you follow the walkthrough. No accounts or permissions are changed.</p>${button("Choose my starting point →","starting-point")}${button("Not now","skip-setup","text-button")}</section>` : ""}${intro("SMALL STEPS. REAL DISCOVERIES.", "Make AI something<br>you know how to <em>use.</em>", "Learn by trying. Check what happens. Build confidence, one useful skill at a time.")}
+  ${current?.postponed?recommendationPanel():""}<section class="hero panel overview-journey"><div class="hero-copy"><span class="pill accent">YOUR JOURNEY · ${info.complete} OF ${info.total} CHAPTERS COMPLETED</span><h2>${next ? "Pick up where you left off." : "Look how far you’ve come."}</h2><p class="current-task-label">${next ? esc(currentTaskDescription()) : "You’ve completed the journey. Revisit a chapter and put your skills to work."}</p>${current?.postponed?`<p class="postponed-notice">This exercise is saved to revisit. Resume if you’re ready, or choose the recommended activity above.</p>`:""}<div class="hero-actions">${next ? button(state.resume.view!=="mini" && resumed === "orientation" && !S.getSummary(state,resumed).complete && state.chapters.orientation.step===0 && !state.chapters.orientation.stepStatus[1] ? "Start with the app tour →" : "Resume current task →", "resume") : button("Revisit the learning journey", "course")}${next ? button("Explore all chapters →", "course", "secondary") : ""}</div></div><div class="orbit" aria-hidden="true"><div class="orbit-ring"></div><div class="orbit-core">✦</div><span class="orbit-label orbit-model">MODEL <b>Think</b></span><span class="orbit-label orbit-tool">TOOL <b>Act</b></span><span class="orbit-label orbit-skill">SKILL <b>Guide</b></span></div><div class="overview-progress"><div class="section-heading"><span>Whole journey progress</span><strong>${info.percent}%</strong></div><progress max="100" value="${info.percent}" aria-label="Whole course progress">${info.percent}%</progress><p class="muted">Chapter completion includes every required exercise and check. Optional practice prompts do not affect XP.</p></div></section>${!current?.postponed?recommendationPanel():""}${revisitPanel()}`;
 }
 function learn() {
   return `<h2 class="tab-heading">Three parts. Different jobs.</h2><p class="lead">One assistant can combine all three. Recognizing their roles helps you ask for the right kind of help.</p><div class="concepts">${C.concepts.map((c, i) => `<article class="panel concept"><span class="concept-index">0${i + 1}</span><h3>${c.name}</h3><div class="concept-verb">${c.verb}</div><p>${c.text}</p><div class="example"><span>EVERYDAY EXAMPLE</span><p>${c.example}</p></div></article>`).join("")}</div><div class="callout"><span>✦</span><p><strong>Try describing an outcome.</strong> “Help me plan a week of meals.” The model reasons, tools can find information or save files, and a skill can guide the method. Available tools depend on your assistant.</p></div><div class="section-heading"><h2>Understanding becomes useful through practice.</h2>${button("Try the exercise →", "practice")}</div>`;
 }
 function practice() {
-  const checks = ["I opened the actual note and checked its three definitions and examples.", "I requested one change and checked that the saved note reflected it.", "I can identify the model, the file-writing tool, and where reusable instructions would fit."];
-  return `<h2 class="tab-heading">Make your first AI-assisted note.</h2><p class="lead">Use an assistant you already have. Your goal is to inspect a real result—not just accept “done.”</p><div class="practice-grid"><section class="panel"><span class="pill">STEP 01 · DO</span><h3>Ask for a useful result</h3><p>Start with the app tour if you have only used web chat. In Codex, select an empty practice folder. In web chat, request the note text and save it yourself; file-tool practice can be deferred. Copy the prompt into your chosen assistant.</p><pre class="prompt" id="exercise-prompt">${esc(exercisePrompt)}</pre>${button("Copy prompt", "copy-prompt", "secondary")}<p id="copy-status" role="status" class="muted"></p><div class="small-callout"><strong>No file tools?</strong> Save the supplied text in your own editor. You can practice the concepts; record AI-operated file creation as deferred rather than claiming it happened.</div></section><section class="panel"><span class="pill">STEP 02 · VERIFY</span><h3>Check what really happened</h3><p>Create the note, ask for an edit, and inspect both results.</p><span class="pill">EXERCISE ${state.step+1} OF 3</span><h3>${esc(checks[state.step])}</h3>${exerciseControls(state,3)}</section></div>`;
+ const guide=practiceGuide('foundation',state.step);
+ return `<h2 class="tab-heading">${esc(guide.title)}</h2><p class="lead">Open an AI chat you already use. Send the message below, then check its answer. If it gives you text instead of a file, save it yourself.</p><section class="panel context-step"><span class="pill">EXERCISE ${state.step+1} OF 3</span>${exerciseBrief(guide)}<h3>Try this</h3><p>Copy this message into your AI chat, send it, and read the answer.</p><pre class="prompt" id="exercise-prompt">${esc(guide.prompt)}</pre>${button('Copy message','copy-prompt','secondary')}<p id="copy-status" role="status" class="muted"></p>${practiceSupport(guide,`foundation:${state.step}`)}<p class="exercise-verify">Before marking done: ${esc(guide.check)}</p>${exerciseControls(state,3)}</section>`;
 }
 function quiz() {
   const info = S.summary(state);
@@ -79,7 +85,7 @@ function quiz() {
   return `<section class="panel quiz-card"><div class="section-heading"><span class="pill">QUESTION ${questionIndex + 1} OF ${C.questions.length}</span><span class="muted">No rush. Retries are part of learning.</span></div><h2>${q.prompt}</h2><div class="answers">${C.concepts.map((c, i) => `<button data-answer="${i}" class="answer ${last === i ? correct ? "correct" : "incorrect" : ""}" ${correct || quizLocked(q,attempts) ? "disabled" : ""}><span>${String.fromCharCode(65 + i)}</span>${c.name}${correct && last === i ? "<b>✓</b>" : ""}</button>`).join("")}</div>${feedback ? `<div class="feedback ${correct ? "positive" : "retry"}" role="status"><strong>${correct ? "That's right." : "Not quite—give it another try."}</strong><p>${esc(q.feedback?.[last] || q.explanation)}</p></div>` : ""}${quizRetry(q,attempts)}${correct ? button(questionIndex === C.questions.length - 1 ? "Finish knowledge check →" : "Next question →", "next-question") : `<p class="muted">Choose the role that fits the action described.</p>`}</section>`;
 }
 function lesson() {
-  return `${intro("CHAPTER 01 · THE FOUNDATIONS", "Models, tools, and skills.", "Understand the roles. Create something real. Check your understanding.")}<div class="lesson-meta"><span class="pill accent ${S.summary(state).complete ? "completed-badge" : ""}">${chapterBadge()}</span><span>Exercise + knowledge check</span><span class="study-time" title="Reading, practice and knowledge check; setup may take extra time.">${esc(J.estimate("foundation"))}</span></div><div class="tabs" role="tablist" aria-label="Chapter sections">${[["learn", "01", "Understand"], ["practice", "02", "Try it"], ["quiz", "03", "Check"], ["reference", "04", "Questions & sources"], ["notes", "05", "My note"]].map(([id, number, label]) => `<button role="tab" aria-selected="${tab === id}" data-tab="${id}" class="${tab === id ? "selected" : ""}"><span>${number}</span>${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="${tab}">${tab === "learn" ? learn() : tab === "practice" ? practice() : tab === "quiz" ? quiz() : tab === "reference" ? earlyReference("foundation") : noteEditor()}</section>${otherTools("foundation")}${nextChapterLink("foundation")}`;
+  return `${intro("CHAPTER 01 · THE FOUNDATIONS", "Models, tools, and skills.", "Understand the roles. Create something real. Check your understanding.")}<div class="lesson-meta"><span class="pill accent ${S.summary(state).complete ? "completed-badge" : ""}">${chapterBadge()}</span><span>Exercise + knowledge check</span><span class="study-time" title="Reading, practice and knowledge check; setup may take extra time.">${esc(J.estimate("foundation"))}</span></div><div class="tabs" role="tablist" aria-label="Chapter sections">${[["learn", "01", "Understand"], ["practice", "02", "Try it"], ["quiz", "03", "Check"], ["reference", "04", "Questions & sources"], ["notes", "05", "My note"]].map(([id, number, label]) => `<button role="tab" aria-selected="${tab === id}" data-tab="${id}" class="${tab === id ? "selected" : ""}"><span>${number}</span>${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="${tab}">${tab === "learn" ? learn() : tab === "practice" ? practice() : tab === "quiz" ? quiz() : tab === "reference" ? earlyReference("foundation") : noteEditor()}</section>${nextChapterLink("foundation")}`;
 }
 function chapterLinks() { return chapterNavigation("foundation"); }
 function contextSources() { return C.context.sources.map(s => `<button class="text-button" data-source="${s.url}">${esc(s.label)} ↗</button>`).join(""); }
@@ -92,9 +98,9 @@ function contextNextQuestion() {
 }
 function contextPractice() {
   const index = state.context.step;
-  const step = C.context.steps[index];
+  const step = practiceGuide("context",index);
   const checked = state.context.checks.includes(index + 1);
-  return `<nav class="practice-route" aria-label="Context practice steps"><p>Explore any step; unfinished work stays unfinished.</p>${C.context.steps.map((step,i)=>`<button class="secondary" data-context-step="${i}" ${i===index ? 'aria-current="step"' : ""}>${i+1}. ${esc(step.title)} · ${state.context.checks.includes(i+1) ? "Done" : esc(statusLabel(state.context.stepStatus[i+1] || "not-started"))}</button>`).join("")}</nav><section class="panel context-step"><span class="pill">STEP ${index + 1} OF ${C.context.steps.length}</span><h2 id="context-step-title" tabindex="-1">${esc(step.title)}</h2><p class="lead">${esc(step.text)}</p><pre class="prompt">${esc(step.prompt)}</pre><button class="secondary" data-copy-context="${index}">Copy this prompt</button><div class="small-callout">${esc(step.hint)}</div>${index === 0 ? `<details><summary>Need a sample first note?</summary><pre class="prompt">${esc(C.context.sampleNote)}</pre><button class="secondary" data-copy-context="sample">Copy sample note</button><p>Save this as MY-FIRST-NOTE.md, then attach it or place it in your accessible practice workspace.</p></details>` : ""}${practiceSupport(step,`context:${index}`)}<p class="exercise-verify">Before marking done: ${esc(step.check)}</p>${exerciseControls(state.context,C.context.steps.length)}</section>`;
+  return `<nav class="practice-route" aria-label="Context practice steps"><p>Explore any step; unfinished work stays unfinished.</p>${C.context.steps.map((step,i)=>`<button class="secondary" data-context-step="${i}" ${i===index ? 'aria-current="step"' : ""}>${i+1}. ${esc(step.title)} · ${state.context.checks.includes(i+1) ? "Done" : esc(statusLabel(state.context.stepStatus[i+1] || "not-started"))}</button>`).join("")}</nav><section class="panel context-step"><span class="pill">STEP ${index + 1} OF ${C.context.steps.length}</span><h2 id="context-step-title" tabindex="-1">${esc(step.title)}</h2><p class="lead">${esc(step.text)}</p>${exerciseBrief(step)}<h3>Try this</h3><p>Send this message in your AI chat.</p><pre class="prompt">${esc(step.prompt)}</pre><button class="secondary" data-copy-context="${index}">Copy message</button><div class="small-callout">${esc(step.hint)}</div>${practiceSupport(step,`context:${index}`)}<p class="exercise-verify">Before marking done: ${esc(step.check)}</p>${exerciseControls(state.context,C.context.steps.length)}</section>`;
 }
 function contextQuiz() {
   const info = S.contextSummary(state);
@@ -108,21 +114,24 @@ function contextQuiz() {
 function contextLesson() {
   const info = S.contextSummary(state);
   const badge = info.complete ? "Completed" : state.context.exercise === "skipped" ? "Exercise skipped" : state.context.exercise === "deferred" ? "Exercise deferred" : state.context.checks.length || info.correct ? "In progress" : "Ready to explore";
-  return `${chapterNavigation("context")}${intro("CHAPTER 02 · GIVE AI USEFUL CONTEXT", "Files, context, and continuity.", "Supply the right source. Inspect the answer. Save a useful record for the next chat.")}<div class="lesson-meta"><span class="pill accent ${info.complete ? "completed-badge" : ""}">${badge}</span><span>${info.percent}% · ${info.correct} / ${C.context.questions.length} questions</span><span class="study-time">${esc(J.estimate("context"))}</span></div><div class="tabs" role="tablist" aria-label="Context chapter sections">${[["learn", "Understand"], ["practice", "Try it"], ["quiz", "Check"], ["reference", "Questions & sources"], ["notes", "My note"]].map(([id, label]) => `<button role="tab" aria-selected="${contextTab === id}" data-context-tab="${id}" class="${contextTab === id ? "selected" : ""}">${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="Context ${contextTab}">${contextTab === "practice" ? contextPractice() : contextTab === "quiz" ? contextQuiz() : contextTab === "notes" ? contextNoteEditor() : contextTab === "reference" ? earlyReference("context") : `<div class="callout"><span>↗</span><p><strong>Does putting a file in a project mean the AI has read it?</strong> File access makes a source available. Ask the assistant to read the relevant file, then check its answer against that source.</p></div><div class="concepts">${[["Available", "A supported attachment or workspace makes a file accessible. A path alone does not grant access."], ["Used for this task", "Ask the assistant to read the relevant source. Compare the answer with the actual file."], ["Useful next time", "Keep working preferences in project instructions and completed work in a progress note."]].map(([title, text]) => `<article class="panel concept"><h3>${title}</h3><p>${text}</p></article>`).join("")}</div><section class="panel"><h2>Choose how to supply the file</h2><p>In a chat with uploads, attach the note. In a supported local project, use its accessible workspace. A ChatGPT project's shared uploaded or connected sources are different from a folder on your computer.</p><h3>Keep useful instructions and progress</h3><p>Codex uses AGENTS.md for project guidance; other surfaces may provide instruction settings. Record what you completed and the next step in a progress note, then test resuming in another chat.</p><p>Memory is a separate capability and is not required for this exercise. If a tool is unavailable, note the limitation and use the supported alternative.</p>${button("Start the context exercise →", "context-practice")}</section><section class="sources panel"><h2>Official references</h2><p>Product controls can differ. Links need internet; the chapter itself works offline.</p>${contextSources()}</section>`}</section>${otherTools("context")}${nextChapterLink("context")}`;
+  return `${chapterNavigation("context")}${intro("CHAPTER 02 · GIVE AI USEFUL CONTEXT", "Files, context, and continuity.", "Supply the right source. Inspect the answer. Save a useful record for the next chat.")}<div class="lesson-meta"><span class="pill accent ${info.complete ? "completed-badge" : ""}">${badge}</span><span>${info.percent}% · ${info.correct} / ${C.context.questions.length} questions</span><span class="study-time">${esc(J.estimate("context"))}</span></div><div class="tabs" role="tablist" aria-label="Context chapter sections">${[["learn", "Understand"], ["practice", "Try it"], ["quiz", "Check"], ["reference", "Questions & sources"], ["notes", "My note"]].map(([id, label]) => `<button role="tab" aria-selected="${contextTab === id}" data-context-tab="${id}" class="${contextTab === id ? "selected" : ""}">${label}</button>`).join("")}</div><section class="tab-content" role="tabpanel" aria-label="Context ${contextTab}">${contextTab === "practice" ? contextPractice() : contextTab === "quiz" ? contextQuiz() : contextTab === "notes" ? contextNoteEditor() : contextTab === "reference" ? earlyReference("context") : `<div class="callout"><span>↗</span><p><strong>Does putting a file in a project mean the AI has read it?</strong> File access makes a source available. Ask the assistant to read the relevant file, then check its answer against that source.</p></div><div class="concepts">${[["Available", "A supported attachment or workspace makes a file accessible. A path alone does not grant access."], ["Used for this task", "Ask the assistant to read the relevant source. Compare the answer with the actual file."], ["Useful next time", "Keep working preferences in project instructions and completed work in a progress note."]].map(([title, text]) => `<article class="panel concept"><h3>${title}</h3><p>${text}</p></article>`).join("")}</div><section class="panel"><h2>Choose how to supply the file</h2><p>In a chat with uploads, attach the note. In a supported local project, use its accessible workspace. A ChatGPT project's shared uploaded or connected sources are different from a folder on your computer.</p><h3>Keep useful instructions and progress</h3><p>Codex uses AGENTS.md for project guidance; other surfaces may provide instruction settings. Record what you completed and the next step in a progress note, then test resuming in another chat.</p><p>Memory is a separate capability and is not required for this exercise. If a tool is unavailable, note the limitation and use the supported alternative.</p>${button("Start the context exercise →", "context-practice")}</section><section class="sources panel"><h2>Official references</h2><p>Product controls can differ. Links need internet; the chapter itself works offline.</p>${contextSources()}</section>`}</section>${nextChapterLink("context")}`;
 }
 function referenceEntries() { return [...C.library, ...C.context.library, ...Course.chapters.flatMap(ch => ch.library)]; }
 function library() {
   return `${intro("A PLACE TO COME BACK TO", "Keep the useful bits close.", "Find clear answers about AI concepts, tools, and practical workflows.")}<label class="search-label" for="library-search">Search this reference library</label><input id="library-search" class="search" type="search" placeholder="Try “files”, “skill”, or “verification”…"><label class="search-label" for="library-topic">Filter by topic</label><select id="library-topic"><option value="">All topics</option>${[...new Set(referenceEntries().map(e=>e.tag))].map(tag=>`<option value="${esc(tag)}">${esc(tag)}</option>`).join("")}</select><p class="muted" id="search-count">${referenceEntries().length} entries</p><div class="library-grid">${referenceEntries().map(entry => `<article class="panel library-entry" data-tag="${esc(entry.tag)}" data-search="${esc((entry.title + " " + entry.tag + " " + entry.text).toLowerCase())}"><span class="pill">${entry.tag}</span><h2>${entry.title}</h2><p>${entry.text}</p></article>`).join("")}</div><p class="muted">This reference grows as chapters are added.</p><div class="sources panel"><h2>Go to the source</h2><p>These official references open in your browser and need an internet connection. Bundled chapters work offline.</p>${courseSources(Object.keys(Course.sources))}</div>`;
 }
 function render() {
+  document.body.classList.toggle("in-lesson",["lesson","context","chapter","mini","feature"].includes(view));
   renderLearnerHeader();
+  document.getElementById("learner-header").hidden=["feature","home","course","guide"].includes(view);
   applySidebar();
   const active=document.activeElement;
   const focusAttrs=active && main.contains(active)?[...active.attributes].filter(a=>a.name.startsWith("data-")).map(a=>[a.name,a.value]):[];
   const focusId=active && main.contains(active)?active.id:null;
-  for (const item of document.querySelectorAll("nav [data-view]")) { const active = item.dataset.view === view || (["context", "course", "chapter"].includes(view) && item.dataset.view === "lesson"); item.classList.toggle("active", active); item.setAttribute("aria-current", active ? "page" : "false"); }
+  for (const item of document.querySelectorAll("nav [data-view]")) { const active = item.dataset.view === view || (["context", "course", "chapter", "mini", "mini-catalog", "feature", "legacy-course"].includes(view) && item.dataset.view === "lesson"); item.classList.toggle("active", active); item.setAttribute("aria-current", active ? "page" : "false"); }
   document.getElementById("breadcrumb").textContent = names[view];
-  main.innerHTML = view === "home" ? overview() : view === "lesson" ? chapterLinks() + lesson() : view === "context" ? contextLesson() : view === "course" ? courseIndex() : view === "chapter" ? courseChapter() : view === "journal" ? journeyJournal() : view === "library" ? library() : view === "notes" ? intro("YOUR PERSONAL FIELD NOTES", "Make it yours.", "Capture the examples, questions, and discoveries you want to remember.") + courseNotePicker() : overview();
+  main.innerHTML = view === "legacy-home" ? legacyOverview() : view === "legacy-course" ? legacyCourseIndex() : view === "legacy-guide" ? legacyCourseGuide() : view === "feature" ? featureTutorial() : view === "mini" ? miniLesson() : view === "mini-catalog" ? miniCatalog() : view === "setup" ? startingPoint() : view === "guide" ? courseGuide() : view === "home" ? overview() : view === "lesson" ? chapterLinks() + lesson() : view === "context" ? contextLesson() : view === "course" ? courseIndex() : view === "chapter" ? courseChapter() : view === "journal" ? journeyJournal() : view === "library" ? library() : view === "notes" ? intro("YOUR PERSONAL FIELD NOTES", "Make it yours.", "Capture the examples, questions, and discoveries you want to remember.") + courseNotePicker() : overview();
+  if(["home","course","feature","guide"].includes(view))main.insertAdjacentHTML("afterbegin",featureIdentity());
   if (["lesson", "context", "chapter"].includes(view)) {
     const id = activeChapterId(), activeTab = view === "lesson" ? tab : view === "context" ? contextTab : chapterTab;
     const contentPanel = main.querySelector('.tab-content');
@@ -130,6 +139,7 @@ function render() {
     if (references) references.insertAdjacentHTML('beforebegin', chapterFinishPanel(id, activeTab));
     else contentPanel?.insertAdjacentHTML('beforeend', chapterFinishPanel(id, activeTab));
     if (activeTab === 'reference') updateQuestionReview();
+    if(['foundation','context'].includes(id))main.querySelector('.lesson-meta')?.insertAdjacentHTML('afterend',chapterRemaining(id));
     if(activeTab === 'learn' && ['foundation','context'].includes(id)) main.querySelector('.tab-content')?.insertAdjacentHTML('afterbegin', prerequisitePanel(id));
   }
   for(const list of main.querySelectorAll('[role="tablist"]')) {
@@ -145,24 +155,44 @@ function render() {
     const contentPanel=main.querySelector('.tab-content');
     if(contentPanel && (view==='lesson'?tab:view==='context'?contextTab:chapterTab)==='practice') contentPanel.insertAdjacentHTML('afterbegin',button('Open compact companion','companion','secondary'));
   }
+  addLessonSupport();
+  addWorkflowSupport();
   window.quest.updateCompanion?.(companionStep()).catch(()=>{});
 
 }
 function navigate(nextView) {
   view = nextView;
   if (view === "lesson") { state.lessonSeen = true; save(); }
-  else if (["context", "chapter"].includes(view)) save();
+  else if(["mini","feature"].includes(view))save();
+  else if (["context", "chapter"].includes(view)) { if(view === "chapter")state.chapters[selectedChapter].seen=true; save(); }
   render();
   main.focus({ preventScroll: true });
   window.scrollTo(0, 0);
 }
 document.addEventListener('toggle', event => {
-  if (event.target.matches('.tab-content .chapter-questions > details')) updateQuestionReview();
+  if (event.target.matches('.tab-content .chapter-questions > details') && event.target.isConnected) {
+    const id=event.target.dataset.questionChapter,title=event.target.dataset.questionTitle;
+    if(state?.questionPanels[id]&&title){const old=state.questionPanels[id],next=event.target.open?[...new Set([...old,title])]:old.filter(item=>item!==title);if(JSON.stringify(old)!==JSON.stringify(next)){state.questionPanels[id]=next;save();}}
+    updateQuestionReview();
+  }
 }, true);
 document.addEventListener("click", async event => {
   const target = event.target.closest("button, a");
   if (!target || !state) return;
   if (target.matches(".brand")) { event.preventDefault(); navigate("home"); return; }
+  if(target.dataset.openMini){openMini(target.dataset.openMini);return;}
+  if(view==='mini'&&target.dataset.copyStarter!==undefined){const guide=window.QuestMiniLessons.guide(state,window.QuestMiniLessons.get(selectedMini));if(guide.starter)try{await navigator.clipboard.writeText(guide.starter.prompt);announce('Fictional sample copied; it is not your completed work.');}catch{announce('Select the sample and copy it manually.');}return;}
+  if(target.dataset.openLearningTask){
+    const parts=target.dataset.openLearningTask.split(':');if(parts.length===3)openLearningTask(parts[0],Number(parts[1]),parts[2]);return;
+  }
+  if(target.dataset.equivalentPreparation){
+    const id=target.dataset.equivalentPreparation;if(learningOrder().includes(id)){state.preparation[id]=!state.preparation[id];save();render();announce('Preparation preference saved. No exercises, checks or XP were marked complete.');}return;
+  }
+  if (target.dataset.missingLabel) {
+    const key=target.dataset.missingLabel;
+    if(['modeLabel','modelLabel'].includes(key)){state.setup[key]='Not found';save();const input=document.getElementById(key==='modeLabel'?'observed-mode':'observed-model');if(input){input.value='Not found';input.focus({preventScroll:true});}const prompt=document.getElementById('inventory-prompt');if(prompt)prompt.textContent=window.QuestLearningMap.inventoryPrompt(state.setup);}return;
+  }
+  if(target.dataset.copyOptional){const item=Course.followUps.find(item=>item.id===target.dataset.copyOptional);if(item)try{await navigator.clipboard.writeText(item.prompt);announce('Optional prompt copied. No work has been marked done.');}catch{announce('Select the prompt and copy it with Ctrl+C.');}return;}
   if (target.dataset.chapter) {
     const chapter = Course.chapters.find(ch => ch.id === target.dataset.chapter);
     if (!chapter) return;
@@ -189,7 +219,7 @@ document.addEventListener("click", async event => {
     return;
   }
   if (target.dataset.copyCourse !== undefined) {
-    try { await navigator.clipboard.writeText(currentChapter().steps[Number(target.dataset.copyCourse)].prompt); announce("Copied. Paste into your chosen assistant."); }
+    try { await navigator.clipboard.writeText(practiceGuide(selectedChapter,Number(target.dataset.copyCourse)).prompt); announce("Copied. Paste into your chosen assistant."); }
     catch { announce("Select the prompt and use Ctrl+C."); }
     return;
   }
@@ -207,7 +237,7 @@ document.addEventListener("click", async event => {
     return;
   }
   if (target.dataset.copyContext !== undefined) {
-    const text = target.dataset.copyContext === "sample" ? C.context.sampleNote : C.context.steps[Number(target.dataset.copyContext)].prompt;
+    const text = target.dataset.copyContext === "sample" ? C.context.sampleNote : practiceGuide("context",Number(target.dataset.copyContext)).prompt;
     try { await navigator.clipboard.writeText(text); announce("Copied. Paste into your chosen assistant or editor."); }
     catch { announce("Select the text and copy it with Ctrl+C."); }
     return;
@@ -217,7 +247,7 @@ document.addEventListener("click", async event => {
     if (item) try { await navigator.clipboard.writeText(item.prompt); announce("Follow-up prompt copied. Use it with the relevant real AI tool."); } catch { announce("Select the prompt and copy it with Ctrl+C."); }
     return;
   }
-  if (target.dataset.view) { navigate(target.dataset.view === "lesson" ? "course" : target.dataset.view); return; }
+  if (target.dataset.view) { if(target.dataset.view==="notes"){notesChapter=state.resume.view==="feature"?"feature:"+(state.resume.feature||"scheduled"):state.resume.view==="context"?"context":state.resume.view==="lesson"?"foundation":state.resume.chapter;}navigate(target.dataset.view === "lesson" ? "course" : target.dataset.view); return; }
   if (target.dataset.tab) {
     tab = target.dataset.tab;
     if (tab === "quiz") { questionIndex = C.questions.findIndex(q => !S.solved(state, q)); if (questionIndex < 0) questionIndex = C.questions.length; }
@@ -243,6 +273,21 @@ document.addEventListener("click", async event => {
   }
   if (target.dataset.source) { window.quest.openSource(target.dataset.source).catch(() => announce("The source could not be opened.")); return; }
   switch (target.dataset.action) {
+    case 'mini-catalog': navigate('mini-catalog');break;
+    case 'mini-help': {const panel=main.querySelector('.exercise-help');panel.open=true;panel.querySelector('summary').focus({preventScroll:true});break;}
+    case 'mini-prompt':
+    case 'mini-input': {const item=window.QuestMiniLessons.get(selectedMini),guide=window.QuestMiniLessons.guide(state,item);try{await navigator.clipboard.writeText(target.dataset.action==='mini-prompt'?guide.prompt:guide.sample);announce('Copied. No result has been marked practiced.');}catch{announce('Select the text and copy it manually.');}break;}
+    case 'mini-practiced':
+    case 'mini-undo':
+    case 'mini-reviewed':
+    case 'mini-defer':
+    case 'mini-skip': {const M=window.QuestMiniLessons,item=M.get(selectedMini);M.outcome(state,item,({'mini-practiced':'practiced','mini-undo':'not-started','mini-reviewed':'reviewed','mini-defer':'deferred','mini-skip':'skipped'})[target.dataset.action]);save();render();announce('Mini-lesson result saved. Chapter XP is unchanged until the chapter completion flow is finished.');break;}
+    case 'mini-unavailable': window.QuestMiniLessons.availability(state,window.QuestMiniLessons.get(selectedMini),'unavailable');save();render();break;
+    case 'copy-exercise-input': try{await navigator.clipboard.writeText(practiceGuide(activeChapterId(),exerciseValue().step).sample);announce('Sample input copied. This does not mark any work done.');}catch{announce('Select the sample input and copy it manually.');}break;
+    case 'exercise-help': {const panel=main.querySelector('.exercise-help');if(panel){panel.open=true;panel.querySelector('summary').focus({preventScroll:true});}break;}
+    case 'exercise-unavailable': {
+      const value=exerciseValue(),number=value.step+1;value.checks=value.checks.filter(n=>n!==number);value.stepStatus[number]='deferred';value.stepReasons[number]='unavailable';value.stepAvailability[number]='unavailable';value.exercise='not-started';save();render();announce('This exercise is saved as unavailable. Your other completed work is preserved.');break;
+    }
     case 'exercise-done': setExerciseDone(true); break;
     case 'exercise-undo': setExerciseDone(false); break;
     case 'exercise-next':
@@ -251,13 +296,16 @@ document.addEventListener("click", async event => {
     }
     case 'exercise-skip':
     case 'exercise-defer': {
-      const value=exerciseValue();value.checks=value.checks.filter(n=>n!==value.step+1);value.stepStatus[value.step+1]=target.dataset.action==='exercise-skip'?'skipped':'deferred';value.exercise='not-started';save();render();announce('Saved to revisit. You can continue to another exercise.');break;
+      const value=exerciseValue();value.checks=value.checks.filter(n=>n!==value.step+1);value.stepReasons[value.step+1]='later';value.stepStatus[value.step+1]=target.dataset.action==='exercise-skip'?'skipped':'deferred';value.exercise='not-started';save();render();announce('Saved to revisit. You can continue to another exercise.');break;
     }
+    case 'copy-first-edit': try{await navigator.clipboard.writeText('Change only the tool example to checking tomorrow’s weather. Preserve the other two definitions. Tell me whether you edited a saved file or only supplied revised text.');announce('Edit request copied. Inspect the changed result before marking it done.');}catch{announce('Select the edit request and copy it manually.');}break;
+    case 'starting-point': navigate('setup');break;
+    case 'skip-setup': state.setup.complete=true;save();navigate('home');break;
+    case 'copy-inventory': try{await navigator.clipboard.writeText(window.QuestLearningMap.inventoryPrompt(state.setup));announce('Copied your observations. Paste into your AI chat.');}catch{announce('Select your observations and copy with Ctrl+C.');}break;
     case "resume": {
       let resume = state.resume;
-      const next = learningOrder().find(id => !S.getSummary(state,id).complete);
-      // The overview action always opens the chapter named on its card.
-      if(next && S.getSummary(state,resume.view === "lesson" ? "foundation" : resume.view === "context" ? "context" : resume.chapter).complete) resume = {view:next==='foundation'?'lesson':next==='context'?'context':'chapter', chapter:next==='foundation'||next==='context'?'orientation':next, tab:next===(resume.view==='lesson'?'foundation':resume.view==='context'?'context':resume.chapter)?resume.tab:'learn'};
+      if(resume.view==="feature"){openFeatureTutorial(resume.feature||"scheduled");break;}
+      if(resume.view==="mini"){openMini(resume.mini);break;}
       selectedChapter = resume.chapter;
       if (resume.view === "lesson") { tab = resume.tab; if (tab === "quiz") { questionIndex = C.questions.findIndex(q => !S.solved(state, q)); if (questionIndex < 0) questionIndex = C.questions.length; } }
       else if (resume.view === "context") { contextTab = resume.tab; if (contextTab === "quiz") contextQuestion = contextNextQuestion(); }
@@ -274,7 +322,7 @@ document.addEventListener("click", async event => {
     case "export-progress": try { await save(); const exported = await window.quest.exportProgress(); announce(exported ? "Personal backup exported. Keep it private." : "Export cancelled."); } catch { announce("The backup could not be exported. Your current progress remains available."); } break;
     case "cancel-import": pendingImport = null; render(); break;
     case "confirm-import": if (pendingImport) { try { state = S.normalize(await window.quest.importProgress(pendingImport)); pendingImport = null; status.textContent = "All changes saved"; render(); announce("Backup imported. Previous progress was backed up in the local data folder."); } catch { announce("Import failed. Inspect your saved progress before continuing."); } } break;
-    case "course": navigate("course"); break;
+    case "course": navigate(["lesson","context","chapter","legacy-home"].includes(view)?"legacy-course":"course"); break;
     case "course-practice": chapterTab = "practice"; navigate("chapter"); break;
     case "course-next": { const value = state.chapters[selectedChapter]; value.step = Math.min(currentChapter().steps.length - 1, value.step + 1); save(); render(); document.getElementById("course-step-title")?.focus(); break; }
     case "course-scope-guide": chapterTab="learn"; navigate("chapter"); document.getElementById("scope-guide-title")?.focus(); break;
@@ -336,10 +384,29 @@ document.addEventListener("click", async event => {
       break;
     }
     case "review-questions": setChapterTab("reference"); break;
-    case "copy-prompt": try { await navigator.clipboard.writeText(exercisePrompt); document.getElementById("copy-status").textContent = "Copied. Paste it into your chosen assistant."; announce("Prompt copied. Paste it into your assistant."); } catch { document.getElementById("copy-status").textContent = "Select the prompt text above and copy it with Ctrl+C."; } break;
+    case "copy-prompt": try { await navigator.clipboard.writeText(practiceGuide("foundation",state.step).prompt); document.getElementById("copy-status").textContent = "Copied. Paste it into your AI chat and send it."; announce("Message copied. Paste it into your AI chat."); } catch { document.getElementById("copy-status").textContent = "Select the prompt text above and copy it with Ctrl+C."; } break;
   }
 });
+document.addEventListener('submit',event=>{
+  if(event.target.id!=='starting-point-form')return;
+  event.preventDefault();state.setup.complete=true;save();selectedChapter='orientation';chapterTab='learn';navigate('chapter');
+});
 document.addEventListener("change", async event => {
+  if(event.target.id==='mini-filter'){miniFilter=event.target.value;render();return;}
+  if(event.target.id==='mini-availability'){window.QuestMiniLessons.availability(state,window.QuestMiniLessons.get(selectedMini),event.target.value);save();render();return;}
+  if(event.target.dataset.stepAvailability){
+    const v=exerciseValue(),n=v.step+1,value=event.target.value;
+    if(['unknown','available','needs-setup','unavailable'].includes(value)){
+      if(value==='unknown')delete v.stepAvailability[n];else v.stepAvailability[n]=value;
+      if(value==='available'&&!v.checks.includes(n)&&v.stepStatus[n]==='deferred'&&['unavailable','preparation'].includes(v.stepReasons[n])){delete v.stepStatus[n];delete v.stepReasons[n];}
+      if(!v.checks.includes(n)&&['needs-setup','unavailable'].includes(value)){v.stepStatus[n]='deferred';v.stepReasons[n]=value==='unavailable'?'unavailable':'preparation';v.exercise='not-started';}
+      save();render();
+    }return;
+  }
+  if(event.target.dataset.stepReason){const v=exerciseValue(),n=v.step+1;if(['later','preparation','help','unavailable'].includes(event.target.value)&&!v.checks.includes(n)){v.stepReasons[n]=event.target.value;v.stepStatus[n]='deferred';save();}return;}
+
+  if(event.target.dataset.setup){const key=event.target.dataset.setup;if(['surface','workflow','experience','files'].includes(key)){state.setup[key]=event.target.value;save();}return;}
+  if(event.target.id==='coverage-filter'){coverageFilter=event.target.value;render();return;}
   if (event.target.id === "progress-import") {
     const file = event.target.files[0];
     if (!file) return;
@@ -381,6 +448,15 @@ document.addEventListener("change", async event => {
   }
 });
 document.addEventListener("input", event => {
+  if(event.target.id==='mini-evidence'){window.QuestMiniLessons.evidence(state,window.QuestMiniLessons.get(selectedMini),event.target.value);save();return;}
+  if(event.target.id==='mini-search'){const position=event.target.selectionStart;miniSearch=event.target.value;render();const input=document.getElementById('mini-search');input.focus({preventScroll:true});input.setSelectionRange(position,position);return;}
+  if(event.target.dataset.stepEvidence && ['lesson','context','chapter'].includes(view)){
+    const number=Number(event.target.dataset.stepEvidence);if(number===exerciseValue().step+1){exerciseValue().stepEvidence[number]=event.target.value;save();}return;
+  }
+  if(event.target.dataset.setup && ['modeLabel','modelLabel'].includes(event.target.dataset.setup)){
+    const key=event.target.dataset.setup;state.setup[key]=event.target.value;save();
+    const prompt=document.getElementById('inventory-prompt');if(prompt)prompt.textContent=window.QuestLearningMap.inventoryPrompt(state.setup);return;
+  }
   if (event.target.dataset.recordNote || event.target.dataset.followNote) {
     const collection = event.target.dataset.recordNote ? state.records : state.followUps;
     const id = event.target.dataset.recordNote || event.target.dataset.followNote;
@@ -398,7 +474,7 @@ document.addEventListener("input", event => {
     filterQuery=event.target.value.trim().toLowerCase();filterLibrary();
   }
 });
-window.quest.load().then(saved => { state = S.normalize(saved); status.textContent = "All changes saved"; render(); if(!state.profile.setupComplete)openProfile(); }).catch(error => {
+window.quest.load().then(async saved => { appInfo=await window.quest.info(); state = S.normalize(saved); status.textContent = "All changes saved"; render(); if(!state.profile.setupComplete)openProfile(); }).catch(error => {
   status.textContent = "Saved progress needs attention"; status.classList.add("error");
   main.innerHTML = `<section class="panel"><h1>Your progress has been kept intact.</h1><p>${esc(error.message)}</p><p>No new progress will be written in this session. Close this window and get help recovering the saved file.</p></section>`;
 });
@@ -426,6 +502,10 @@ window.quest.onCompanionAction?.(payload=>{
     state.chapters[selectedChapter].step++; save(); render(); document.getElementById("course-step-title")?.focus();
   } else if(payload.action==="next" && current.canNext && view==="context" && contextTab==="practice") {
     state.context.step++; save(); render(); document.getElementById("context-step-title")?.focus();
+  } else if(payload.action==='next' && current.canNext && view==='lesson' && tab==='practice') {
+    state.step++;save();render();
+  } else if(payload.action==='notes' && current.canNotes && view==='lesson') {
+    tab='notes';navigate('lesson');document.getElementById('lesson-note')?.focus();
   } else if(payload.action==="notes" && current.canNotes && view==="context") {
     contextTab="notes"; navigate("context"); document.getElementById("context-note")?.focus();
   } else if(payload.action==="notes" && current.canNotes && view==="chapter") {
@@ -458,8 +538,8 @@ function openProfile() {
 }
 async function finishProfile(name) {
   state.profile={name,setupComplete:true};
-  await save();renderLearnerHeader();document.getElementById("profile-dialog").close();
-  document.querySelector(".learner-name")?.focus();
+  await save();renderLearnerHeader();const featureName=main.querySelector(".feature-name");if(featureName)featureName.textContent=state.profile.name||"Learner";document.getElementById("profile-dialog").close();
+  (featureName||document.querySelector(".learner-name"))?.focus({preventScroll:true});
 }
 document.getElementById("profile-form").addEventListener("submit",event=>{event.preventDefault();finishProfile(document.getElementById("learner-name").value);});
 document.getElementById("profile-skip").addEventListener("click",()=>finishProfile(""));

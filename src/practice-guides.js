@@ -1,0 +1,158 @@
+(function(root){
+ const C=typeof module!=='undefined'?require('./content.js'):root.QuestContent;
+ const Course=typeof module!=='undefined'?require('./course.js'):root.QuestCourse;
+ const note='Model: reasons about a request. Example: suggests a meal.\nTool: performs an action. Example: searches opening hours.\nSkill: guides a repeatable method. Example: follows a meal-planning checklist.';
+ const tracker='Use learning-tracker.cjs and README.md from Develop with AI and Git. If missing, open that chapter first. Use only your disposable practice repository; a downloaded ZIP may not have Git history.';
+ // Each row is authored for the particular task: expected result, common failure, recovery.
+ const rows={
+  foundation:[
+   ['The answer explains model, tool and skill, with one everyday example for each. Open the saved note and check that all three explanations are there.','The assistant says Saved but gives no accessible file.','Ask for the exact location and open it. If file writing is unavailable, copy the text into Notepad, save as MY-FIRST-NOTE.md, and record that you saved it manually.'],
+   ['Only the tool example changes to checking tomorrow’s weather. The model and skill definitions remain unchanged.','The assistant rewrites everything or describes an edit without changing the file.','Open the actual note and compare all three definitions. Ask it to change only the tool example, or save the revised text yourself and record the manual route.'],
+   ['You identify the model as reasoning, a real file tool as writing if one ran, and the supplied instructions as the method. A skill need not have been installed.','A saved prompt or a manual Notepad save is described as an installed skill or AI file-tool execution.','Ask the assistant to separate observed tool activity, your manual actions, and reusable instructions. Leave any unobserved action unknown.']
+  ],
+  orientation:[
+   ['Your actual mode/model labels appear in the prepared message, or missing labels say Not found. The answer leaves unknown account access unknown.','You cannot find the model control or the assistant guesses your settings.','Use the I don’t see these controls route. Record Not found and ask for an explanation based only on your supplied observations.'],
+   ['You identify the current workspace if it is known, and choose either an empty practice folder or text you will save yourself.','A local file path is treated as an attachment, or the chat cannot identify a workspace.','Ask which file access was actually verified. Use pasted sample text and Notepad instead of changing permissions.'],
+   ['You find Attach/Add files if shown and can explain that attaching contents differs from naming a local path.','The menu is missing or shows unrelated tools.','Record Not found and use an ordinary text message. No installation or extra plan is needed for the sample-note route.']
+  ],
+  context:[
+   ['The response names the actual attached/read note or asks for it; a filename alone is not a successful read.','The assistant invents note contents before receiving them.','Attach the real note or paste the sample and explicitly label this as a pasted-text test.'],
+   ['The answer matches the tool example in the exact note you supplied. The sample context note uses grocery-store opening hours; your edited note may use weather.','The answer repeats an older example or cites the wrong file.','Open the note, point to the current tool sentence, reattach the right version and ask which source was used.'],
+   ['A teaching preference and a progress record serve different jobs; completed actions reflect your report and saved files can be opened.','The draft marks unperformed work complete or merely drafted text is described as saved.','Correct the draft before saving. Supply which actions actually happened, preserve existing records and open the result.'],
+   ['The fresh chat names the supplied records, summarizes actual completed work and identifies one next step without inventing history.','It claims to remember another conversation or resumes from an outdated record.','Supply the latest records explicitly. Use the fictional handoff only as a simulation, never as your completed work.']
+  ],
+  memory:[
+   ['An inventory names the inspected product, host and memory description; unknown scope remains unknown.','A hidden toggle is treated as proof that memory is enabled or shared.','Record Not found. Use the scope table and continue with supplied text without changing settings.'],
+   ['A short recap identifies “use short paragraphs” as an instruction supplied in this message.','Following the current message is presented as proof of automatic memory.','Ask which sentence supplied the preference. Separate explicit context from untested automatic recall.'],
+   ['The fresh response uses the fictional training-team note and leaves the team name and prior chat unknown.','The assistant invents a team name or claims full transcript transfer.','Ask which supplied line supports the claim, correct the recap and exclude unverified history from your note.']
+  ],
+  'feature-lab':[
+   ['For the city you chose, three public destinations have checkable links. If a real map is returned, inspect a marker and destination. A sourced list is a fallback, not map-tool execution.','A marker has the wrong address or a static list is called interactive.','Open a destination link and verify its location. Request a correction; if map tools are absent, save the sourced-list result and keep the map attempt unavailable.'],
+   ['An actual image shows model/tool/skill clearly; after your edit request the chosen element visibly changes.','Only a text description appears, or labels are unreadable.','Ask for larger labels and inspect the new output. If image tools are absent, mark the image exercise unavailable rather than counting a description as an image.'],
+   ['The chosen capability is named and its observed interface or recap behavior is described; the two are not confused.','An animated pet is described as a more capable model.','Ask what actually changed: interface, reusable instructions or tool access. Try only the capability you already have.'],
+   ['The result identifies the graphical browser/computer actually used to open a public page; no login or secret is needed.','A command-line cloud environment is presented as a graphical computer.','Ask for the actual tool and visible page evidence. If no graphical browser is available, stop and record the limitation.'],
+   ['A visible shortcut opens, performs one harmless interaction and returns to the chat. Its label is recorded exactly.','Your client has no Pet/Mini/Micro control or the label differs.','Use your client’s current label. If absent, mark this exercise unavailable and continue without installing anything.'],
+   ['Two recap runs follow the selected reusable method and each asks one practice question before giving feedback.','Ordinary chat is claimed to have used a skill although no reusable capability was selected or available.','Ask which capability was actually invoked. A saved instruction prompt is a fallback; record that distinction.']
+  ],
+  prompting:[
+   ['The assistant asks one useful question about the beginner app’s purpose and does not start implementation.','It produces a long feature list or starts writing code immediately.','Say “Stop implementation. Ask only one question about the intended learner and outcome.” Inspect any changes before continuing.'],
+   ['Exactly three proposed features each include an observable success check; no code is written.','The proposal uses vague goals such as powerful or easy without a check.','Ask for one concrete action and visible result for each feature, keeping the proposal to three features.'],
+   ['The revised proposal keeps the desktop-course goal and gives every lesson a task, observable output and understanding check.','The assistant replaces the project goal or implements the proposal.','Restate the original goal and request a proposal-only revision with a short before/after explanation.']
+  ],
+  research:[
+   ['A dated answer distinguishes the requested billing/access routes and supports the distinction with current official links and remaining uncertainty.','A confident answer has no source, uses an outdated blog, or claims all access routes are identical.','Ask for current official documentation and the exact passage supporting each distinction. Do not change billing or create an API key.'],
+   ['The cited passage supports the specific claim; statements inferred by the assistant are identified separately.','The link opens but the page does not support the answer.','Quote the unsupported claim back and ask for the relevant passage or a correction. A working URL alone is insufficient.'],
+   ['RESEARCH-NOTES.md includes an answer, official URLs, date checked and uncertainty, while preserving existing notes.','The note drops qualifications or is overwritten instead of appended.','Compare with the verified answer, restore missing context and inspect the proposed edit before saving. Save supplied text manually if necessary.']
+  ],
+  artifacts:[
+   ['The actual PDF is readable on one page, retains the note’s qualifications, and a source link opens the intended page.','Text is clipped or source links are plain, unclickable text.','Open the PDF, identify the clipped text or broken link, and ask for a smaller layout or clickable link before accepting it.'],
+   ['A formula counts 2 completed lessons initially, then 3 when the remaining lesson is changed to yes.','The displayed count is hardcoded or does not recalculate.','Inspect the count cell’s formula and completed values. Ask for a formula-based count and repeat the 2-to-3 test.'],
+   ['Three editable slides contain a practical example; the requested title and original logo appear in the updated deck.','The result is flat images or the edited title appears only in the chat.','Open the actual deck, identify the limitation, and request editable text or an honest alternative rather than claiming it was edited.'],
+   ['20 minutes × 5 sessions produces 100 weekly minutes. Changing minutes to 30 produces 150.','The interface looks interactive but changing an input leaves the result unchanged.','Try both input cases and ask the assistant to connect the input event to the calculation. Check the arithmetic independently.'],
+   ['The separate preview has three lesson checkboxes, a working official link and the requested title change; controls remain usable at a narrow width.','The assistant modifies an existing site, publishes without request or provides a static mockup with no working checkboxes.','Confirm the separate preview target before edits. Report the exact failed interaction and request a correction without publication.']
+  ],
+  seeing:[
+   ['The response quotes the sentence actually visible in your supplied snapshot and does not claim to edit the note.','It summarizes an old screenshot or claims to have controlled Notepad.','Attach the current harmless snapshot and ask it to distinguish what it saw from any action it actually performed.'],
+   ['The assistant names the connected official page and its summary matches that page, not just the URL.','It reads a different tab or cannot access your regular browser profile.','Check the browser and exact tab connection, reconnect the intended public page, then ask for its title and one visible detail.'],
+   ['The exact sentence appears in a fresh blank Notepad tab; no existing note is replaced.','The assistant merely provides text in chat or targets a nonblank note.','Stop before replacing content. Select a fresh blank tab and retry a scoped text-entry request; mark unavailable if no computer tool exists.']
+  ],
+  extensions:[
+   ['You distinguish what the plugin can do, which account/resources are connected and which actions require approval.','Installed is treated as proof of repository or document access.','Inspect the selected connection and resource scope read-only. Do not broaden permissions just to finish the lesson.'],
+   ['A saved workflow defines a recap, one example, one question, waiting for an answer and asking for missing notes.','It overwrites an existing skill or creates a server for a simple recap method.','Use a new project-local name. Review the instructions and use saved text if real skill creation is unsupported.'],
+   ['With notes: a grounded recap and one question. Without notes in a fresh test: a request for input, not an invented recap.','The workflow invents missing content or answers its own practice question immediately.','Add explicit missing-input and wait-for-answer instructions, then rerun both cases.']
+  ],
+  control:[
+   ['The explanation separates the supplied context counter from the supplied account allowance and leaves unavailable values unknown.','The assistant guesses your remaining quota or treats context fullness as subscription usage.','Supply only non-sensitive visible labels/values. Ask which counter each statement refers to; do not change billing.'],
+   ['A plan proposes three questions and a separate answer key, names the source note and defines checks without creating files.','Implementation starts during the plan-only request.','Stop and inspect any changes. Restate “proposal only” and require the checks and stopping condition before work begins.'],
+   ['The result contains three questions and a separate key; every answer agrees with the note and the task stops without scheduling.','Answers contradict the note or an unwanted recurring task is proposed as completed.','Compare each answer with the note. Request only the missing correction; do not approve a schedule for this exercise.']
+  ],
+  coding:[
+   ['Running the tracker prints its title, a numbered Done/Pending list and 2 of 3 completed. README gives the same run command and result.','Node is unavailable, output is only predicted, or README and actual output disagree.','Ask for the actual runtime check and run output. If Node is missing, use the client’s supported setup route or defer execution; do not claim a run from code inspection.'],
+   ['The title-only change keeps 2 of 3. Adding the completed Side chats lesson produces 3 of 4.','Both changes happen together so you cannot see why the count changed.','Request the title change and run first, then the added lesson and second run. Compare the two small diffs.'],
+   ['A deliberate identity and reviewed files form a local commit; the Remaining summary is on the new branch as an uncommitted change.','Git is missing, the folder is only a ZIP, the identity is invented or unrelated files are staged.','Inspect the chosen folder and exact staged paths. Ask for your chosen local identity and initialize only the disposable practice repository if needed.'],
+   ['The temporary title edit is restored while the pre-existing Remaining change and unrelated work stay intact.','A broad reset erases changes beyond the disposable title edit.','Record the original diff before undoing. Ask for a path/section-specific restore, and compare file contents and status afterward.']
+  ],
+  github:[
+   ['The chosen repository contains the intended branch. Default output is unchanged; --pending lists pending lessons and the all-complete case is handled.','A wrong repository/base is assumed, private files are included or only the default command is tested.','Inspect repository identity, visibility, exact files and both run outputs before pushing. Remove sensitive material from the proposed change before publication.'],
+   ['A draft PR has the correct head/base, a focused --pending diff, a clear description and factual checks.','A duplicate PR is opened or its base points to the feature branch.','Inspect existing PRs and actual branch names. Correct the base/head and reuse the intended PR without merging.'],
+   ['A disclosed simulation comment is followed by a README change and new commit on the same PR, with factual follow-up.','An AI-generated comment impersonates a real reviewer or claims independent approval.','Label the exchange as a learning simulation. Verify the actual changed commit and do not manufacture approval.'],
+   ['A readiness summary distinguishes draft/ready, checks, findings, conflicts and the maintainer’s still-pending merge decision.','Passing checks are treated as a completed merge or permission to delete branches.','Read the actual PR state and keep merge/deletion separate until the maintainer explicitly chooses them.']
+  ],
+  environments:[
+   ['The response reports observable directory, branch/commit when present, runtime and status, or explicitly says an item is not verified.','A model name is used to infer local versus cloud execution.','Ask for actual environment/tool evidence without edits; leave unknown files or hosts unknown.'],
+   ['A separate worktree prints My Worktree Experiment while the original retains its title and existing file state.','Two chats change the same checkout or the original file also changes.','Check both absolute directories and Git status before editing. Use a genuinely separate checkout and compare outputs.'],
+   ['A real selected cloud environment runs the README command, names its source revision and ends with unchanged Git status.','A local run is called cloud, or environment/dependencies are missing.','Inspect the selected host and published environment. Prepare the needed environment through supported controls, or defer; do not claim remote execution from a local result.']
+  ],
+  delegation:[
+   ['Two distinct read-only findings cover tracker behavior and README accuracy; the parent waits and synthesizes evidence.','One ordinary response is labelled as two subagents, or either agent edits files.','Ask for the actual task identities and returned findings. If subagents are unavailable, record a sequential demonstration as such, not parallel execution.'],
+   ['A plan defines percentage behavior including an empty list; a bounded implementation is reviewed and tested with the actual selected configuration reported.','A cheaper model is assumed from its name or savings are claimed without measurements.','Inspect the available configuration and real handoff. Keep savings unmeasured unless comparable usage is actually observable; use an honest single-model fallback if needed.'],
+   ['The implementation waits for and uses a real specification from the authorized exercise chat; final output matches that specification.','Two chats edit the same files or a narrated handoff is presented as an actual message.','Use a separate worktree, identify exact recipients and scope, and inspect the received specification before implementation. Distinguish parent relay from direct peer messaging.']
+  ],
+  automation:[
+   ['A checker runs against the unchanged tracker and logs a timestamp, ManualTest trigger and pass/fail.','A manual run is claimed to prove that a lifecycle hook fired.','Keep the ManualTest label. Inspect the actual log and explain that no hook has yet been demonstrated.'],
+   ['After your explicit trust/approval, a real supported Stop event writes a distinct event record with the checker outcome.','A toggle or copied configuration is called a successful event run.','Inspect the client’s current schema, the exact command and the event log. If the event is unsupported, defer rather than simulate success.'],
+   ['Only the demo hook is disabled and its saved state is verified; unrelated hooks remain unchanged.','All hooks are removed, or the demonstration is left running unintentionally.','Identify the demo configuration first, disable only that entry and recheck the saved setting. Keep unrelated configuration intact.']
+  ],
+  capstone:[
+   ['A proposal names the next-pending behavior, the all-complete result, file scope and concrete checks without editing.','The plan assumes a pending lesson always exists or begins implementation.','Ask for an explicit all-complete example and the bounded plan before any edits.'],
+   ['The isolated diff and actual run pass the planned cases; any read-only reviewer findings are received before synthesis.','Implementation changes the original checkout or proceeds without waiting for a requested review.','Check the worktree directory, wait for actual findings and rerun the planned cases before accepting the change.'],
+   ['Only the reviewed change reaches a PR in your chosen repository; review findings and fixes are factual and merge remains your decision.','The assistant pushes unrelated edits or merges before you decide.','Inspect exact files and destination before publishing; request correction on the same PR and keep the merge boundary explicit.'],
+   ['A manual validation has a real result. If you choose a temporary schedule, its timezone/host and actual run are inspected, then its paused state is verified.','A successful manual run is described as a scheduled execution or local work is assumed to run with the PC off.','Distinguish manual and scheduled run evidence. Check the host’s requirements and configured time; pause only the chosen demo schedule.']
+  ]
+ };
+ const inputs={
+  foundation:['An AI chat and Notepad, or an accessible practice folder. Use this fictional sample only as a comparison; ask for your own result.',note],
+  orientation:['Your AI app and the labels you can actually see. Not found is valid; no account or permission changes are required.',''],
+  context:['MY-FIRST-NOTE.md from Chapter 1, or the supplied sample. When using the sample, the tool example is checking grocery-store opening hours.',C.context.sampleNote],
+  memory:['Use the fictional training-team note below. Copy only non-sensitive visible setting labels; do not enable, erase or switch memory settings.','Preference for this task: Use short paragraphs.\nFictional note: A training team uses AI to draft checklists and verifies every output.\nUnknown: team name, previous chat history and automatic memory behavior.'],
+  'feature-lab':['An available tool in your actual app. Choose a public city for the map. For image/recap work use the supplied model/tool/skill note; never include credentials.',note],
+  prompting:['A harmless proposal-only chat. The project is a desktop course for beginners learning AI. No existing code or account access is needed.','Goal: Help beginners learn AI through practical tasks, visible results and short understanding checks.'],
+  research:['An internet-capable assistant and official documentation. Question: what does the current plan include, and which API/access routes have separate terms? Do not create keys or change billing.',''],
+  artifacts:['Your verified RESEARCH-NOTES.md for the PDF and official link in the site. Other activities use the supplied fictional lesson data. If the research note is missing, complete Research with evidence first.','Spreadsheet/site lessons: Models — yes; Tools — yes; Skills — no.\nCalculator: 20 minutes per session; 5 sessions per week.\nPresentation: a model reasons, a tool acts, reusable instructions guide a method.'],
+  seeing:['A fresh Notepad tab containing the sentence below for the snapshot. For browser reading, use https://learn.chatgpt.com/docs/use-chatgpt. For computer typing, open another fresh blank tab.','Today I learned how AI uses models, tools, and skills.'],
+  extensions:['An installed capability you can inspect, a new project-local recap method name, and your first note or the supplied fictional note. No new connection or installation is needed just to inspect.',note],
+  control:['Your first note, plus only the non-sensitive context/usage labels actually shown. Reuse the reviewed plan in the final exercise; do not schedule anything.',note],
+  coding:['A new disposable practice folder. Ask the assistant to check Node.js and Git; setup is separate if either is absent. Choose a repo-local identity before committing.','Tracker title: My AI Journey\nLessons: Models/tools/skills — done; MCP connections — done; Git foundations — pending.\nInitial expected result: 2 of 3 completed.'],
+  github:[tracker+' Choose a repository and visibility deliberately before a push.',''],
+  environments:[tracker+' A cloud run additionally needs an accessible published environment with the repository and runtime.',''],
+  delegation:[tracker+' Supply both files to the chosen client and use a separate worktree for any implementation.',''],
+  automation:[tracker+' Use a project-local checker and demo log. A real hook requires supported configuration and explicit trust; manual execution is not hook evidence.',''],
+  capstone:[tracker+' Use your reviewed plan, an isolated worktree and the chosen practice repository. A scheduled extension needs a supported host and your chosen timezone.','']
+ };
+ const foundationPrompts=[
+  'Explain a model, a tool and a skill in one short sentence each, with an everyday example for each. Help me save the result as MY-FIRST-NOTE.md. If you cannot create files in this chat, give me the text and simple steps to save it in Notepad.',
+  'Using my supplied MY-FIRST-NOTE.md, change only the tool example to checking tomorrow’s weather. Preserve the model and skill definitions. Tell me whether you edited the saved file or only supplied revised text. If the note is missing, ask me to attach or paste it first.',
+  'Using the note and actions I actually report, help me identify the model, any tool that really ran, and where reusable instructions would fit. Ask whether I saved the note manually before claiming AI file-tool use. Do not infer an installed skill from a saved prompt.'
+ ];
+ const specificInputs={
+  foundation:[null,'Your actual MY-FIRST-NOTE.md from exercise 1, or the text you saved manually. Supply the current version before requesting the edit.','Your actual note and a truthful account of who saved/edited it. No installed skill is required.'],
+  orientation:[null,'Your current AI chat, a new empty folder if file tools exist, or Notepad for the manual text route. Do not grant unrelated file access.','Your current chat’s + or attachment menu, if shown. Inspect it without selecting a personal file or changing permissions.'],
+  research:[null,'The answer and official links returned in exercise 1. Open the actual source page before checking the passage.','Your verified answer, its official links, date checked and remaining uncertainty. Use your practice folder or save the supplied text manually.'],
+  artifacts:[
+   'Your verified RESEARCH-NOTES.md and official source links from Research with evidence. If missing, complete that chapter first. Do not replace it with the unrelated lesson data below.',
+   'A spreadsheet-capable assistant and a spreadsheet viewer. Fictional rows: Models — yes; Tools — yes; Skills — no. No research note is needed for this exercise.',
+   'A presentation-capable assistant and a slide viewer. Topic: model reasons, tool acts, skill guides; include one everyday example. No research note is needed.',
+   'An assistant that can create an interactive visual. Start with 20 minutes per session and 5 sessions per week; use 30 minutes for the second check.',
+   'A separate site preview, three fictional lessons (Models, Tools, Skills), and one official link you verified in Research with evidence. Do not publish.'
+  ],
+  seeing:['A fresh Notepad tab with the supplied sentence and a supported screenshot/Appshot attachment route.','A supported browser connection and the exact public tab https://learn.chatgpt.com/docs/use-chatgpt. No account sign-in is needed.','A fresh, blank Notepad tab and an available computer-use tool. Do not select an existing note.'],
+  extensions:['An already-installed plugin or connection whose details you can inspect. No new account authorization is needed for this read-only inspection.','A new project-local recap workflow name, supplied notes and supported skill creation or saved instructions. Preserve existing skills.','The recap workflow from exercise 2 and your first note, or the supplied sample. Also test a fresh chat with no notes.'],
+  control:['Only the context/usage labels and non-sensitive values you actually see. If missing, record Not found; do not supply payment details.','Your first note, or the supplied sample, in a chat that can propose a plan without editing.','The reviewed three-question quiz plan from exercise 2 and the source note. If you skipped planning, return to exercise 2 first.'],
+  github:[null,'The online feature branch implementing --pending from exercise 1. Confirm the actual repository and default branch before opening a PR.','The existing draft PR from exercise 2 and its current README. Label all review comments as an AI-assisted learning simulation.','The actual PR from the earlier exercises, including its draft state, checks and unresolved findings. No merge or deletion is authorized by this lesson.'],
+  automation:[null,null,'Only the demo hook configured in exercise 2, its saved configuration and the demo log. Identify it before disabling; preserve other hooks.']
+ };
+ function baseStep(id,index){return id==='foundation'?{title:['Create and inspect your first note','Request one visible edit','Identify what actually did the work'][index],text:'Use your actual result; the sample is a comparison, not proof that an external task succeeded.',prompt:foundationPrompts[index],check:['I opened the note and checked its definitions and examples.','I compared the actual old and revised tool example.','I distinguished reasoning, actual tool activity and reusable instructions.'][index]}:id==='context'?C.context.steps[index]:Course.chapters.find(ch=>ch.id===id)?.steps[index];}
+ function get(id,index,observations={}){
+  const row=rows[id]?.[index],base=baseStep(id,index);if(!row||!base)return null;
+  const [expected,failure,recovery]=row,[defaultMaterials,defaultSample]=inputs[id];
+  const materials=specificInputs[id]?.[index]||defaultMaterials;
+  const sample=(id==='artifacts'&&index===0)||(id==='seeing'&&index===1)||(id==='extensions'&&index===0)||(id==='control'&&index===0)?'':defaultSample;
+  const inputChapter=['github','environments','delegation','automation','capstone'].includes(id)?'coding':id==='artifacts'&&index===0?'research':null;
+  const prompt=id==='memory'&&index===0?`I inspected memory controls without changing them. Product/mode label I supplied: ${observations.modeLabel||'Not provided'}. Host: Not provided. Memory setting/description: I have not supplied these labels yet. Ask me for the visible setting description or accept Not found. Then explain what can and cannot be established about scope. Do not change settings, store a preference, or assume synchronization.`:id==='automation'&&index===2?'Help me disable only this demo hook through supported controls and verify its saved state. Preserve unrelated hooks. Do not install anything or send files to another service.':base.prompt;
+  return {...base,chapter:id,index,prompt,materials,sample,expected:base.expected||expected,failure,recovery:base.recovery||recovery,inputChapter,
+   minutes:['coding','github','environments','delegation','automation','capstone'].includes(id)?'About 5–15 min':'About 3–8 min',
+   learnerAction:'Supply the listed inputs, send the prepared request, then open the actual result and apply the check below. You decide when it is done.',
+   assistantAction:'Follow the prepared request within its stated boundaries. Missing tools or input must be reported instead of inventing a result.'};
+ }
+ const api={get,baseStep,foundationPrompts};if(typeof module!=='undefined')module.exports=api;else root.QuestPracticeGuides=api;
+})(typeof window!=='undefined'?window:globalThis);

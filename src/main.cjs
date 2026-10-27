@@ -57,7 +57,7 @@ app.whenReady().then(async () => {
   function updateCompanion(value) {
     // Only the primary lesson renderer supplies bounded text, never arbitrary HTML or navigation.
     const data = {};
-    for (const key of ["key", "title", "text", "prompt", "check"]) data[key] = typeof value?.[key] === "string" ? value[key].slice(0, 12000) : "";
+    for (const key of ["key", "title", "text", "prompt", "check", "materials", "sample", "expected", "failure", "recovery"]) data[key] = typeof value?.[key] === "string" ? value[key].slice(0, 12000) : "";
     data.checked = value?.checked === true; data.readOnly = value?.readOnly === true;
     data.canNext = value?.canNext === true; data.canNotes = value?.canNotes === true;
     companionData = data;
@@ -91,6 +91,7 @@ app.whenReady().then(async () => {
     primaryWindow.webContents.send("quest:companion-action", {key:value.key,action:value.action});
     if (value.action !== "next") { primaryWindow.show(); primaryWindow.focus(); companionWindow.hide(); }
   });
+  ipcMain.handle("quest:info", event => { validateSender(event); return {version:app.getVersion(),packaged:app.isPackaged}; });
   ipcMain.handle("quest:load", event => { validateSender(event); return store.load(); });
   ipcMain.handle("quest:save", (event, value) => { validateSender(event); return store.save(value); });
   ipcMain.handle("quest:export", async event => {
